@@ -1,0 +1,75 @@
+.positionBody1 {
+  position: relative;
+  top: 0px;
+  z-index: 5;
+}
+.positionBody2 {
+  position: relative;
+  top: -31px;
+  z-index: 4;
+}
+.positionBody3 {
+  position: relative;
+  top: -62px;
+  z-index: 3;
+}
+.positionBody4 {
+  position: relative;
+  top: -94px;
+  z-index: 2;
+}
+.positionBody5 {
+  position: relative;
+  top: -110px;
+  z-index: 1;
+}
+.layer {
+  position: relative;
+  top: 45px;
+  left: 50%;
+}
+.conveyorOption {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  top: -15px;
+}
+.mapOffset {
+  position: relative;
+  top: 24px;
+}
+.zoneName {
+  position: absolute;
+  top: 180px;
+  left: -5px;
+  width: 99%;
+  height: 15%;
+  background-color: var(--zoneNameTagBackgroundColor) !important;
+  color: var(--zoneNameTagColor) !important;
+  font-size: 13px;
+}
+.flexWidth {
+  position: relative;
+  width: 25%;
+}
+.robotSize {
+  height: 80px;
+  width: 70px;
+}
+.moveZoneText {
+  font-weight: 900;
+  font-size: 15px;
+  position: absolute;
+  top: 120px;
+  left: 300px;
+  color: var(--bodyMoveColor);
+}
+.moveZoneText .letter {
+  display: inline-block;
+  line-height: 1em;
+}
+.moveZoneBody {
+  position: absolute;
+  top: 88px;
+  left: 300px;
+}

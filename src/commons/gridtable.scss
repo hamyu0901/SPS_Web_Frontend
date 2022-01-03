@@ -1,0 +1,11 @@
+@import "src/commons/table";
+.gridTableCard {
+  border: solid 1px var(--gridTableCardBorderColor) !important;
+}
+.tdText { 
+  color: var(--tdTextColor);
+}
+
+table.v-table thead th{
+  height: 52px !important;
+}

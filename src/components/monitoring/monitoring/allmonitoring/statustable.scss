@@ -1,0 +1,18 @@
+.statusTable {
+  text-align: center;
+}
+.statusTableTitle {
+  width: 100%;
+  border-bottom: solid 1px var(--statusTableTitleBorderBottomColor);
+}
+.statusTableContents{
+  width: 100%;
+}
+.predictIcon {
+  margin: 0;
+  padding: 0;
+  height: 12px;
+  width: 12px;
+  pointer-events: none;
+}
+  

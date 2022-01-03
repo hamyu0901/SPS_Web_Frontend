@@ -1,0 +1,107 @@
+.alarmPushSize {
+  position: absolute;
+  top: 600px;
+  left: 10px;
+  height: 300px;
+  width: 960px;
+}
+.menuZDirection {
+  position: absolute;
+  z-index: 5;
+  border: solid 1px var(--hscMenuStyleBorderColor);
+}
+.layoutZDirection {
+  background-color: var(--boothLayoutBackgroundColor);
+  position: absolute;
+  z-index: 4;
+}
+.alarmZDirection {
+  position: absolute;
+  z-index: 5;
+}
+.boothNameOffset0 {
+  position: absolute;
+  top: 5px;
+  left: -80px;
+  height: 185px;
+  width: 120px;
+  font-size: 20px;
+}
+.boothNameOffset1 {
+  position: absolute;
+  top: 195px;
+  left: -80px;
+  height: 185px;
+  width: 120px;
+  font-size: 20px;
+}
+.boothNameOffset2 {
+  position: absolute;
+  top: 385px;
+  left: -80px;
+  height: 185px;
+  width: 120px;
+  font-size: 20px;
+}
+.boothNameOffset3 {
+  position: absolute;
+  top: 575px;
+  left: -80px;
+  height: 185px;
+  width: 120px;
+  font-size: 20px;
+}
+.boothNameOffset4 {
+  position: absolute;
+  top: 765px;
+  left: -80px;
+  height: 185px;
+  width: 120px;
+  font-size: 20px;
+}
+.pageMoveBtn {
+  margin: 0px;
+  top: 860px;
+  left: -36px;
+  width: 200px;
+}
+
+.buttonItem {
+  color: var(--buttonItemColor);
+}
+
+.alarmDlgCardTitle {
+  background-color: var(--alarmDlgCardTitleBackgroundColor);
+  color: var(--alarmDlgCardTitleColor) !important;
+}
+
+.zoneIndex1 {
+  margin-top: 25px;
+}
+
+.zoneIndex2 {
+  margin-top: 50px;
+}
+
+.zoneIndex3 {
+  margin-top: 75px;
+}
+
+.zoneIndex4 {
+  margin-top: 100px;
+}
+
+.statusBar {
+  margin-top: -20px;
+  height: 60px;
+  border-radius: 5px;
+  border: solid 2px var(--statusBarBorderColor);
+}
+
+.predictIcon {
+  margin: 0;
+  padding: 0;
+  height: 10px;
+  width: 10px;
+  pointer-events: none;
+}

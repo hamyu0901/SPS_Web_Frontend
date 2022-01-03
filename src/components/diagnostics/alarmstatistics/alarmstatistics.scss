@@ -1,0 +1,33 @@
+a {
+  pointer-events: none;
+  cursor: default;
+}
+
+.AlarmstatisticsSelector {
+  height: 34px;
+  width: 100%;
+}
+
+.FilterSelector {
+  height: 34px;
+  width: 100%;
+}
+
+.FilterInputMessage {
+  width: 50px;
+}
+
+.v-btn {
+  min-width: 0;
+  margin: 0;
+}
+
+.buttonItem {
+  background-color: var(--buttonBackgroundColor) !important;
+  color: var(--buttonColor) !important;
+}
+
+.searchBtn {
+  margin-top: 1px;
+  height: 33px;
+}

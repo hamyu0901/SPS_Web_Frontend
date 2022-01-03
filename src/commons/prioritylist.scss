@@ -1,0 +1,37 @@
+.priorityListCard {
+  border: solid 1px var(--priorityListCardBorderColor) !important;
+}
+.priorityList {
+    padding: 0 !important;
+    height: 100%;
+    background-color: var(--priorityListBackgroundColor) !important;
+}
+.priorityListTitle {
+    height: 61px;
+    background-color:  var(--priorityListTitleBackgroundColor) !important;
+    text-align: center;
+}   
+.priorityListTile {
+    padding: 0 !important;
+    height: 49px !important;
+    color: var(--priorityListColor) !important;
+}
+
+.tileDatas {
+    padding-top: 15px;
+    height: 100%;
+}
+.tileDatasBtn {
+    margin-top: -5px;
+    width: 96px;
+    height: 30px;
+    color: var(--priorityListColor) !important;
+    border: solid 2px var(--priorityListButtonBorderColor);
+    border-radius: 15px;
+}
+.tileDatasBtn:hover {
+    // border: solid 1px #3188ff;
+    background-color: var(--priorityListActiveButtonBackgroundrColor) !important;
+    color: var(--priorityListButtonHoverColor) !important;
+    border: 0;
+}

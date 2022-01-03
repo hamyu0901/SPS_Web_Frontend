@@ -1,0 +1,30 @@
+a {
+  pointer-events: none;
+  cursor: default;
+}
+
+.v-btn {
+  min-width: 0;
+  margin: 0;
+}
+
+.searchBtn {
+  height: 33px;
+}
+
+.AtomizerDataSelector {
+  height: 34px;
+  width: 100%;
+}
+
+.AtomizerDataTable {
+  width: 100%;
+}
+
+.subTitle {
+  margin-top: -10px;
+}
+.subTitle p{
+  color: var(--subTitleColor);
+  font-size: 13px;
+}

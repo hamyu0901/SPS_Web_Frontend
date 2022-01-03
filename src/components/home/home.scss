@@ -1,0 +1,16 @@
+// home
+.convert {
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--boothMonitoringDetailText);
+}
+.boothStatusImg {
+  color: var(--boothStatusImgTextColor);
+  cursor: unset;
+}
+.boothMonitoring {
+  min-width: 0; /*임시 방편.. 변경 필요*/
+}

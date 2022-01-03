@@ -1,0 +1,30 @@
+.selectOptionDlgCard {
+  background-color: var(--cardBackgroundColor) !important;
+  color: var(--cardColor) !important;
+}
+
+.selectOptionDlgCardContents {
+  background-color: var(--cardContentsBackgroundColor) !important;
+}
+
+.selectOptionDlgBtn {
+  border: solid 1px var(--buttonItemBackgroundColor);
+}
+
+.selectOptionDlgPredictStatus {
+  border-right: solid 1px var(--predictStatusBorderColor);
+  border-bottom: solid 1px var(--predictStatusBorderColor);
+  border-left: solid 1px var(--predictStatusBorderColor);
+}
+.predictIcon {
+  margin: 0;
+  padding: 0;
+  height: 16px;
+  width: 16px;
+  pointer-events: none;
+}
+
+.buttonItem {
+  background-color: var(--buttonItemBackgroundColor) !important;
+  color: var(--buttonItemColor) !important;
+}

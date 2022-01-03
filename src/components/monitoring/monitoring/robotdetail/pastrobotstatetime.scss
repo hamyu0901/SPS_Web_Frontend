@@ -1,0 +1,17 @@
+.noDataText {
+  width: 100%;
+  height: 100%;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.pastRobotStateTimeCard {
+  background-color: var(--pastRobotStateTimeCardBackgroundColor) !important;
+  color: var(--pastRobotStateTimeCardColor);
+  border: solid 1px var(--pastRobotStateTimeCardBorderColor) !important;
+}
+
+.pastRobotStateTimeCardTitle {
+  background-color: var(--pastRobotStateTimeCardTitleBackgroundColor) !important;
+  color: var(--pastRobotStateTimeCardTitleColor);
+}

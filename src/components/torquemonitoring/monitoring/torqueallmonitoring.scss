@@ -1,0 +1,68 @@
+.alarmPushSize {
+    position: absolute;
+    top: 600px;
+    left: 10px;
+    height: 300px;
+    width: 960px;
+}
+.menuZDirection {
+    position: absolute;
+    z-index: 5;
+}
+.layoutZDirection {
+    position: absolute;
+    z-index: 4;
+}
+.alarmZDirection {
+    position: absolute;
+    z-index: 5;
+}
+.boothNameOffset0 {
+    position: absolute;
+    top: 5px;
+    left: -80px;
+    height: 160px;
+    width: 120px;
+    font-size: 20px;
+}
+.boothNameOffset1 {
+    position: absolute;
+    top: 170px;
+    left: -80px;
+    height: 160px;
+    width: 120px;
+    font-size: 20px;
+}
+.boothNameOffset2 {
+    position: absolute;
+    top: 335px;
+    left: -80px;
+    height: 160px;
+    width: 120px;
+    font-size: 20px;
+}
+.boothNameOffset3 {
+    position: absolute;
+    top: 500px;
+    left: -80px;
+    height: 160px;
+    width: 120px;
+    font-size: 20px;
+}
+.boothNameOffset4 {
+    position: absolute;
+    top: 665px;
+    left: -80px;
+    height: 160px;
+    width: 120px;
+    font-size: 20px;
+}
+.pageMoveBtn {
+    margin: 0px;
+    top: 860px;
+    left: -36px;
+    width: 200px;
+}
+.dialogContent {
+  background-color: #171A29 !important;
+}

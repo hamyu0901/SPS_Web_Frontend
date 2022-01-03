@@ -1,0 +1,38 @@
+.robotInfosCard {
+  border: solid 1px var(--robotInfoCardBorderColor) !important;
+}
+.robotInfo_table {
+  width: 100%;
+  background-color: var(--robotInfosTdBackgroundColor) !important;
+  color: var(--robotInfosColor);
+  border-top: 1px solid var(--robotInfosBorderColor) !important;
+  border-right: 1px solid var(--robotInfosBorderColor) !important;
+  border-left: 1px solid var(--robotInfosBorderColor) !important;
+}
+
+.robotInfo_table_row {
+  border-bottom:  1px solid var(--robotInfosBorderColor) !important;
+}
+
+.robotInfo_info_name, .robotInfo_status_name {
+  height: 35px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.robotInfo_info_value, .robotInfo_status_value {
+  margin-left: 3px;
+  height: 35px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.headerClr {
+  background-color: var(--robotInfosThBackgroundColor) !important;
+  color: var(--robotInfosColor);
+}

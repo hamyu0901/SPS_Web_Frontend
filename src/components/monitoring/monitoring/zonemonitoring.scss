@@ -1,0 +1,944 @@
+.hscMenuStyle {
+  height: 100%;
+  width: 100%;
+  background-color: var(--hscMenuStyleBackgroundColor) !important;
+  color: var(--hscMenuStyleColor);
+  border: solid 1px var(--hscMenuStyleBorderColor) !important;
+}
+
+.menuZDirection {
+  position: absolute;
+  z-index: 5;
+  border: solid 1px var(--hscMenuStyleBorderColor);
+}
+
+.zoneLayout {
+  width: 100%;
+  height: 625px;
+  background-color: var(--zoneLayoutBackgroundColor);
+  border: dotted 5px var(--zoneLayoutBorderColor);
+  border-radius: 5px;
+}
+
+.layoutZDirection {
+  position: absolute;
+  z-index: 4;
+}
+
+.infoLayout {
+  width: 100%;
+  height: 45px;
+  background-color: var(--infoLayoutBackgroundColor) !important;
+  color: var(--infoLayoutColor);
+  border: solid 1px var(--infoLayoutBorderColor) !important;
+}
+
+.bodyTable {
+  position: absolute;
+  top: 47px;
+  left: 80px;
+  width: 170px;
+  height: 10px;
+  font-size: 11px;
+  font-weight: bold;
+}
+.L1 {
+  position: absolute;
+  top: 80px;
+  left: 55px;
+}
+.robotInfoL1 {
+  position: absolute;
+  top: 80px;
+  left: 240px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoL1Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.L2 {
+  position: absolute;
+  top: 80px;
+  left: 415px;
+}
+.robotInfoL2 {
+  position: absolute;
+  top: 80px;
+  left: 600px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoL2Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.L3 {
+  position: absolute;
+  top: 80px;
+  left: 775px;
+}
+.robotInfoL3 {
+  position: absolute;
+  top: 80px;
+  left: 960px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoL3Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.L4 {
+  position: absolute;
+  top: 80px;
+  left: 1135px;
+}
+.robotInfoL4 {
+  position: absolute;
+  top: 80px;
+  left: 1320px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoL4Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.L5 {
+  position: absolute;
+  top: 80px;
+  left: 1495px;
+}
+.robotInfoL5 {
+  position: absolute;
+  top: 80px;
+  left: 1680px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoL5Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.R1 {
+  position: absolute;
+  top: 480px;
+  left: 55px;
+  width: 170px;
+}
+.robotInfoR1 {
+  position: absolute;
+  top: 475px;
+  left: 240px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoR1Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.R2 {
+  position: absolute;
+  top: 480px;
+  left: 415px;
+  width: 170px;
+}
+.robotInfoR2 {
+  position: absolute;
+  top: 475px;
+  left: 600px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoR2Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.R3 {
+  position: absolute;
+  top: 480px;
+  left: 775px;
+  width: 170px;
+}
+.robotInfoR3 {
+  position: absolute;
+  top: 475px;
+  left: 960px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoR3Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.R4 {
+  position: absolute;
+  top: 480px;
+  left: 1135px;
+  width: 170px;
+}
+.robotInfoR4 {
+  position: absolute;
+  top: 475px;
+  left: 1320px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoR4Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+.R5 {
+  position: absolute;
+  top: 480px;
+  left: 1495px;
+  width: 170px;
+}
+.robotInfoR5 {
+  position: absolute;
+  top: 475px;
+  left: 1680px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.robotInfoR5Status {
+  position: absolute;
+  top: 155px;
+  left: 0px;
+}
+
+.zone {
+  position: relative;
+  top: -80px;
+  left: -50px;
+}
+figure.robotImageHover {
+  margin: 10px;
+  min-width: 230px;
+  max-width: 315px;
+  width: 180px;
+  position: relative;
+  background: var(--robotStyleBackgroundColor);
+  color: var(--robotStyleColor);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+}
+figure.robotImageHover * {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all 0.6s ease;
+  transition: all 0.6s ease;
+}
+figure.robotImageHover img {
+  opacity: 0.8;
+  width: 180px;
+  vertical-align: top;
+  -webkit-transition: opacity 0.35s;
+  transition: opacity 0.35s;
+}
+figure.robotImageHover figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 180px;
+  height: 100%;
+}
+figure.robotImageHover figcaption > div {
+  height: 50%;
+  overflow: hidden;
+  width: 180px;
+  position: relative;
+}
+figure.robotImageHover:hover img,
+figure.robotImageHover.hover img {
+  opacity: 0.3;
+  -webkit-filter: grayscale(100%);
+filter: grayscale(100%);
+}
+figure.robotImageHover:hover figcaption h3:first-of-type,
+figure.robotImageHover.hover figcaption h3:first-of-type {
+  -webkit-transform: translateY(150%);
+  transform: translateY(150%);
+  opacity: 0;
+}
+figure.robotImageHover:hover figcaption h3:nth-of-type(2),
+figure.robotImageHover.hover figcaption h3:nth-of-type(2) {
+  opacity: 1;
+  -webkit-transform: translateY(0%);
+  transform: translateY(0%);
+}
+.atomInfoL1 {
+  position: absolute;
+  top: 130px;
+  left: 240px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoL1Table {
+  position: absolute;
+  top: 200px;
+  left: 245px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoL2 {
+  position: absolute;
+  top: 130px;
+  left: 600px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoL2Table {
+  position: absolute;
+  top: 200px;
+  left: 605px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoL3 {
+  position: absolute;
+  top: 130px;
+  left: 960px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoL3Table {
+  position: absolute;
+  top: 200px;
+  left: 965px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoL4 {
+  position: absolute; 
+  top: 130px;
+  left: 1320px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoL4Table {
+  position: absolute;
+  top: 200px;
+  left: 1325px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoL5 {
+  position: absolute;
+  top: 130px;
+  left: 1680px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoL5Table {
+  position: absolute;
+  top: 200px;
+  left: 1685px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoR1 {
+  position: absolute;
+  top: 530px;
+  left: 240px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoR1Table {
+  position: absolute;
+  top: 600px;
+  left: 245px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoR2 {
+  position: absolute;
+  top: 530px;
+  left: 600px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoR2Table {
+  position: absolute;
+  top: 600px;
+  left: 600px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoR3 {
+  position: absolute;
+  top: 530px;
+  left: 960px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoR3Table {
+  position: absolute;
+  top: 600px;
+  left: 960px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoR4 {
+  position: absolute;
+  top: 530px;
+  left: 1320px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoR4Table {
+  position: absolute;
+  top: 600px;
+  left: 1320px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.atomInfoR5 {
+  position: absolute;
+  top: 530px;
+  left: 1680px;
+  width: 170px;
+  height: 110px;
+  font-size: 12px;
+}
+.atomInfoR5Table {
+  position: absolute;
+  top: 600px;
+  left: 1680px;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+}
+.status {
+  height: 20px;
+  width: 90%;
+}
+/* L1 도장기 정보 위치 */
+.atomInfoL1HV {
+  position: absolute;
+  top: 110px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL1SAS {
+  position: absolute;
+  top: 140px;
+  left: 250px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL1HVC {
+  position: absolute;
+  top: 170px;
+  left: 250px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL1SAV {
+  position: absolute;
+  top: 203px;
+  left: 250px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL1FLOW {
+  position: absolute;
+  top: 237px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL1TURBINESPEED {
+  position: absolute;
+  top: 257px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* L2 도장기 정보 위치 */
+.atomInfoL2HV {
+  position: absolute;
+  top: 110px;
+  left: 600px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL2SAS {
+  position: absolute;
+  top: 140px;
+  left: 610px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL2HVC {
+  position: absolute;
+  top: 170px;
+  left: 610px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL2SAV {
+  position: absolute;
+  top: 203px;
+  left: 610px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL2FLOW {
+  position: absolute;
+  top: 237px;
+  left: 600px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL2TURBINESPEED {
+  position: absolute;
+  top: 257px;
+  left: 600px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* L3 도장기 정보 위치 */
+.atomInfoL3HV {
+  position: absolute;
+  top: 110px;
+  left: 960px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL3SAS {
+  position: absolute;
+  top: 140px;
+  left: 970px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL3HVC {
+  position: absolute;
+  top: 170px;
+  left: 970px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL3SAV {
+  position: absolute;
+  top: 203px;
+  left: 970px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL3FLOW {
+  position: absolute;
+  top: 237px;
+  left: 960px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL3TURBINESPEED {
+  position: absolute;
+  top: 257px;
+  left: 960px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* L4 도장기 정보 위치 */
+.atomInfoL4HV {
+  position: absolute;
+  top: 110px;
+  left: 1320px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL4SAS {
+  position: absolute;
+  top: 140px;
+  left: 1330px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL4HVC {
+  position: absolute;
+  top: 170px;
+  left: 1330px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL4SAV {
+  position: absolute;
+  top: 203px;
+  left: 1330px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL4FLOW {
+  position: absolute;
+  top: 237px;
+  left: 1320px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL4TURBINESPEED {
+  position: absolute;
+  top: 257px;
+  left: 1320px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* L5 도장기 정보 위치 */
+.atomInfoL5HV {
+  position: absolute;
+  top: 110px;
+  left: 1680px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL5SAS {
+  position: absolute;
+  top: 140px;
+  left: 1690px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL5HVC {
+  position: absolute;
+  top: 170px;
+  left: 1690px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL5SAV {
+  position: absolute;
+  top: 203px;
+  left: 1690px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoL5FLOW {
+  position: absolute;
+  top: 237px;
+  left: 1680px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoL5TURBINESPEED {
+  position: absolute;
+  top: 257px;
+  left: 1680px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* R1 도장기 정보 위치 */
+.atomInfoR1HV {
+  position: absolute;
+  top: 510px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR1SAS {
+  position: absolute;
+  top: 540px;
+  left: 250px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR1HVC {
+  position: absolute;
+  top: 570px;
+  left: 250px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR1SAV {
+  position: absolute;
+  top: 603px;
+  left: 250px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR1FLOW {
+  position: absolute;
+  top: 637px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR1TURBINESPEED {
+  position: absolute;  
+  top: 657px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* R2 도장기 정보 위치 */
+.atomInfoR2HV {
+  position: absolute;
+  top: 510px;
+  left: 600px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR2SAS {
+  position: absolute;
+  top: 540px;
+  left: 610px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR2HVC {
+  position: absolute;
+  top: 570px;
+  left: 610px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR2SAV {
+  position: absolute;
+  top: 603px;
+  left: 610px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR2FLOW {
+  position: absolute;
+  top: 637px;
+  left: 600px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR2TURBINESPEED {
+  position: absolute;
+  top: 657px;
+  left: 600px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* R3 도장기 정보 위치 */
+.atomInfoR3HV {
+  position: absolute;
+  top: 510px;
+  left: 960px;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR3SAS {
+  position: absolute;
+  top: 540px;
+  left: 970px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR3HVC {
+  position: absolute;
+  top: 570px;
+  left: 970px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR3SAV {
+  position: absolute;
+  top: 603px;
+  left: 970px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR3FLOW {
+  position: absolute;
+  top: 637px;
+  left: 960px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR3TURBINESPEED {
+  position: absolute;
+  top: 657px;
+  left: 960px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* R4 도장기 정보 위치 */
+.atomInfoR4HV {
+  position: absolute;
+  top: 510px;
+  left: 1320px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR4SAS {
+  position: absolute;
+  top: 540px;
+  left: 1330px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR4HVC {
+  position: absolute;
+  top: 570px;
+  left: 1330px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR4SAV {
+  position: absolute;
+  top: 603px;
+  left: 1330px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR4FLOW {
+  position: absolute;
+  top: 637px;
+  left: 1320px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR4TURBINESPEED {
+  position: absolute;
+  top: 657px;
+  left: 1320px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}
+/* R5 도장기 정보 위치 */
+.atomInfoR5HV {
+  position: absolute;
+  top: 510px;
+  left: 1680px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR5SAS {
+  position: absolute;
+  top: 540px;
+  left: 1690px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR5HVC {
+  position: absolute;
+  top: 570px;
+  left: 1690px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR5SAV {
+  position: absolute;
+  top: 603px;
+  left: 1690px;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+.atomInfoR5FLOW {
+  position: absolute;
+  top: 637px;
+  left: 1680px;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--atomizerExternalColor);
+}
+.atomInfoR5TURBINESPEED {
+  position: absolute;
+  top: 657px;
+  left: 1680px;
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--atomizerExternalColor);
+}

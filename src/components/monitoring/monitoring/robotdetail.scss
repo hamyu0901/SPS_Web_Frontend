@@ -1,0 +1,45 @@
+.hscMenuStyle {
+  height: 100%;
+  width: 100%;
+  background-color: var(--hscMenuStyleBackgroundColor) !important;
+  color: var(--hscMenuStyleColor);
+  border: solid 1px var(--hscMenuStyleBorderColor) !important;
+}
+
+.infoStyle {
+  height: 100%;
+  width: 100%;
+  background-color: var(--infoStyleBackgroundColor) !important;
+  color: var(--infoStyleColor);
+  border: solid 1px var(--infoStyleBorderColor) !important;
+}
+.menuZDirection {
+  position: absolute;
+  z-index: 5;
+  border: solid 1px var(--hscMenuStyleBorderColor);
+}
+.layoutZDirection {
+  z-index: 4;
+}
+
+.chartArea {
+  border: 1px solid var(--infoStyleBorderColor);
+}
+.temperatureCard {
+  background-color: var(--temperatureCardBackgroundColor) !important;
+  color: var(--temperatureCardColor);
+  border: solid 1px var(--temperatureCardBorderColor) !important;
+}
+
+.temperatureCardTitle {
+  background-color: var(--temperatureCardTitleBackgroundColor) !important;
+  color: var(--temperatureCardTitleColor);
+}
+
+.temperatureCardItem {
+  border-bottom: solid 1px var(--temperatureCardBorderColor);
+}
+.tempFont{
+  font-size: 20px;
+}
+

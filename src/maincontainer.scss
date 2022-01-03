@@ -1,0 +1,36 @@
+.sideIcon {
+  margin-left: -5px;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.horiz-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.tabLogo {
+  pointer-events: none;
+  cursor: default;
+}
+.tabTitle {
+  font-weight: bold;
+}
+.mainTabSpan {
+  color: var(--mainTabSpanColor);
+}
+.showBtn {
+  right: 0;
+}
+.footerTextColor {
+  font-weight: bold;    
+}
+.footerNameColor {
+  font-weight: bold;    
+}
+.v-tabs__slider-wrapper {
+  top: 0px;   
+}
+.tabItem /deep/ .v-tabs__item {
+  opacity: 1;
+}

@@ -1,0 +1,29 @@
+.scrolltbody {
+  display: block;
+  border-collapse: collapse;
+  background-color: var(--robotAlarmDlgTableBackgroundColor);
+  border: solid 1px var(--robotAlarmDlgTableBorderColor);
+}
+.scrolltbody th {
+  height: 30px;
+  background-color: var(--robotAlarmDlgTableThBackgroundColor); 
+}
+.scrolltbody td { 
+  height: 25px;
+  background-color: var(--robotAlarmDlgTableTdBackgroundColor); 
+  border-bottom: 1px solid var(--robotAlarmDlgTableTdBorderColor); 
+}
+.scrolltbody tbody {
+  display: block;
+  height: 170px;
+  overflow: scroll;
+}
+.scrolltbody th:nth-of-type(1), .scrolltbody td:nth-of-type(1) { width: 192px; }
+.scrolltbody th:nth-of-type(2), .scrolltbody td:nth-of-type(2) { width: 192px; }
+.scrolltbody th:nth-of-type(3), .scrolltbody td:nth-of-type(3) { width: 192px; }
+.scrolltbody th:nth-of-type(4), .scrolltbody td:nth-of-type(4) { width: 192px; }
+.scrolltbody th:nth-of-type(5), .scrolltbody td:nth-of-type(5) { width: 192px; }
+
+.alarmViewData {
+  width: 100%;
+}

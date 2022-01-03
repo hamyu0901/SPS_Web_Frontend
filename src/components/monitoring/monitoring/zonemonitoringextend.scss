@@ -1,0 +1,904 @@
+    .menuZDirection {
+        position: absolute;
+        z-index: 5;
+    }
+    .layoutZDirection {
+        position: absolute;
+        z-index: 4;
+    }
+    .opInfo {
+        top: 405px;
+        left: 1575px;
+        width: 293px;
+        border: 1px solid #dddddd;
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        padding: 8px;
+        height: 3px;
+    }
+    .tdStyle {
+        border-bottom: 1px solid #dddddd;
+    }
+    .cmdSection {
+        background-color: #25273e;
+        text-align: center;
+    }
+    .feedbackSection {
+        background-color: #303363;
+        text-align: center;
+    }
+    .bodyTable {
+        position: absolute;
+        top: 47px;
+        left: 80px;
+        width: 170px;
+        height: 10px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+    .L1 {
+        position: absolute;
+        top: 80px;
+        left: 55px;
+    }
+    .robotSize {
+        width: 150px !important;
+        height: auto !important;
+    }
+    .robotInfoL1Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .L2 {
+        position: absolute;
+        top: 80px;
+        left: 350px;
+    }
+    .robotInfoL2Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .L3 {
+        position: absolute;
+        top: 80px;
+        left: 645px;
+    }
+    .robotInfoL3Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .L4 {
+        position: absolute;
+        top: 80px;
+        left: 960px;
+    }
+    .robotInfoL4Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .L5 {
+        position: absolute;
+        top: 80px;
+        left: 1255px;
+    }
+    .robotInfoL5Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .L6 {
+        position: absolute;
+        top: 80px;
+        left: 1550px;
+    }
+    .robotInfoL6Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .R1 {
+        position: absolute;
+        top: 480px;
+        left: 55px;
+        width: 170px;
+    }
+    .robotInfoR1Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .R2 {
+        position: absolute;
+        top: 480px;
+        left: 350px;
+        width: 170px;
+    }
+    .robotInfoR2Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .R3 {
+        position: absolute;
+        top: 480px;
+        left: 645px;
+        width: 170px;
+    }
+    .robotInfoR3Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .R4 {
+        position: absolute;
+        top: 480px;
+        left: 960px;
+        width: 170px;
+    }
+    .robotInfoR4Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .R5 {
+        position: absolute;
+        top: 480px;
+        left: 1255px;
+        width: 170px;
+    }
+    .robotInfoR5Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .R6 {
+        position: absolute;
+        top: 480px;
+        left: 1550px;
+    }
+    .robotInfoR6Status {
+        position: absolute;
+        top: 155px;
+        left: 0px;
+    }
+    .graph_container{
+        display:block;
+        width: 1800px;
+        height: 200px;
+    }
+    .zone {
+        position: relative;
+        top: -80px;
+        left: -50px;
+    }
+    figure.robotImageHover {
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        margin: 10px;
+        min-width: 230px;
+        max-width: 315px;
+        width: 180px;
+        background: #171A29;
+        text-align: left;
+    }
+    figure.robotImageHover * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-transition: all 0.6s ease;
+        transition: all 0.6s ease;
+    }
+    figure.robotImageHover img {
+        opacity: 0.8;
+        width: 180px;
+        vertical-align: top;
+        -webkit-transition: opacity 0.35s;
+        transition: opacity 0.35s;
+    }
+    figure.robotImageHover figcaption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 180px;
+        height: 100%;
+    }
+    figure.robotImageHover figcaption > div {
+        height: 50%;
+        overflow: hidden;
+        width: 180px;
+        position: relative;
+    }
+    figure.robotImageHover:hover img,
+    figure.robotImageHover.hover img {
+        opacity: 0.3;
+        -webkit-filter: grayscale(100%);
+        filter: grayscale(100%);
+    }
+    figure.robotImageHover:hover figcaption h3:first-of-type,
+    figure.robotImageHover.hover figcaption h3:first-of-type {
+        -webkit-transform: translateY(150%);
+        transform: translateY(150%);
+        opacity: 0;
+    }
+    figure.robotImageHover:hover figcaption h3:nth-of-type(2),
+    figure.robotImageHover.hover figcaption h3:nth-of-type(2) {
+        opacity: 1;
+        -webkit-transform: translateY(0%);
+        transform: translateY(0%);
+    }
+    .atomInfoL1 {
+        position: absolute;
+        top: 110px;
+        left: 200px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoL2 {
+        position: absolute;
+        top: 110px;
+        left: 495px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoL3 {
+        position: absolute;
+        top: 110px;
+        left: 790px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoL4 {
+        position: absolute;
+        top: 110px;
+        left: 1105px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoL5 {
+        position: absolute;
+        top: 110px;
+        left: 1400px;        
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoL6 {
+        position: absolute;
+        top: 110px;
+        left: 1695px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoR1 {
+        position: absolute;
+        top: 510px;
+        left: 200px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoR2 {
+        position: absolute;
+        top: 510px;
+        left: 495px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoR3 {
+        position: absolute;
+        top: 510px;
+        left: 790px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoR4 {
+        position: absolute;
+        top: 510px;
+        left: 1105px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoR5 {
+        position: absolute;
+        top: 510px;
+        left: 1400px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .atomInfoR6 {
+        position: absolute;
+        top: 510px;
+        left: 1695px;
+        width: 130px;
+        height: 110px;
+        font-size: 12px;
+    }
+    .status {
+        height: 20px;
+        width: 90%;
+    }
+    /* L1 도장기 정보 위치 */
+    .atomInfoL1HV {
+        position: absolute;
+        top: 90px;
+        left: 200px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL1SAS {
+        position: absolute;
+        top: 115px;
+        left: 200px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL1HVC {
+        position: absolute;
+        top: 140px;
+        left: 224px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL1SAV {
+        position: absolute;
+        top: 154px;
+        left: 200px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL1FLOW {
+        position: absolute;
+        top: 180px;
+        left: 200px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL1TURBINESPEED {
+        position: absolute;
+        top: 220px;
+        left: 200px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* L2 도장기 정보 위치 */
+    .atomInfoL2HV {
+        position: absolute;
+        top: 90px;
+        left: 495px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL2SAS {
+        position: absolute;
+        top: 115px;
+        left: 495px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL2HVC {
+        position: absolute;
+        top: 140px;
+        left: 519px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL2SAV {
+        position: absolute;
+        top: 154px;
+        left: 495px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL2FLOW {
+        position: absolute;
+        top: 180px;
+        left: 495px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL2TURBINESPEED {
+        position: absolute;
+        top: 220px;
+        left: 495px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* L3 도장기 정보 위치 */
+    .atomInfoL3HV {
+        position: absolute;
+        top: 90px;
+        left: 790px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL3SAS {
+        position: absolute;
+        top: 115px;
+        left: 790px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL3HVC {
+        position: absolute;
+        top: 140px;
+        left: 814px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL3SAV {
+        position: absolute;
+        top: 154px;
+        left: 790px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL3FLOW {
+        position: absolute;
+        top: 180px;
+        left: 790px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL3TURBINESPEED {
+        position: absolute;
+        top: 220px;
+        left: 790px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* L4 도장기 정보 위치 */
+    .atomInfoL4HV {
+        position: absolute;
+        top: 90px;
+        left: 1105px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL4SAS {
+        position: absolute;
+        top: 115px;
+        left: 1105px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL4HVC {
+        position: absolute;
+        top: 140px;
+        left: 1129px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL4SAV {
+        position: absolute;
+        top: 154px;
+        left: 1105px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL4FLOW {
+        position: absolute;
+        top: 180px;
+        left: 1105px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL4TURBINESPEED {
+        position: absolute;
+        top: 220px;
+        left: 1105px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* L5 도장기 정보 위치 */
+    .atomInfoL5HV {
+        position: absolute;
+        top: 90px;
+        left: 1400px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL5SAS {
+        position: absolute;
+        top: 115px;
+        left: 1400px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL5HVC {
+        position: absolute;
+        top: 140px;
+        left: 1424px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL5SAV {
+        position: absolute;
+        top: 154px;
+        left: 1400px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL5FLOW {
+        position: absolute;
+        top: 180px;
+        left: 1400px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL5TURBINESPEED {
+        position: absolute;
+        top: 220px;
+        left: 1400px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* L6 도장기 정보 위치 */
+    .atomInfoL6HV {
+        position: absolute;
+        top: 90px;
+        left: 1695px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL6SAS {
+        position: absolute;
+        top: 115px;
+        left: 1695px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL6HVC {
+        position: absolute;
+        top: 140px;
+        left: 1720px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL6SAV {
+        position: absolute;
+        top: 154px;
+        left: 1695px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL6FLOW {
+        position: absolute;
+        top: 180px;
+        left: 1695px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoL6TURBINESPEED {
+        position: absolute;
+        top: 220px;
+        width: 150px;
+        left: 1695px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* R1 도장기 정보 위치 */
+    .atomInfoR1HV {
+        position: absolute;
+        top: 490px;
+        left: 200px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR1SAS {
+        position: absolute;
+        top: 515px;
+        left: 200px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR1HVC {
+        position: absolute;
+        top: 540px;
+        left: 224px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR1SAV {
+        position: absolute;
+        top: 554px;
+        left: 200px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR1FLOW {
+        position: absolute;
+        top: 580px;
+        left: 200px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR1TURBINESPEED {
+        position: absolute;
+        top: 620px;
+        left: 200px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* R2 도장기 정보 위치 */
+    .atomInfoR2HV {
+        position: absolute;
+        top: 490px;
+        left: 495px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR2SAS {
+        position: absolute;
+        top: 515px;
+        left: 495px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR2HVC {
+        position: absolute;
+        top: 540px;
+        left: 519px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR2SAV {
+        position: absolute;
+        top: 554px;
+        left: 495px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR2FLOW {
+        position: absolute;
+        top: 580px;
+        left: 495px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR2TURBINESPEED {
+        position: absolute;
+        top: 620px;
+        left: 495px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* R3 도장기 정보 위치 */
+    .atomInfoR3HV {
+        position: absolute;
+        top: 490px;
+        left: 790px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR3SAS {
+        position: absolute;
+        top: 515px;
+        left: 790px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR3HVC {
+        position: absolute;
+        top: 540px;
+        left: 814px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR3SAV {
+        position: absolute;
+        top: 554px;
+        left: 790px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR3FLOW {
+        position: absolute;
+        top: 580px;
+        left: 790px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR3TURBINESPEED {
+        position: absolute;
+        top: 620px;
+        left: 790px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* R4 도장기 정보 위치 */
+    .atomInfoR4HV {
+        position: absolute;
+        top: 490px;
+        left: 1105px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR4SAS {
+        position: absolute;
+        top: 515px;
+        left: 1105px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR4HVC {
+        position: absolute;
+        top: 540px;
+        left: 1129px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR4SAV {
+        position: absolute;
+        top: 554px;
+        left: 1105px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR4FLOW {
+        position: absolute;
+        top: 580px;
+        left: 1105px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR4TURBINESPEED {
+        position: absolute;
+        top: 620px;
+        left: 1105px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* R5 도장기 정보 위치 */
+    .atomInfoR5HV {
+        position: absolute;
+        top: 490px;
+        left: 1400px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR5SAS {
+        position: absolute;
+        top: 515px;
+        left: 1400px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR5HVC {
+        position: absolute;
+        top: 540px;
+        left: 1424px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR5SAV {
+        position: absolute;
+        top: 554px;
+        left: 1400px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR5FLOW {
+        position: absolute;
+        top: 580px;
+        left: 1400px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR5TURBINESPEED {
+        position: absolute;
+        top: 620px;
+        left: 1400px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    /* R6 도장기 정보 위치 */
+    .atomInfoR6HV {
+        position: absolute;
+        top: 490px;
+        left: 1695px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR6SAS {
+        position: absolute;
+        top: 515px;
+        left: 1695px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR6HVC {
+        position: absolute;
+        top: 540px;
+        left: 1720px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR6SAV {
+        position: absolute;
+        top: 554px;
+        left: 1695px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR6FLOW {
+        position: absolute;
+        top: 580px;
+        left: 1695px;
+        color: #000;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .atomInfoR6TURBINESPEED {
+        position: absolute;
+        top: 620px;
+        left: 1695px;
+        width: 150px;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .robotSize {
+        height: 90%;
+        width: auto;
+    }
+    .robotSizeFlex {
+        width: 10px !important;
+    }
