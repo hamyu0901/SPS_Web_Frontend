@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid fill-height>
+  <v-container fluid fill-height id="diagnosticsMainContainer">
     <v-navigation-drawer 
     app stateless 
     class="navigationDrawer elevation-0" 
@@ -52,6 +52,7 @@ export default {
             {title: this.$t(`diagnostics.drawertitle.torquetemperature`), normalImg: require("@/images/navicons/nav_torquetemperature_normal.png"), overImg: require("@/images/navicons/nav_torquetemperature_over.png"), active: false, path:'/sps/diagnostics/torquetemperature'},
             {title: this.$t(`diagnostics.drawertitle.atomizerdata`), normalImg: require("@/images/navicons/nav_atomizer_normal.png"), overImg: require("@/images/navicons/nav_atomizer_over.png"), active: false, path:'/sps/diagnostics/atomizerdata'},
             {title: this.$t(`diagnostics.drawertitle.alarmstatistics`), normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/alarmstatistics'},
+            {title: this.$t(`diagnostics.drawertitle.report`), normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/report'},
              // {title: `Histogram`, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/histogram'}
           ],
         }
@@ -76,7 +77,7 @@ export default {
       ...mapGetters({
         getTheme: 'getTheme',
         getNavigationFlag: 'getNavigationFlag',
-        getDiagnosticsMenuItems: 'getDiagnosticsMenuItems'
+        getDiagnosticsMenuItems: 'getDiagnosticsMenuItems',
       }),
 
       changeDrawerFlag() {
@@ -100,6 +101,7 @@ export default {
         document.documentElement.style.setProperty("--navigationDrawerBorderColor", this.$style.diagnostics.sideMenuBorderRightColor);
       },
       checkedPath() {
+        console.log(window.location.pathname);
         this.path = window.location.pathname;
         for(let i = 0; i < this.listDatas.length; i++) {
           if(this.listDatas[i].path == this.path) {
@@ -131,7 +133,8 @@ export default {
             this.$refs.navIcons[i].src = this.listDatas[i].normalImg;
           }
         }
-      }
+      },
+
     }
 }
 </script>

@@ -446,7 +446,11 @@
             "torquesimilarity": "扭矩相似度分析",
             "torqueloadfactor": "对扭矩负载率的累计分析",
             "torquetemperature": "电机温度分析",
-            "torquerealtime": "扭矩实时数据"
+            "torquerealtime": "扭矩实时数据",
+            "report": "報告書"
+        },
+        "report":{
+
         },
         "predict": {
             "predictCodeSumChartTitle": "最近一个月内发生的预知报警个数",

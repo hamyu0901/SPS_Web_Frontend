@@ -67,6 +67,7 @@ export default {
     mounted() {
         this.datas.mainMenuItems = JSON.parse(JSON.stringify(this.getMainMenuItems));
         this.datas.diagnosticsMenuItems = JSON.parse(JSON.stringify(this.getDiagnosticsMenuItems));
+        console.log(this.datas.diagnosticsMenuItems);
         this.initializeStyle();
 
     },

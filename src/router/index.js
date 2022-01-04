@@ -23,6 +23,11 @@ import TorqueRange from '@/components/diagnostics/torquerange/TorqueRange'
 import TorqueSimilarity from '@/components/diagnostics/torquesimilarity/TorqueSimilarity'
 import TorqueLoadFactor from '@/components/diagnostics/torqueloadfactor/TorqueLoadFactor'
 import TorqueTemperature  from '@/components/diagnostics/torquetemperature/TorqueTemperature'
+import Report from '../components/diagnostics/report/Report.vue'
+
+import TorqueAnalaysis from '../components/diagnostics/report/report/torqueAnalysis/torqueAnalysis.vue'
+import AlarmAnalaysis from '../components/diagnostics/report/report/alarmAnalysis/AlarmAnalysis.vue'
+import TempAnalaysis from '../components/diagnostics/report/report/tempAnalysis/TempAnalysis.vue'
 
 import RealTimeView from '@/components/realtimeview/RealTimeView'
 import RealTimeTorque from '@/components/realtimeview/realtimetorque/RealTimeTorque'
@@ -99,6 +104,16 @@ const router =  new Router({
             {path: 'torquesimilarity', name: 'torquesimilarity', component: TorqueSimilarity},
             {path: 'torqueloadfactor', name: 'torqueloadfactor', component: TorqueLoadFactor},
             {path: 'torquetemperature', name: 'torquetemperature', component: TorqueTemperature},
+            { path: 'report', 
+              name: 'report', 
+              component: Report,
+              redirect:'report/torqueAnalysis',
+              children: [
+                {path: 'torqueAnalysis', name: 'torqueAnalysis', component: TorqueAnalaysis},
+                {path: 'tempAnalysis', name: 'tempAnalysis', component: TempAnalaysis},
+                {path: 'alarmAnalysis', name: 'alarmAnalysis', component: AlarmAnalaysis}
+              ]
+            },
           ]
         },
         { path: 'maintenance', name: 'maintenance', component: Maintenance },

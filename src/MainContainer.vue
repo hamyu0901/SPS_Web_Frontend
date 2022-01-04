@@ -104,6 +104,7 @@ export default {
         },
     },
     created() {
+        
         this.getFactoryInfos();
         this.setLanguage();
         this.setCopyRight();

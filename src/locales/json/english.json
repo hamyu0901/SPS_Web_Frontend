@@ -446,7 +446,11 @@
             "torquesimilarity": "Torque Similarity Analysis",
             "torqueloadfactor": "Torque Cumulation Analysis",
             "torquetemperature": "Motor Temperature",
-            "torquerealtime": "Torque Real Time Data"
+            "torquerealtime": "Torque Real Time Data",
+            "report": "Data Report"
+        },
+        "report":{
+
         },
         "predict": {
             "predictCodeSumChartTitle": "Number of predicted alarms in the last month",

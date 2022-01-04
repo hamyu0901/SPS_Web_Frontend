@@ -22,15 +22,16 @@ const state = {
     mainMenuItems: [
         {id: 'home', name: i18n.t(`tabtitle.home`), target: "/sps/home", show: true, active: false, normalImg: require("@/images/tabicons/tab_home_normal.png"), overImg: require("@/images/tabicons/tab_home_over.png"), menuImg: require("@/images/menuicons/main_menu_home.png"), menuLightImg: require("@/images/menuicons/main_menu_home_light.png")},
         {id: 'monitoring', name: i18n.t(`tabtitle.monitoring`),  target: "/sps/monitoring", show: true, active: false, normalImg: require("@/images/tabicons/tab_monitoring_normal.png"), overImg: require("@/images/tabicons/tab_monitoring_over.png"), menuImg: require("@/images/menuicons/main_menu_monitoring.png"), menuLightImg: require("@/images/menuicons/main_menu_monitoring_light.png")},
-        // {name: "torquemonitoring",  target: "/sps/torquemonitoring", active: false, normalImg: require("@/images/tabicons/tab_monitoring_normal.png"), overImg: require("@/images/tabicons/tab_monitoring_over.png")},
+        {id: "torquemonitoring",  target: "/sps/torquemonitoring", active: false, normalImg: require("@/images/tabicons/tab_monitoring_normal.png"), overImg: require("@/images/tabicons/tab_monitoring_over.png")},
         {id: 'realtime', name: i18n.t(`tabtitle.realtime`), target: "/sps/realtime", show: true, active: false, normalImg: require("@/images/tabicons/tab_realtimeview_normal.png"), overImg: require("@/images/tabicons/tab_realtimeview_over.png"), menuImg: require("@/images/menuicons/main_menu_realtime.png"), menuLightImg: require("@/images/menuicons/main_menu_realtime_light.png")},
         {id: 'diagnostics', name: i18n.t(`tabtitle.diagnostics`), target: "/sps/diagnostics", show: true, active: false, normalImg: require("@/images/tabicons/tab_diagnostics_normal.png"), overImg: require("@/images/tabicons/tab_diagnostics_over.png"), menuImg: require("@/images/menuicons/main_menu_diagnostics.png"), menuLightImg: require("@/images/menuicons/main_menu_diagnostics_light.png")},
         {id: 'maintenance', name: i18n.t(`tabtitle.maintenance`), target: "/sps/maintenance", show: true, active: false, normalImg: require("@/images/tabicons/tab_maintenance_normal.png"), overImg: require("@/images/tabicons/tab_maintenance_over.png"), menuImg: require("@/images/menuicons/main_menu_maintenance.png"), menuLightImg: require("@/images/menuicons/main_menu_maintenance_light.png")},
         {id: 'alarm', name: i18n.t(`tabtitle.alarm`), target: "/sps/alarm", show: true, active: false, normalImg: require("@/images/tabicons/tab_alarmview_normal.png"), overImg: require("@/images/tabicons/tab_alarmview_over.png"), menuImg: require("@/images/menuicons/main_menu_alarm.png"), menuLightImg: require("@/images/menuicons/main_menu_alarm_light.png")},
         {id: 'posthistory', name: i18n.t(`tabtitle.posthistory`), target: "/sps/posthistory", show: true, active: false, normalImg: require("@/images/tabicons/tab_posthistory_normal.png"), overImg: require("@/images/tabicons/tab_posthistory_over.png"), menuImg: require("@/images/menuicons/main_menu_posthistory.png"), menuLightImg: require("@/images/menuicons/main_menu_posthistory_light.png")},
         {id: 'manual', name: i18n.t(`tabtitle.manual`), target: "/sps/manual", show: true, active: false, normalImg: require("@/images/tabicons/tab_manual_normal.png"), overImg: require("@/images/tabicons/tab_manual_over.png"), menuImg: require("@/images/menuicons/main_menu_manual.png"), menuLightImg: require("@/images/menuicons/main_menu_manual_light.png")},
-        {id: 'backupview', name: i18n.t(`tabtitle.backupview`), target: "/sps/backupview", show: true, active: false, normalImg: require("@/images/tabicons/tab_backupview_normal.png"), overImg: require("@/images/tabicons/tab_backupview_over.png"), menuImg: require("@/images/menuicons/main_menu_backupview.png"), menuLightImg: require("@/images/menuicons/main_menu_backupview_light.png")}
+        {id: 'backupview', name: i18n.t(`tabtitle.backupview`), target: "/sps/backupview", show: true, active: false, normalImg: require("@/images/tabicons/tab_backupview_normal.png"), overImg: require("@/images/tabicons/tab_backupview_over.png"), menuImg: require("@/images/menuicons/main_menu_backupview.png"), menuLightImg: require("@/images/menuicons/main_menu_backupview_light.png")},
     ],
+    
     diagnosticsMenuItems: [
         {id: 'predict', title: i18n.t(`diagnostics.drawertitle.predict`), path:'/sps/diagnostics/predict', show: true, active: false, normalImg: require("@/images/navicons/nav_predict_normal.png"), overImg: require("@/images/navicons/nav_predict_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_predict.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_predict_light.png")},
         {id: 'torquedata', title: i18n.t(`diagnostics.drawertitle.torquedata`), path:'/sps/diagnostics/torquedata', show: true, active: false, normalImg: require("@/images/navicons/nav_torquedata_normal.png"), overImg: require("@/images/navicons/nav_torquedata_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_torquedata.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_torquedata_light.png")},
@@ -40,12 +41,16 @@ const state = {
         {id: 'torquetemperature', title: i18n.t(`diagnostics.drawertitle.torquetemperature`), path:'/sps/diagnostics/torquetemperature', show: true, active: false, normalImg: require("@/images/navicons/nav_torquetemperature_normal.png"), overImg: require("@/images/navicons/nav_torquetemperature_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_motortemperature.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_motortemperature_light.png")},
         {id: 'atomizerdata', title: i18n.t(`diagnostics.drawertitle.atomizerdata`), path:'/sps/diagnostics/atomizerdata', show: true, active: false, normalImg: require("@/images/navicons/nav_atomizer_normal.png"), overImg: require("@/images/navicons/nav_atomizer_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_atomizerdata.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_atomizerdata_light.png")},
         {id: 'alarmstatistics', title: i18n.t(`diagnostics.drawertitle.alarmstatistics`), path:'/sps/diagnostics/alarmstatistics', show: true, active: false, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics_light.png")},
+        {id: 'report', title: i18n.t(`diagnostics.drawertitle.report`), path:'/sps/diagnostics/report', show: true, active: false, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics_light.png")},
         // {title: `Histogram`, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/histogram'}
     ]
 }
 export default new Vuex.Store({
     state,
     getters: {
+        getReportPage(state){
+            return state.reportPage;
+        },
         getBaseUrl(state) {
             return state.baseUrl;
         },
@@ -101,7 +106,7 @@ export default new Vuex.Store({
         },
 
         changeTheme(state, payload) {
-            // false - light, true - dark
+            
             state.theme = payload;
         },
 
@@ -137,6 +142,7 @@ export default new Vuex.Store({
         },
         
         setDiagnosticsMenuItems(state, payload) {
+            
             state.diagnosticsMenuItems = payload;
         }
     },
@@ -183,6 +189,7 @@ export default new Vuex.Store({
         },
 
         setDiagnosticsMenuItems(context, payload) {
+            
             return context.commit('setDiagnosticsMenuItems', payload);
         }
     },
