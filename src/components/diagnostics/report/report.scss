@@ -1,0 +1,18 @@
+#reportMainContainer{
+    width:100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    #tabMenuBox{
+        padding: 10px;
+        a{
+            width: 110px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 10px;
+        }
+        a:last-child{
+            margin: 0;
+        }
+    }
+}

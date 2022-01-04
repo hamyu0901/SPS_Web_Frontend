@@ -62,6 +62,7 @@ function url() {
     baseAddress += (document.location.href.split('//')[1].split(':')[0] + ':8000');
     return baseAddress = 'http' + baseAddress;
   }
+
 }
 
 

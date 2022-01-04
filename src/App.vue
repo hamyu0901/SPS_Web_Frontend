@@ -29,7 +29,7 @@ export default {
   computed: {
     ...mapGetters ({
         getTheme: 'getTheme',
-        getLanguage: 'getLanguage'
+        getLanguage: 'getLanguage',
     }),
 
     setThemeStyle() {
@@ -89,6 +89,7 @@ export default {
       } else if(languageItem === 'chinese') {
         sessionStorage.setItem('language','cn');
       }
+
       this.$store.dispatch('setLanguage', sessionStorage.getItem('language'));
     }
   }

@@ -606,6 +606,7 @@ export default {
         },
 
         saveMenuDatas(saveMenuDatas) {
+            console.log("sdfsd");
             this.$store.dispatch('setMainMenuItems', saveMenuDatas.mainMenuItems);
             this.$store.dispatch('setDiagnosticsMenuItems', saveMenuDatas.diagnosticsMenuItems);
         },

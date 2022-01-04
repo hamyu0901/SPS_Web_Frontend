@@ -446,7 +446,11 @@
             "torquesimilarity": "토크 부하율 유사도",
             "torqueloadfactor": "토크 부하율 적산",
             "torquetemperature": "모터 온도",
-            "torquerealtime": "실시간 토크 부하율"
+            "torquerealtime": "실시간 토크 부하율",
+            "report": "데이터 리포트"
+        },
+        "report":{
+
         },
         "predict": {
             "predictCodeSumChartTitle": "최근 한달 간 발생한 예지 알람 개수",
