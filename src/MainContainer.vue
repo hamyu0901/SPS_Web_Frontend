@@ -157,6 +157,7 @@ export default {
 
         setLogoImg() {
             if(Boolean(this.getAuth)) {
+                
                 this.ui.tabLogoImg = require('@/images/tabicons/tab_logo_premium.png');
             } else {
                  this.ui.tabLogoImg = require('@/images/tabicons/tab_logo_basic.png');

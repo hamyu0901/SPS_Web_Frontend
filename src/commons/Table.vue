@@ -1,5 +1,5 @@
 <template>
-  <table style="height: 400px;">
+  <table style="height: 250px;">
     <thead>
         <tr style="height: 30px;">
             <th></th>

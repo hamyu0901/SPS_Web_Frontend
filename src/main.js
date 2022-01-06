@@ -9,7 +9,7 @@ import 'babel-polyfill';
 import 'es6-promise';
 import 'reset-css';
 import Vuetify from 'vuetify';
-import 'vuetify/dist/vuetify.css';
+import 'vuetify/dist/vuetify.min.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import VueChart from 'vue-chartjs';
 import Vue2DatePicker from 'vue2-datepicker';
