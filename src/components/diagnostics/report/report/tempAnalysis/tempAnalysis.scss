@@ -6,7 +6,13 @@
     #header{
         display: flex;
         justify-content: center;
+        
+        div[data-v-e1d36a28] >>> div.v-date-picker-title__date{
+            font-size: 40px !important;
+            overflow: none;
+        }
     }
+    
     #tableContainer{
         width: 100%;
         height: inherit;
@@ -34,3 +40,4 @@
     }
     
 }
+

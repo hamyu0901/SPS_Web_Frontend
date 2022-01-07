@@ -11,11 +11,11 @@
         bottom offset-y
     >
         <template v-slot:activator="{ on }">
-        <label @click="decreaseMonth()" style="margin-right: 30px">{{'<'}}</label>
-        <label v-on="on">{{selectedMonth.format('YYYY년 MM월')}}</label>
-        <label @click="increaseMonth()" style="margin-left: 30px">{{'>'}}</label>
+            <label @click="decreaseMonth()" style="margin-right: 30px">{{'<'}}</label>
+            <label v-on="on">{{selectedMonth.format('YYYY년 MM월')}}</label>
+            <label @click="increaseMonth()" style="margin-left: 30px">{{'>'}}</label>
         </template>
-        <v-date-picker v-model="month" type="month" locale="ko-kr">
+        <v-date-picker v-model="month" color="green lighten-1" type="month" locale="ko-kr" id="dateHeader">
              <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="menu = false">취소</v-btn>
           <v-btn flat color="primary" @click="changeMonth()">확인</v-btn>
@@ -24,13 +24,13 @@
     </div>
     <div id="tableContainer">
         <div id="tablePrensent">
-            <div class="periodBox">{{curr_month}}월 축별 온도 평균 데이터</div>
+            <div class="periodBox">{{curr_month.format('MM')}}월 축별 온도 평균 데이터</div>
             <div class="tableBox">
                 <table-vue :propsTableData="propsTableData"></table-vue>
             </div>
         </div>
         <div id="tableBefore">
-            <div class="periodBox">{{prev_month}}월 축별 온도 평균 데이터</div>
+            <div class="periodBox">{{curr_month.subtract(1, 'M').format('MM')}}월 축별 온도 평균 데이터</div>
             <div class="tableBox">
                 <table-vue :propsTableData="propsTableData"></table-vue>
             </div>
@@ -48,10 +48,9 @@ export default {
         TableVue: TableVue
     },
     data: () => ({
-        month: moment(),
+        month: new Date().toISOString().substr(0, 7),
         selectedMonth: moment(),
-        curr_month: moment().format('MM'),
-        prev_month:  moment().subtract(1, 'M').format('MM'),
+        curr_month: moment(),
         menu: false,
         propsTableData:{
             x_Headers:[
@@ -74,25 +73,21 @@ export default {
             ]
         }
     }),
-    created(){
-        console.log(this.curr_month, this.prev_month);
-    },
     methods:{
         changeMonth(){
-            this.selectedMonth = this.month;
+            this.selectedMonth = moment(this.month);
+            this.curr_month = moment(this.month);
             this.menu = false;
         },
         increaseMonth(){
             this.month = moment(this.month).add(1, 'M');
             this.selectedMonth = this.month;
-            this.curr_month = moment(this.month).format('MM');
-            this.prev_month = moment(this.month).subtract(1, 'M').format('MM');
+            this.curr_month = moment(this.month);
         },
         decreaseMonth(){
             this.month = moment(this.month).subtract(1, 'M');
             this.selectedMonth = this.month;
-            this.curr_month = moment(this.month).format('MM');
-            this.prev_month = moment(this.month).subtract(1, 'M').format('MM');
+            this.curr_month = moment(this.month);
         }
 
     }
