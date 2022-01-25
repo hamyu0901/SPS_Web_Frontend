@@ -3,57 +3,21 @@
     height:100%;
     display: flex;
     flex-direction: column;
-    #header{
+    #tempHeader{
         display: flex;
-        justify-content: center;
-        label{
-            margin: 0 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            cursor: pointer;
+        align-items: center;
+
+        div:first-child{
+            margin-right: auto;
+            
         }
-        button{
-            display: flex;
-            justify-content: center;
-            min-width: 0px;
-            width: 20px;
-            i{
-                font-size: 14px;
-                margin: auto;
-            }
-        }
-        div[data-v-e1d36a28] >>> div.v-date-picker-title__date{
-            font-size: 40px !important;
-            overflow: none;
+        div:last-child{
+            margin-left: auto;
+            
         }
     }
     
-    #tableContainer{
-        width: 100%;
-        height: inherit;
-        display: flex;
-        #tablePrensent{
-            width:50%;
-            height:100%;
-        }
-        #tableBefore{
-            width:50%;
-            height:100%;
-        }
-        .periodBox{
-            width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-        .tableBox{
-            padding:70px;
-            padding-top:0px;
-            
-            
-        }
-    }
+    
     
 }
 .no-drag {-ms-user-select: none; -moz-user-select: -moz-none; -webkit-user-select: none; -khtml-user-select: none; user-select:none;}

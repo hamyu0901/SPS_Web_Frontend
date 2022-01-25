@@ -25,6 +25,7 @@ import SlideUpDown from 'vue-slide-up-down';
 import VueUploadComponent from 'vue-upload-component';
 import Moment from 'moment';
 import VueMomentJS from 'vue-momentjs';
+import 'devextreme/dist/css/dx.dark.css';
 import { verify } from 'crypto';
 import http from 'http';
 import cheetahGrid from 'vue-cheetah-grid';
