@@ -7,13 +7,11 @@
         </v-card-title>
         <v-form
             ref="form"
-            v-model="datas.valid"
             lazy-validation
         >
             <v-text-field
-                v-model="datas.reportName"
-                :counter="30"
-                :rules="nameRules"
+                @change="changeReportName"
+                :rules="[v => !!v || 'Name is required']"
                 label="Report Name"
                 required
             ></v-text-field>
@@ -22,10 +20,13 @@
                 label="Today Date"
                 readonly
             ></v-text-field>
+            <div class= "addButton">
+                <v-btn
+                    @click="clickReportAddButton"
+                >생성
+                </v-btn>
+            </div>
         </v-form>
-        <div class= "addButton">
-            <v-btn @click="clickReportAddButton">생성</v-btn>
-        </div>
     </v-card>
 </template>
 <script>
@@ -38,9 +39,9 @@ export default {
                 headerTitle : ''
             },
             datas: {
-                valid : true,
                 reportName: '',
                 currentDate: '',
+                reportInfo: [],
             }
         }
     },
@@ -48,6 +49,7 @@ export default {
         this.getCurrentDate();
     },
     methods: {
+
         clickCloseButton(){
             this.$emit('closeTorqueReportAddDlg')
         },
@@ -56,11 +58,36 @@ export default {
             let year = today.getFullYear(); // 년도
             let month = today.getMonth() + 1;  // 월
             let date = today.getDate();  // 날짜
+            let hours = ('0' + today.getHours()).slice(-2);
+            let minutes = ('0' + today.getMinutes()).slice(-2);
+            let seconds = ('0' + today.getSeconds()).slice(-2);
             this.datas.currentDate = year + '-' + month + '-' + date
+            return this.datas.currentDate + ' ' + hours +':' + minutes + ':' + seconds
         },
         clickReportAddButton(){
-            this.ui.headerTitle = this.datas.reportName
-            this.$emit('clickReportAddButton',this.ui.headerTitle)
+            if(this.datas.reportName !== ''){
+                this.ui.headerTitle = this.datas.reportName
+                this.$http.post(`/diagnostics/report/report`,{
+                    reportName : this.ui.headerTitle,
+                    timeStamp : this.getCurrentDate()
+                })
+                .then(() => {
+                    this.getReportInfo();
+                });
+            }
+            else {
+                window.alert('Name is Required')
+            }
+        },
+        async getReportInfo(){
+            await this.$http.get(`/diagnostics/report/report`,)
+                .then((response) => {
+                    this.datas.reportInfo = response.data
+            });
+            this.$emit('clickReportAddButton',this.datas.reportInfo)
+        },
+        changeReportName(name){
+            this.datas.reportName = name
         }
     }
 }

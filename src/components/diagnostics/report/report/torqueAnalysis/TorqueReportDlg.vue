@@ -1,29 +1,36 @@
 <template>
-    <v-card class = "container">
+    <v-card>
         <v-card-title>
             리포트 조회
             <v-spacer/>
-			<v-btn icon @click="clickCloseButton"><v-icon>mdi-close</v-icon></v-btn>
+			<!-- <v-btn icon ><v-icon>mdi-close</v-icon></v-btn> -->
         </v-card-title>
-        <DxDataGrid
-            :data-source="datas.dataSource"
-            key-expr="ID"
-            :columns="datas.columns"
-            :show-borders="true"
-        >
-            <DxSelection
-                mode="multiple"
-                :width="50"
-                show-check-boxes-mode="always"
-            />
-        </DxDataGrid>
+        <div class ="reportList">
+            <DxDataGrid
+                :data-source="datas.reports"
+                key-expr="reportNumber"
+                :show-borders="true"
+                :width="1000"
+                @selection-changed="selectReport"
+            >
+                <DxColumn data-field="reportNumber" :width="100" caption="No"/>
+                <DxColumn data-field="report_name" caption="제목"/>
+                <DxColumn data-field="update_time" caption="등록일"/>
+                <DxSelection
+                    mode="single"
+                    :width="50"
+                    show-check-boxes-mode="always"
+                />
+            </DxDataGrid>
+        </div>
         <div class= "buttton">
-            <v-btn>확인</v-btn>
-            <v-btn>취소</v-btn>
+            <v-btn @click="clickConfirmButton">확인</v-btn>
+            <v-btn @click="clickCloseButton">취소</v-btn>
         </div>
     </v-card>
 </template>
 <script>
+
 import { DxButton } from 'devextreme-vue/button';
 import{
     DxDataGrid,
@@ -36,58 +43,69 @@ import{
 } from 'devextreme-vue/data-grid';
 import 'devextreme/dist/css/dx.light.css';
 import 'devextreme/dist/css/dx.dark.css';
-    export default {
-        components: {
-            DxDataGrid,
-            DxColumn,
-            DxEditing,
-            DxLookup,
-            DxToolbar,
-            DxItem,
-            DxButton,
-            DxSelection
-        },
-        props: [],
-        data () {
-            return {
-                datas : {
-                    dataSource : [
-                        {
-                            ID: 1,
-                            CompanyName: 'Super Mart of the West',
-                            Address: '702 SW 8th Street',
-                            City: 'Bentonville',
-                            State: 'Arkansas',
-                            Zipcode: 72716,
-                            Phone: '(800) 555-2797',
-                            Fax: '(800) 555-2171',
-                            Website: 'http://www.nowebsitesupermart.com',
-                            }, {
-                            ID: 2,
-                            CompanyName: 'Electronics Depot',
-                            Address: '2455 Paces Ferry Road NW',
-                            City: 'Atlanta',
-                            State: 'Georgia',
-                            Zipcode: 30339,
-                            Phone: '(800) 595-3232',
-                            Fax: '(800) 595-3231',
-                            Website: 'http://www.nowebsitedepot.com',
-                        },
-                    ],
-                    columns: ['CompanyName', 'City', 'State', 'Phone', 'Fax'],
-                }
-            }
-        },
-        methods : {
-            clickCloseButton(){
-                this.$emit('closeTorqueReportDlg');
+export default {
+    components: {
+        DxDataGrid,
+        DxColumn,
+        DxEditing,
+        DxLookup,
+        DxToolbar,
+        DxItem,
+        DxButton,
+        DxSelection
+    },
+    props: ['reports'],
+    data () {
+        return {
+            datas : {
+                reports: [],
+                reportList: [],
+                selectedReport:{}
             }
         }
+    },
+    mounted(){
+        // console.log(this.reports)
+        // this.datas.reports = this.reports
+        // this.setDataGrid();
+    },
+    watch: {
+        reports() {
+            if(this.reports !== []){
+                this.datas.reports = this.reports
+                 this.setDataGrid();
+            }
+        }
+    },
+    methods : {
+        selectReport(report){
+            this.datas.selectedReport = report.selectedRowsData[0]
+            // this.$emit('selectedReportInfo',report.selectedRowsData[0])
+        },
+        clickCloseButton(){
+            this.$emit('closeTorqueReportDlg');
+        },
+        setDataGrid(){
+            // this.datas.reportList = [];
+            // this.datas.reportList = deepClone(this.datas.reports)
+            this.datas.reports.forEach((el,index) => {
+                el.update_time = el.update_time.substr(0, 10),
+                Object.assign(el, {reportNumber : index+1})
+            })
+        },
+        clickConfirmButton(){
+            this.$emit('selectedReportInfo', this.datas.selectedReport)
+        }
     }
+}
 </script>
 <style scoped>
-    .buttton{
-        display: flex;
-        justify-content: right;
-    }
+.buttton{
+    display: flex;
+    justify-content: right;
+}
+.reportList{
+    display: flex;
+    justify-content: center;
+}
 </style>
