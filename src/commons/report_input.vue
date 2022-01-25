@@ -12,7 +12,7 @@
 </template>
 <script>
 export default {
-    props:['model'],
+    props:['model', 'robotId'],
     data(){
         return{
             inputModel: null,
@@ -28,7 +28,7 @@ export default {
     },
     methods:{
         changeInput(inputModel){
-            this.$emit('changeInput', inputModel)
+            this.$emit('changeInput', {robot_id: this.robotId, value: inputModel})
         },
         initializeInputModel(){
             this.inputModel = this.model !== null ? this.model : null;

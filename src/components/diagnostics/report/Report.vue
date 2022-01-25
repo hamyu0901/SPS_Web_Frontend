@@ -40,7 +40,9 @@
                 v-bind:reports="datas.reports"
             />
         </div>
-        <div v-if="datas.reportType === 1">온도 분석</div>
+        <div v-if="datas.reportType === 1">
+            <temp-analysis></temp-analysis>
+        </div>
         <div v-if="datas.reportType === 2">알람 분석</div>
         <!-- <div id="reportRouterbox"> -->
             <!-- <router-view></router-view> -->
@@ -52,10 +54,12 @@
 import {mapGetters} from 'vuex';
 import ReportDialog from '@/components/diagnostics/report/report/ReportDialog';
 import TorqueAnalysis from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAnalysis';
+import TempAnalysisVue from './report/tempAnalysis/TempAnalysis.vue';
 export default {
     components: {
         ReportDialog,
-        TorqueAnalysis
+        TorqueAnalysis,
+        TempAnalysis: TempAnalysisVue,
     },
     data(){
         return{

@@ -31,7 +31,6 @@ export default {
         }
     },
     created(){
-        console.log(this.disable)
         this.initInput();
     },
     watch:{
@@ -69,6 +68,13 @@ export default {
             display: flex;
             align-items: center;
             padding-left: 10px;
+
+            #title{
+                h1{
+                    font-size: 15px;
+                    font-weight: 700;
+                }
+            }
         }
         #opinion_right{
             flex-grow: 1;

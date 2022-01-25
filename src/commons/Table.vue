@@ -27,8 +27,8 @@
                 </th>
                 <td v-if="tableData.length > 0" v-for="(x_header, column_index) in propsColumn_x" :key="column_index" @mouseover="mouseover(row_index, column_index)" @mouseleave="mouseleave()" >
                     <label v-if="x_header.key[0] === 'avg_temperature'">{{objectFindByKey(tableData, 'robot_id', y_header.robot_id).avg_temperature[0][x_header.array_key]}} ({{objectFindByKey(tableData, 'robot_id', y_header.robot_id).violation[0][x_header.array_key]}})</label>
-                    <selector-vue v-if="x_header.key === 'severity'" :disable="isEditable === false" :items="selectorItems" :selectedItem="objectFindByKey(tableData, 'robot_id', y_header.robot_id).severity" @changeSelect="changeSelect"></selector-vue>
-                    <input-vue v-if="x_header.key === 'comment'" :disable="isEditable === false" :model="objectFindByKey(tableData, 'robot_id', y_header.robot_id).comment" @changeInput="changeInput"></input-vue>
+                    <selector-vue v-if="x_header.key === 'severity'" :disable="isEditable === false" :items="selectorItems" :selectedItem="objectFindByKey(tableData, 'robot_id', y_header.robot_id).severity" :robotId="y_header.robot_id" @changeSelect="changeSelect"></selector-vue>
+                    <input-vue v-if="x_header.key === 'comment'" :disable="isEditable === false" :model="objectFindByKey(tableData, 'robot_id', y_header.robot_id).comment" :robotId="y_header.robot_id" @changeInput="changeInput"></input-vue>
                 </td>
                 <td v-if="tableData.length <= 0" v-for="(x_header, column_index) in propsColumn_x" :key="column_index" @mouseover="mouseover(row_index, column_index)" @mouseleave="mouseleave()" >
                     
@@ -74,15 +74,14 @@ export default {
         }
     },
     methods:{
-        changeInput(updatedInput){
-            this.inputModel = updatedInput;
+        changeInput(updatedVal){
+            (this.objectFindByKey(this.tableData, 'robot_id', updatedVal.robot_id)).comment = updatedVal.value;
         },
-        changeSelect(updatedItem){
-            this.selectedItem = updatedItem;
+        changeSelect(updatedVal){
+            (this.objectFindByKey(this.tableData, 'robot_id', updatedVal.robot_id)).severity = updatedVal.value;
         },
         childFunc(){
-           console.log(this.tableData);
-            // this.$emit('onSave',);
+            this.$emit('onSave', this.tableData);
         },
         objectFindByKey(array, key, value) {
             for (var i = 0; i < array.length; i++) {

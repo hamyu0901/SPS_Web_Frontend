@@ -25,7 +25,7 @@
             </v-menu>
         </div>
         <div id="zoneTableBox">
-            <table-vue ref="table" :withRowHeaders="true" :isEditable="true" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/>
+            <table-vue ref="table" :withRowHeaders="true" :isEditable="true" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`" @onSave="onSave"/>
         </div>
         <div id="opinionBox">
             <zone-opinion-vue :disable="disableTextArea" :opinionInput="opinionInput" @updateText="updateText"></zone-opinion-vue>
@@ -335,7 +335,6 @@ export default {
                     colWidth: 30,
                 }
             ],
-
             column_y:[
                 {
                     colname: 'L1',
@@ -438,7 +437,7 @@ export default {
                 }
             }
             
-            this.zonePeriod = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-01 ~ ${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}- ${quickDate}`;
+            this.zonePeriod = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-01 ~ ${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-${quickDate}`;
             var dateFrom = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-01 00:00:00`;
             var dateTo = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-31 23:59:59`;
             this.findZoneData(dateFrom, dateTo);
@@ -451,52 +450,26 @@ export default {
         childFunc(){
             this.$refs.table.childFunc();
         },
-        onSave() {
-            const value = {
-                report_id: this.report_id,
+        getRobotList(){
+            var list = [];
+            for(const robot of this.robots){
+                list.push(robot.robot_id);
+            }
+            return list;
+        },
+        onSave(tableData) {
+            var value = {
+                report_id: 1,
                 report_type: 1,
                 factory_id: this.getFactoryId,
-                booth_id: this.booth_id,
-                zone_id: this.factory_id,
+                booth_id: this.boothId,
+                zone_id: this.zoneId,
                 robot_id_list:this.getRobotList(),
-                /*[1,2,3,4,41,42,43,44]*/
-                data_list:[
-
-                ],
-                /*
-                {
-                    avg_temperature:[
-                        {
-                            axis1: 1,
-                            axis2: 1,
-                            axis3: 1,
-                            axis4: 1,
-                            axis5: 1,
-                            axis6: 1,
-                            axis7: 1,
-                        }
-                    ],
-                    violation:[
-                        {
-                            axis1: 1,
-                            axis2: 1,
-                            axis3: 1,
-                            axis4: 1,
-                            axis5: 1,
-                            axis6: 1,
-                            axis7: 1,
-                        }
-                    ],
-                    severity: 0,
-                    comment:'특이사항 없음'
-                }
-                
-                */
-                robot_coment_list:[],
-                robot_severity_list:[],
+                data_list:tableData,
                 current_data_range:`[${this.zonePeriod.substr(0,10)}, ${this.zonePeriod.substr(13,23)}]`,
-                comment:[this.opinionInput],
+                comment:this.opinionInput,
             }
+            this.$emit('onSave', value)
         },
         setThisZone(){
             this.zoneId = this.zoneInfo.zone_id;
@@ -527,7 +500,6 @@ export default {
                     this.tableData.push(list.robot_info);
                 }
                 this.disableTextArea = false;
-                console.log(this.tableData);
             })
 
 

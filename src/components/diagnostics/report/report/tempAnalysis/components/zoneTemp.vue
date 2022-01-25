@@ -4,7 +4,7 @@
             <h1>{{zoneName}}</h1>
         </div>
         <div id="compareBox">
-            <current-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" :quickPeriod="quickPeriod" ref="current"></current-zone>
+            <current-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" :quickPeriod="quickPeriod" ref="current" @onSave="onSave"></current-zone>
             <prev-zone :robotInfo="robotInfo" ref="prev"></prev-zone>
         </div>
     </div>
@@ -36,6 +36,20 @@ export default {
         
     },
     methods:{
+        onSave(value){
+
+            value.prev_data_id = null;
+            this.$http.post(`/diagnostics/datareport/temperature/save`, value).then(result => {
+                // if(this.tableData.length !== 0){
+                //     this.tableData.splice(0);
+                // }
+
+                // for(const list of result.data){
+                //     this.tableData.push(list.robot_info);
+                // }
+                // this.disableTextArea = false;
+            })
+        },
         childFunc() {
             this.$refs.prev.onSave();
            this.$refs.current.childFunc();

@@ -26,7 +26,7 @@
 </template>
 <script>
 export default {
-    props:['items', 'selectedItem', 'noDataText'],
+    props:['items', 'selectedItem', 'noDataText', 'robotId'],
     data(){
         return{
             itemSelected: null,
@@ -42,7 +42,7 @@ export default {
     },
     methods:{
       changeSelect(changedItem){
-        this.$emit('changeSelect', changedItem.index);
+        this.$emit('changeSelect', {robot_id: this.robotId, value: changedItem.index});
       },
       initializeSelectedItem(){
         this.itemSelected = this.selectedItem !== null ? this.objectFindByKey(this.items, 'index', this.selectedItem) : null;
