@@ -1,4 +1,4 @@
-// The Vue build version to load with the `import` command 
+// The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
@@ -9,6 +9,8 @@ import 'babel-polyfill';
 import 'es6-promise';
 import 'reset-css';
 import Vuetify from 'vuetify';
+import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/dist/vuetify.css';
 import 'vuetify/dist/vuetify.min.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import VueChart from 'vue-chartjs';
@@ -29,6 +31,8 @@ import 'devextreme/dist/css/dx.dark.css';
 import { verify } from 'crypto';
 import http from 'http';
 import cheetahGrid from 'vue-cheetah-grid';
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.light.css';
 let CanvasJS = require('@/commons/canvasjs/canvasjs.min');
 CanvasJS = CanvasJS.Chart ? CanvasJS : window.CanvasJS;
 
@@ -52,7 +56,7 @@ const options = {
   showMethodName : true,
   separator: '|',
   showConsoleColors: true
-}; 
+};
 
 function url() {
   if ((document.location.href.slice(0, 5)) == 'https') {
@@ -121,10 +125,11 @@ Vue.prototype.$networkError = networkError;
 Vue.prototype.$language = language;
 
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-axios.defaults.withCredentials = true;  
+axios.defaults.withCredentials = true;
 
 // #237ffe 2d77f1
 Vue.use(Vuetify, {
+  iconfont: 'mdi',
   theme: {
     "dy_blue_dark": "#009cff",
     "dy_blue_light": "#237ffe",

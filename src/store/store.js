@@ -31,7 +31,7 @@ const state = {
         {id: 'manual', name: i18n.t(`tabtitle.manual`), target: "/sps/manual", show: true, active: false, normalImg: require("@/images/tabicons/tab_manual_normal.png"), overImg: require("@/images/tabicons/tab_manual_over.png"), menuImg: require("@/images/menuicons/main_menu_manual.png"), menuLightImg: require("@/images/menuicons/main_menu_manual_light.png")},
         {id: 'backupview', name: i18n.t(`tabtitle.backupview`), target: "/sps/backupview", show: true, active: false, normalImg: require("@/images/tabicons/tab_backupview_normal.png"), overImg: require("@/images/tabicons/tab_backupview_over.png"), menuImg: require("@/images/menuicons/main_menu_backupview.png"), menuLightImg: require("@/images/menuicons/main_menu_backupview_light.png")},
     ],
-    
+
     diagnosticsMenuItems: [
         {id: 'predict', title: i18n.t(`diagnostics.drawertitle.predict`), path:'/sps/diagnostics/predict', show: true, active: false, normalImg: require("@/images/navicons/nav_predict_normal.png"), overImg: require("@/images/navicons/nav_predict_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_predict.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_predict_light.png")},
         {id: 'torquedata', title: i18n.t(`diagnostics.drawertitle.torquedata`), path:'/sps/diagnostics/torquedata', show: true, active: false, normalImg: require("@/images/navicons/nav_torquedata_normal.png"), overImg: require("@/images/navicons/nav_torquedata_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_torquedata.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_torquedata_light.png")},
@@ -43,7 +43,14 @@ const state = {
         {id: 'alarmstatistics', title: i18n.t(`diagnostics.drawertitle.alarmstatistics`), path:'/sps/diagnostics/alarmstatistics', show: true, active: false, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics_light.png")},
         {id: 'report', title: i18n.t(`diagnostics.drawertitle.report`), path:'/sps/diagnostics/report', show: true, active: false, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), menuImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics.png"), menuLightImg: require("@/images/menuicons/diagnostics_menu_alarmstatistics_light.png")},
         // {title: `Histogram`, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/histogram'}
-    ]
+    ],
+    //test
+    reportItems: {
+        selectedReport: {},
+        selectTorqueAnalysis: {},
+        selectedTempAnalysis: {},
+        selectedAlarmAnalysis: {}
+    }
 }
 export default new Vuex.Store({
     state,
@@ -54,7 +61,7 @@ export default new Vuex.Store({
         getBaseUrl(state) {
             return state.baseUrl;
         },
-        
+
         getAuth(state) {
             return state.auth;
         },
@@ -82,7 +89,6 @@ export default new Vuex.Store({
         getRobotInfos(state) {
             return state.robot_infos;
         },
-        
         getNavigationFlag(state) {
             return state.navigationFlag;
         },
@@ -94,8 +100,12 @@ export default new Vuex.Store({
         getDiagnosticsMenuItems(state) {
             return state.diagnosticsMenuItems;
         },
+        //test
+        getReportItems(state) {
+            return state.reportItems;
+        }
     },
-    
+
     mutations: {
         setFactoryId(state, payload) {
             state.factory_id = payload;
@@ -106,7 +116,6 @@ export default new Vuex.Store({
         },
 
         changeTheme(state, payload) {
-            
             state.theme = payload;
         },
 
@@ -140,10 +149,22 @@ export default new Vuex.Store({
         setMainMenuItems(state, payload) {
             state.mainMenuItems = payload;
         },
-        
         setDiagnosticsMenuItems(state, payload) {
-            
             state.diagnosticsMenuItems = payload;
+        },
+        initReportItems(state) {
+            let keys = Object.keys(state.reportItems);
+            keys.forEach(key => {
+                state.reportItems[key] = "";
+            })
+        },
+        setPaintingLabItems(state, payload) {
+            let keys = Object.keys(payload);
+            keys.forEach(key => {
+                if(state.reportItems[key] !== undefined) {
+                    state.reportItems[key] = payload[key];
+                }
+            })
         }
     },
 
@@ -189,8 +210,15 @@ export default new Vuex.Store({
         },
 
         setDiagnosticsMenuItems(context, payload) {
-            
+
             return context.commit('setDiagnosticsMenuItems', payload);
+        },
+        //test
+        initReportItems(context) {
+            return context.commit('initReportItems', payload);
+        },
+        setReportItems(context, payload){
+            return context.commit('setReportItems', payload)
         }
     },
     plugins: [
