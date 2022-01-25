@@ -1,69 +1,45 @@
 <template>
-    <div class = "container">
-        <!-- <v-text-field
-            class="fieldDate"
-            v-model="datas.date"
-            label="Select Month"
-            prepend-icon="event"
-            readonly
-            @click.stop="datas.pickerModal = true"
-        ></v-text-field> -->
-        <div class="header">
-            <div class="reportDlgButton">
-                <v-dialog
-                    v-model="datas.torequeReportDlg"
-                >
-                    <template v-slot:activator="{ on, attrs }">
-                        <div class="button">
-                            <v-btn
-                                class="Btn"
-                                v-on="on"
-                                v-bind="attrs"
-                                elevation="0"
-                            >리포트 조회</v-btn>
-                        </div>
-                    </template>
-                    <torque-report-dlg
-                        @closeTorqueReportDlg="closeTorqueReportDlg"
-                    />
-                </v-dialog>
-            </div>
-            <div class="reportAddDlgButton">
-                <v-dialog
-                    width="1000"
-                    v-model="datas.torequeReportAddDlg"
-                >
-                    <template v-slot:activator="{ on, attrs }">
-                        <div class="button">
-                            <v-btn
-                                class="Btn"
-                                v-on="on"
-                                v-bind="attrs"
-                                elevation="0"
-                            >리포트 생성</v-btn>
-                        </div>
-                    </template>
-                    <torque-report-add-dlg
-                        @closeTorqueReportAddDlg="closeTorqueReportAddDlg"
-                        @clickReportAddButton="clickReportAddButton"
-                    />
-                </v-dialog>
-            </div>
+    <div>
+        <div>
+            <torque-report
+                v-if="datas.reportSwitch === 1"
+                v-bind:selectedReport="datas.selectedReport"
+                v-bind:reports="datas.reports"
+            />
         </div>
-        <div v-if="ui.headerTitle !== ''">
-            <div class="reportTitle">{{ui.headerTitle}}</div>
-            <div
-            v-for="(booth, boothIndex) in datas.boothInfo" :key="boothIndex"
-            class="boothHeader"
-            >
-                {{booth.name}}----------------------------------------------------
-                <div v-for="(zone, zoneIndex) in datas.filteredZoneInfo" :key="zoneIndex">
-                    {{datas.filteredZoneInfo[boothIndex][zoneIndex].name}}
+        <div v-if="datas.reportSwitch === 0">
+            <div class="combobox">
+                <div class="yearCombobox">
+                    <v-combobox
+                        v-model="datas.selectedYear"
+                        label="Select year"
+                        outlined
+                        :rules="[v => !!v || 'year is required']"
+                        :items="years"
+                    >
+                    </v-combobox>
+                </div>
+                <div>
+                    <v-combobox
+                        v-model="datas.selectedMonth"
+                        @click="clickMonth"
+                        label="Select Month"
+                        outlined
+                        :items="datas.months"
+                    >
+                    </v-combobox>
                 </div>
             </div>
         </div>
-
-
+        <div>
+            <torque-add-report-table
+                v-if="datas.selectedMonth !== null && datas.reportSwitch === 0 "
+                v-bind:selectedReport="datas.selectedReport"
+                v-bind:month="datas.selectedMonth"
+                v-bind:year="datas.selectedYear"
+                v-bind:reports="datas.reports"
+            />
+        </div>
         <!-- <v-menu
             ref="menu"
             v-model="datas.pickerModal"
@@ -79,66 +55,50 @@
             />
         </v-menu> -->
         <v-spacer></v-spacer>
-        <div class="container">
-            <torque-report-table-result
-                v-if="datas.date"
-                v-bind:selectedCurrentDate="datas.date"
-                v-on:showGridData="showGridData"
-            />
-        </div>
-        <div>
-            <torque-report-chart-result
-                v-if="datas.selectedGridData"
-                v-bind:selectedGridData="datas.selectedGridData"
-            />
-        </div>
     </div>
 </template>
 
 <script>
-function deepClone(obj) {
-  if (obj === null || typeof obj !== "object") {
-    return obj
-  }
 
-  const result = Array.isArray(obj) ? [] : {}
-
-  for (let key of Object.keys(obj)) {
-    result[key] = deepClone(obj[key])
-  }
-
-  return result
-}
 // import TorquePicker from '@/components/diagnostics/report/report/torqueAnalysis/TorquePicker'
-import TorqueReportTableResult from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportTableResult'
-import TorqueReportChartResult from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportChartResult'
+
 import {mapGetters} from 'vuex';
-import TorqueReportDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportDlg'
+// import TorqueReportDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportDlg'
 import TorqueReportAddDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportAddDlg'
+import TorqueAddReportTable from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAddReportTable'
+import TorqueReport from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReport'
+
+import{
+    DxDataGrid,
+    DxColumn,
+    DxEditing
+} from 'devextreme-vue/data-grid';
+import 'devextreme/dist/css/dx.light.css';
+import 'devextreme/dist/css/dx.dark.css';
 export default {
   components: {
-    //   TorquePicker,
-      TorqueReportTableResult,
-      TorqueReportChartResult,
-      TorqueReportDlg,
-      TorqueReportAddDlg
+    //   TorqueReportDlg,
+      TorqueReportAddDlg,
+      TorqueAddReportTable,
+      TorqueReport,
+            DxDataGrid,
+            DxColumn,
+            DxEditing
   },
+  props:['reportSwitch','selectedReport','reports'],
   data(){
       return{
           ui: {
               headerTitle : ''
           },
           datas: {
-              date: "",
-            //   pickerModal: false,
-              selectedGridData : null,
-              violatedAccumulation : [], // 적산 경고값 다 가져온 data
-              filteredViolatedAccum : [], // 해당 날짜로 filter된 data
-              torequeReportDlg : false,
               torequeReportAddDlg: false,
-              boothInfo: [],
-              zoneInfo: [],
-              filteredZoneInfo: [],
+              reports: [],
+              selectedReport : {},
+              reportSwitch: null,
+              selectedYear: null,
+              selectedMonth : null,
+              months: [],
           }
       }
   },
@@ -150,56 +110,46 @@ export default {
             getZoneInfos: 'getZoneInfos',
             getRobotInfos: 'getRobotInfos'
         }),
+        years(){
+            let years = [];
+            years.push(Number(new Date().getFullYear()),Number(new Date().getFullYear())-1)
+            return years
+        },
+    },
+    mounted(){
+        this.datas.reportSwitch = this.reportSwitch
+        this.datas.selectedReport = this.selectedReport
+        this.datas.reports = this.reports
+    },
+    watch: {
+        reportSwitch(){
+            this.datas.reportSwitch = this.reportSwitch
+        },
+        selectedReport(){
+            this.datas.selectedReport = this.selectedReport
+        },
     },
     methods:{
     //   closeTorquePicker(){
     //       this.datas.pickerModal = false
     //   },
-        clickPickerMonth(date){
-            this.datas.date = date
-            this.getViolatedAccumulation();
-        },
-        showGridData(data){
-            this.datas.selectedGridData = data
-        },
-        closeTorqueReportDlg(){
-            this.datas.torequeReportDlg = false
-        },
-        closeTorqueReportAddDlg(){
-             this.datas.torequeReportAddDlg = false
-            this.ui.headerTitle = 'Report Name'
-        },
-        clickReportAddButton(title){
-            this.ui.headerTitle = title
-            this.datas.torequeReportAddDlg = false
-            this.setBoothInfo();
-        },
-        setBoothInfo(){
-            this.datas.boothInfo = deepClone(this.getBoothInfos)
-            this.datas.zoneInfo = deepClone(this.getZoneInfos)
-            this.datas.boothInfo.forEach((el,index) => {this.datas.filteredZoneInfo.push(index)})
-            for(let i = 0; i < this.datas.filteredZoneInfo.length; i ++) {
-                this.datas.filteredZoneInfo[0] = this.datas.zoneInfo.filter(el => el.booth === 1)
-                this.datas.filteredZoneInfo[1] = this.datas.zoneInfo.filter(el => el.booth === 2)
-                this.datas.filteredZoneInfo[2] = this.datas.zoneInfo.filter(el => el.booth === 3)
+        // clickPickerMonth(date){
+        //     this.datas.date = date
+        //     this.getViolatedAccumulation();
+        // },
+        clickMonth(){
+            this.datas.month = [];
+            if(this.datas.selectedYear !== null){
+                this.datas.months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
             }
-            this.getViolatedAccumulation()
-      },
-
-      async getViolatedAccumulation(){
-
-        await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}`).then((response) => {
-              this.datas.violatedAccumulation = response.data
-        });
-        this.setViolatedAccumulation();
-      },
-        setViolatedAccumulation(){
-            Object.assign(this.datas.filteredZoneInfo[0], {value: this.datas.violatedAccumulation.filter(el => el.booth_id ===1)});
-            // this.datas.filteredZoneInfo[0].push(this.datas.violatedAccumulation.filter(el => el.booth_id ===1))
+            else{
+                window.alert('Year is Required')
+            }
         }
     }
 }
 </script>
 <style lang="scss" scoped>
+
   @import './torqueAnalysis';
 </style>
