@@ -11,6 +11,7 @@ import 'reset-css';
 import Vuetify from 'vuetify';
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.css';
+import 'vuetify/dist/vuetify.min.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import VueChart from 'vue-chartjs';
 import Vue2DatePicker from 'vue2-datepicker';
@@ -26,6 +27,7 @@ import SlideUpDown from 'vue-slide-up-down';
 import VueUploadComponent from 'vue-upload-component';
 import Moment from 'moment';
 import VueMomentJS from 'vue-momentjs';
+import 'devextreme/dist/css/dx.dark.css';
 import { verify } from 'crypto';
 import http from 'http';
 import cheetahGrid from 'vue-cheetah-grid';
