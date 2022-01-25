@@ -25,9 +25,9 @@ import TorqueLoadFactor from '@/components/diagnostics/torqueloadfactor/TorqueLo
 import TorqueTemperature  from '@/components/diagnostics/torquetemperature/TorqueTemperature'
 import Report from '../components/diagnostics/report/Report.vue'
 
-import TorqueAnalaysis from '../components/diagnostics/report/report/torqueAnalysis/torqueAnalysis.vue'
-import AlarmAnalaysis from '../components/diagnostics/report/report/alarmAnalysis/AlarmAnalysis.vue'
-import TempAnalaysis from '../components/diagnostics/report/report/tempAnalysis/TempAnalysis.vue'
+// import TorqueAnalaysis from '../components/diagnostics/report/report/torqueAnalysis/torqueAnalysis.vue'
+// import AlarmAnalaysis from '../components/diagnostics/report/report/alarmAnalysis/AlarmAnalysis.vue'
+// import TempAnalaysis from '../components/diagnostics/report/report/tempAnalysis/TempAnalysis.vue'
 
 import RealTimeView from '@/components/realtimeview/RealTimeView'
 import RealTimeTorque from '@/components/realtimeview/realtimetorque/RealTimeTorque'
@@ -57,8 +57,8 @@ const router =  new Router({
       component: MainContainer,
       children: [
         { path: 'home', name: 'home', component: Home },
-        { path: 'monitoring', 
-          name: 'monitoring', 
+        { path: 'monitoring',
+          name: 'monitoring',
           component: Monitoring,
           redirect: 'monitoring/allmonitoring',
           children: [
@@ -66,26 +66,26 @@ const router =  new Router({
             { path: 'zonemonitoring', name: 'zonemonitoring', component: ZoneMonitoring },
             { path: 'robotdetail', name: 'robotdetail', component: RobotDetail}
           ]
-        }, 
-        { path: 'torquemonitoring', 
-          name: 'torquemonitoring', 
+        },
+        { path: 'torquemonitoring',
+          name: 'torquemonitoring',
           component: torqueMonitoring,
           redirect: 'torquemonitoring/torqueallmonitoring',
           children: [
             { path: 'torqueallmonitoring', name: 'torqueallmonitoring', component: torqueAllmonitoring },
           ]
-        }, 
-        { path: 'realtime', 
-          name: 'realtime', 
+        },
+        { path: 'realtime',
+          name: 'realtime',
           component: RealTimeView,
-          redirect: 'realtime/torque',  
+          redirect: 'realtime/torque',
           children: [
             { path: 'torque', name: 'realtimetorque', component: RealTimeTorque },
           ]
         },
         { path: 'review', name: 'review', component:Review },
-        { path: 'diagnostics', 
-          name: 'diagnostics', 
+        { path: 'diagnostics',
+          name: 'diagnostics',
           component: Diagnostics,
           redirect: to => {
             for(let i = 0; i < store.getters.getDiagnosticsMenuItems.length; i++) {
@@ -104,21 +104,19 @@ const router =  new Router({
             {path: 'torquesimilarity', name: 'torquesimilarity', component: TorqueSimilarity},
             {path: 'torqueloadfactor', name: 'torqueloadfactor', component: TorqueLoadFactor},
             {path: 'torquetemperature', name: 'torquetemperature', component: TorqueTemperature},
-            { path: 'report', 
-              name: 'report', 
-              component: Report,
-              redirect:'report/torqueAnalysis',
-              children: [
-                {path: 'torqueAnalysis', name: 'torqueAnalysis', component: TorqueAnalaysis},
-                {path: 'tempAnalysis', name: 'tempAnalysis', component: TempAnalaysis},
-                {path: 'alarmAnalysis', name: 'alarmAnalysis', component: AlarmAnalaysis}
-              ]
+            { path: 'report', name: 'report', component: Report,
+              // redirect:'report/torqueAnalysis',
+              // children: [
+              //   {path: 'torqueAnalysis', name: 'torqueAnalysis', component: TorqueAnalaysis},
+              //   {path: 'tempAnalysis', name: 'tempAnalysis', component: TempAnalaysis},
+              //   {path: 'alarmAnalysis', name: 'alarmAnalysis', component: AlarmAnalaysis}
+              // ]
             },
           ]
         },
         { path: 'maintenance', name: 'maintenance', component: Maintenance },
-        { path: 'alarm', 
-          name: 'alarm', 
+        { path: 'alarm',
+          name: 'alarm',
           component: Alarm,
           redirect: 'alarm/alarmview',
           children: [
@@ -142,7 +140,7 @@ router.beforeEach((to, from, next) => {
     if(res.data !== "" && res.data.length > 0) {
       res.data.forEach(data => {
         Vue.prototype.$http.get(`info/active/kill/${data.pid}`).then(res => {
-          
+
         })
       })
     }
