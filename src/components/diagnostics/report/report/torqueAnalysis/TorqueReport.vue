@@ -77,6 +77,7 @@
                             :data-source="element.robot"
                             key-expr="id"
                             :show-borders="true"
+                            @cell-prepared="onCellPrepared"
                         >
                             <DxEditing
                                 mode="cell"
@@ -86,7 +87,7 @@
                             <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class ="axis-highlighted"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false"/>
@@ -150,6 +151,9 @@ import{
     DxLookup,
 } from 'devextreme-vue/data-grid';
 import DxSelectBox from 'devextreme-vue/select-box';
+import 'devextreme/dist/css/dx.dark.css';
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.light.css';
 import {mapGetters} from 'vuex';
 export default {
     components: {
@@ -283,9 +287,9 @@ export default {
             })
         },
         clickSaveButton(){
-            // this.datas.filteredCurrentData = [];
-            // this.getRowData();
-            // this.updateReportDatas();
+            this.datas.filteredCurrentData = [];
+            this.getRowData();
+            this.updateReportDatas();
         },
         async getRowData(){
             await this.$refs.currentContainer.forEach(el => {
@@ -302,6 +306,7 @@ export default {
                 let report_type = 0
                 let robot_id = row.key
                 let prev_data_id = null;
+                let data_id = row.data.violation_value.data_id
                 for(let i =0; i < row.values.length; i++){
                     if(row.values[i] === undefined){
                         row.values[i] = null
@@ -329,14 +334,16 @@ export default {
                 }
                 if(this.datas.reportDetail.reportDetail !== ''){
                     console.log('put')
-                    this.$http.put(`/diagnostics/report/report/${this.datas.selectedReport.report_id}`, {
+                    await this.$http.put(`/diagnostics/report/report/${this.datas.selectedReport.report_id}`, {
                         factory_id: this.getFactoryId,
                         booth_id : booth_id,
                         zone_id : zone_id,
                         robot_id : robot_id,
                         report_type : report_type,
                         current_data : current_data,
-                        prev_data_id : prev_data_id
+                        prev_data_id : prev_data_id,
+                        data_id : data_id
+
                     })
                     .then(() => {
                         // 뷰엑스 디스패치
@@ -344,7 +351,7 @@ export default {
                 }
                 else{
                     console.log('post')
-                    this.$http.post(`/diagnostics/report/report/${this.datas.selectedReport.report_id}`, {
+                    await this.$http.post(`/diagnostics/report/report/${this.datas.selectedReport.report_id}`, {
                         factory_id: this.getFactoryId,
                         booth_id : booth_id,
                         zone_id : zone_id,
@@ -359,6 +366,12 @@ export default {
                 }
             }
         },
+        onCellPrepared(e){
+            if(e.column.dataField == 'name'){
+                console.log(e)
+                e.cellElement.classList.add('adaptiveRowStyle');
+            }
+        }
     },
 }
 </script>
@@ -405,5 +418,15 @@ export default {
     .saveButton{
         display: flex;
         justify-content: right;
+    }
+    .dx-header-row .axis-highlighted {
+        background-color: #d4d4c6;
+        opacity:0.6;
+        color: black;
+        font-weight: bold;
+    }
+    .adaptiveRowStyle{
+        background-color: #0ebb1a !important;
+        font-size: 12pt
     }
 </style>
