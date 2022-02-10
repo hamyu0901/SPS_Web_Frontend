@@ -33,6 +33,8 @@ import http from 'http';
 import cheetahGrid from 'vue-cheetah-grid';
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
+import "@ag-grid-enterprise/all-modules/dist/styles/ag-grid.css";
+import "@ag-grid-enterprise/all-modules/dist/styles/ag-theme-alpine.css";
 let CanvasJS = require('@/commons/canvasjs/canvasjs.min');
 CanvasJS = CanvasJS.Chart ? CanvasJS : window.CanvasJS;
 

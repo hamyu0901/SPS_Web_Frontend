@@ -10,8 +10,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@ag-grid-community/core": "^26.2.0",
+    "@ag-grid-enterprise/all-modules": "^26.2.0",
+    "@ag-grid-enterprise/core": "^26.2.0",
     "@hscmap/vue-menu": "^2.10.0",
     "@ll931217/vue-treeview": "^0.2.3",
+    "ag-grid-community": "^26.2.0",
+    "ag-grid-enterprise": "^26.2.0",
+    "ag-grid-vue": "^26.2.0",
     "animejs": "^3.2.1",
     "async": "^3.2.2",
     "async-foreach": "^0.1.3",
