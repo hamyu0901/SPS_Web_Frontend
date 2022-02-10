@@ -106,7 +106,7 @@
                                 mode="cell"
                                 :allow-updating="true"
                             />
-                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false"/>
+                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false" css-class="robot-highlighted"/>
                             <DxColumn data-field="violation_value.axis1" caption="1축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.axis2" caption="2축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.axis3" caption="3축" :width="50" :allow-editing="false"/>
@@ -511,9 +511,6 @@ export default {
         margin-bottom: 5px;
         margin-right: 10px;
     }
-    .zone{
-        /* display: flex; */
-    }
     .boothName{
         margin-top: 10px;
         margin-bottom:10px;
@@ -539,5 +536,8 @@ export default {
     }
     .danger{
         height: 10;
+    }
+    .dx-data-row .robot-highlighted {
+        background-color: #515dbe;
     }
 </style>
