@@ -9,7 +9,7 @@
         </v-layout>
     </div>
     <div id="opinion_right">
-        <v-btn color="transparent" @click="expandDiv"><v-icon>unfold_more</v-icon></v-btn>
+        <v-btn color="transparent" @click="expandDiv"><v-icon>mdi-unfold-more-horizontal</v-icon></v-btn>
     </div>
     <div id="opinion_content" v-if="showDetail">
         <v-textarea
