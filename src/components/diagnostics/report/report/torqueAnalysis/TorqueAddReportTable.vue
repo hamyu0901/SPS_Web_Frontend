@@ -258,7 +258,6 @@ export default {
         this.datas.selectedReport = this.selectedReport
         this.ui.headerTitle = this.datas.selectedReport.report_name
         this.datas.reports = this.reports
-        this.getReportDetail();
         this.getViolatedAccumulation();
     },
     watch: {
@@ -266,13 +265,11 @@ export default {
             this.datas.selectedMonth = this.month
             this.datas.selectedYear = this.year
             this.getViolatedAccumulation();
-            this.getReportDetail();
         },
         selectedReport(){
             this.datas.selectedReport = this.selectedReport
             this.ui.headerTitle = this.datas.selectedReport.report_name
             this.getViolatedAccumulation();
-            this.getReportDetail();
         }
     },
     methods: {
@@ -295,39 +292,11 @@ export default {
                         })
                     })
                     this.setBoothInfo();
-                // window.alert("Error Occurred - GET PROJECT MAIN PAINTS");
-                // console.error(err);
             })
-
         },
-        getReportDetail(){
-        },
-        // async test(){
-        //     await this.$http.get(`/diagnostics/report/report/test/${this.getFactoryId}`)
-        //     .then((response)=> {
-        //         this.datas.test = response.data
-        //     })
-        //     let booth_name = ''
-        //     this.datas.test.forEach(el => {
-        //         switch (el.booth_id) {
-        //             case 1:
-        //                 booth_name = '상도'
-        //             break;
-        //             case 2 :
-        //                 booth_name = '중도'
-        //             break;
-        //             case 3 :
-        //                 booth_name = '하도'
-        //             break;
-        //             default:
-        //         }
-        //         Object.assign(el, {booth_name : booth_name})
-        //     })
-        // },
 
         setBoothInfo(){
             this.datas.boothInfo = deepClone(this.getBoothInfos)
-            // this.test();
             this.datas.zoneInfo = deepClone(this.getZoneInfos)
             this.datas.robotInfo = deepClone(this.getRobotInfos)
             let cnt1 = 0;
@@ -485,7 +454,6 @@ export default {
                     prev_data_id : prev_data_id
                 })
                 .then(() => {
-                    this.getReportDetail();
                 });
             }
         },
