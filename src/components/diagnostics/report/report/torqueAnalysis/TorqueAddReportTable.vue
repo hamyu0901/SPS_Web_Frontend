@@ -277,7 +277,6 @@ export default {
     },
     methods: {
         async getViolatedAccumulation(){
-            console.log('g')
             this.datas.boothInfo = [];
             this.datas.zoneInfo = [];
             this.datas.robotInfo = [];
@@ -302,7 +301,6 @@ export default {
 
         },
         getReportDetail(){
-            console.log(this.reportDatas.selectedReport)
         },
         // async test(){
         //     await this.$http.get(`/diagnostics/report/report/test/${this.getFactoryId}`)
@@ -413,7 +411,16 @@ export default {
             this.datas.prevReport = [];
             await this.$http.get(`diagnostics/report/report/detail/${selectReport.itemData.report_id}`)
             .then((response) => {
-                this.datas.prevReport = response.data
+                if(response.data !== ''){
+                    response.data.forEach(el => {
+                        if(el.report_type === 0){
+                            this.datas.prevReport.push(el)
+                        }
+                    })
+                }
+                else{
+                    this.datas.prevReport = [];
+                }
                 this.setBoothInfo();
             })
         },
@@ -422,10 +429,11 @@ export default {
             this.datas.pickerModal = false
         },
         clickSaveButton(){
-            this.datas.filteredCurrentData = [];
-            this.getRowData();
-            this.updateReportDatas();
-
+            if (window.confirm("저장하시겠습니까?")) {
+                this.datas.filteredCurrentData = [];
+                this.getRowData();
+                this.updateReportDatas();
+			}
         },
         async getRowData(){
             await this.$refs.currentContainer.forEach(el => {
