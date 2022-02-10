@@ -157,6 +157,7 @@ export default {
                 selectedYear: null,
                 selectedMonth: null,
                 months: [],
+                torqueAnalysisReportDetail: []
             }
         }
     },
@@ -232,9 +233,24 @@ export default {
             });
         },
         async getReportDetail(report_id){
+            this.datas.torqueAnalysisReportDetail = [];
             await this.$http.get(`diagnostics/report/report/detail/${report_id}`)
             .then((response) => {
-                this.reportDatas.selectedReport.reportDetail = deepClone(response.data)
+                if(response.data !== ''){
+                    response.data.forEach(el => {
+                        switch(el.report_type){
+                            case 0: this.datas.torqueAnalysisReportDetail.push(el)
+                            break;
+                        default:
+                        }
+                    })
+                }
+                else{
+                    this.datas.torqueAnalysisReportDetail = [];
+                }
+            })
+            .catch((err) => {
+                console.error(err);
             })
         },
         customizeText({value}){
@@ -251,7 +267,7 @@ export default {
             }
             this.reportDatas.selectedReport = deepClone(this.datas.selectedReport)
             await this.getReportDetail(this.datas.selectedReport.report_id)
-            if(this.reportDatas.selectedReport.reportDetail == ''){
+            if(this.datas.torqueAnalysisReportDetail.length === 0){
                 this.datas.reportSwitch = 0
             }
             else{
@@ -263,6 +279,7 @@ export default {
                 this.$emit('clickConfirmButton', {
                     selectedReport : this.datas.selectedReport,
                     reportSwitch : this.datas.reportSwitch,
+                    torqueAnalysisReportDetail: this.datas.torqueAnalysisReportDetail
                 })
             }
             else{
