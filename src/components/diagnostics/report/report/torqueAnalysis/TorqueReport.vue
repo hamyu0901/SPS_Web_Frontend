@@ -9,105 +9,153 @@
                     display-expr="report_name"
                     value-expr="report_id"
                     width="300"
-                    @opened="setSelectBox"
-                    @item-click="changeSelectBox"
+                    :value="datas.prevIndex !== null ? datas.filteredReport[datas.prevIndex].report_id : null"
+                    @item-click="changeAllSelectBox"
                 />
             </v-flex>
         </v-layout>
-        <!-- <div class="reportHeader">{{ui.header}}</div> -->
+
         <div v-for="(booth, boothIndex) in datas.boothInfo" :key="boothIndex">
             <div class="boothName">{{booth.name}} --------------------------------</div>
             <v-layout column v-for="(element, zoneIndex) in booth.zone" :key="zoneIndex">
-                <v-layout>
                     <div class="zoneName">{{element.name}}</div>
-                    <!-- <v-flex class="dateBox">
-                        <v-menu
-                            ref="menu"
-                            v-model="menu"
-                            :close-on-content-click="false"
-                            :return-value.sync="date"
-                            transition="scale-transition"
-                            offset-y
-                            min-width="auto"
-                        >
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
-                                    v-model="date"
-                                    label="Picker in menu"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                    v-bind="attrs"
-                                    v-on="on"
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                v-model="date"
-                                no-title
-                                scrollable
-                                >
-                                <v-spacer></v-spacer>
-                                <v-btn
-                                    text
-                                    color="primary"
-                                    @click="menu = false"
-                                >
-                                    Cancel
-                                </v-btn>
-                                <v-btn
-                                    text
-                                    color="primary"
-                                    @click="$refs.menu.save(date)"
-                                >
-                                    OK
-                                </v-btn>
-                            </v-date-picker>
-                        </v-menu>
-                    </v-flex> -->
-                    <!-- <v-flex class="compareCombobox">
-                        <DxSelectBox
-                            :items="datas.simpleProducts"
+                    <v-layout>
+                        <v-flex class="zonePeriod">
+                            <v-menu
+                                v-model="datas.menu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                max-width="700px"
+                                min-width="290px"
+                            >
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field
+                                        v-model="datas.zonePeriod"
+                                        hide-details
+                                        readonly
+                                        prepend-icon="event"
+                                        v-on="on"
+                                    ></v-text-field>
+                                </template>
+                                <torque-analysis-date-time-box :dialog.sync="datas.menu"></torque-analysis-date-time-box>
+                            </v-menu>
+                        </v-flex>
+                    <v-flex>
+                        <DxSelectBox class="prevSelectBox"
+                            :data-source="datas.filteredReport"
                             width="300"
+                            display-expr="report_name"
+                            value-expr="report_id"
+                            :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
+                            @opened="setSelectBox"
+                            @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
                         />
-                    </v-flex> -->
-                </v-layout>
+                    </v-flex>
+                    </v-layout>
                 <v-layout>
                     <v-flex class="currentDataGrid">
+                        <!-- <torque-add-report-table/> -->
                         <DxDataGrid
                             ref="currentContainer"
                             :data-source="element.robot"
                             key-expr="id"
                             :show-borders="true"
-                            @cell-prepared="onCellPrepared"
                         >
                             <DxEditing
                                 mode="cell"
                             :allow-updating="true"
                             />
-                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false"/>
+                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false" css-class="robot-highlighted"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class ="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" />
                             <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false"/>
-                            <DxColumn caption="위험도" data-field="violation_value.current_data.danger_level" :width="70">
-                                <DxLookup
+                            <DxColumn caption="위험도" data-field="violation_value.current_data.danger_level"
+                                :allow-editing="false"
+                                cell-template="dangerTemplate"
+                                :width="70"
+                            >
+                                <!-- <DxLookup
                                     :data-source="datas.danger_level"
                                     display-expr="name"
                                     value-expr="id"
-                                />
+                                /> -->
                             </DxColumn>
+                            <template
+                                #dangerTemplate="{data}"
+                            >
+                                <v-menu
+                                    offset-x
+                                >
+                                    <template v-slot:activator="{on, attrs }">
+                                        <v-btn
+                                            icon
+                                            small
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >
+                                        <v-layout column>
+                                            <v-icon
+                                                color="#129c60"
+                                                v-if="data.data.violation_value.current_data.danger_level == 1"
+                                            >
+                                            mdi-alert
+                                            </v-icon>
+                                            <v-icon
+                                                color="#ed5565"
+                                                v-else-if="data.data.violation_value.current_data.danger_level == 2"
+                                            >
+                                            mdi-alert
+                                            </v-icon>
+                                            <v-icon
+                                                color="#ffce54"
+                                                v-else
+                                            >
+                                            mdi-alert
+                                            </v-icon>
+                                            <div v-if="data.data.violation_value.current_data.danger_level == 1">중</div>
+                                            <div v-else-if="data.data.violation_value.current_data.danger_level == 2">상</div>
+                                            <div v-else>하</div>
+                                        </v-layout>
+                                        </v-btn>
+                                    </template>
+                                    <v-list>
+                                        <v-list-tile
+                                            v-for="(item, index) in datas.danger_level"
+                                            :key="index"
+                                            @click="clickDangerButton(data,item)"
+                                        >
+                                        <v-list-tile-title>{{item.name}}</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-menu>
+                            </template>
                             <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300"/>
                         </DxDataGrid>
+                        <div>
+                            <zone-opinion
+                                @inputZoneOpinion="inputZoneOpinion($event,boothIndex,zoneIndex)"
+                                v-bind:robotInfo="element.robot"
+                            />
+                        </div>
                     </v-flex>
-                    <v-flex class="compareDataGrid" v-if="datas.prevReport.length !==0">
+
+                    <v-flex class="compareDataGrid" v-if="datas.prevReport.length !== 0">
+                        <!-- <torque-ag-prev-grid/> -->
                         <DxDataGrid
+                            ref="prevContainer"
                             :data-source="element.robot"
                             key-expr="id"
                             :show-borders="true"
                         >
-                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false"/>
+                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false" css-class="prevRobot-highlighted"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
@@ -115,15 +163,63 @@
                             <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false"/>
-                            <DxColumn caption="위험도" data-field="previolation_value.current_data.danger_level" :width="80" >
-                                <DxLookup
-                                    :data-source="datas.danger_level"
-                                    display-expr="name"
-                                    value-expr="id"
-                                />
-                            </DxColumn>
+                            <DxColumn caption="위험도" data-field="previolation_value.current_data.danger_level" cell-template="dangerPrevTemplate" :width="70"/>
+                            <template
+                                #dangerPrevTemplate="{data}"
+                            >
+                                <v-menu
+                                    offset-x
+                                >
+                                    <template v-slot:activator="{on, attrs }">
+                                        <v-btn
+                                            icon
+                                            small
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >
+                                            <v-layout column>
+                                                <v-icon
+                                                    color="#129c60"
+                                                    v-if="data.data.previolation_value.current_data.danger_level == 1"
+                                                >
+                                                mdi-alert
+                                                </v-icon>
+                                                <v-icon
+                                                    color="#ed5565"
+                                                    v-else-if="data.data.previolation_value.current_data.danger_level == 2"
+                                                >
+                                                mdi-alert
+                                                </v-icon>
+                                                <v-icon
+                                                    color="#ffce54"
+                                                    v-else
+                                                >
+                                                mdi-alert
+                                                </v-icon>
+                                                <div v-if="data.data.previolation_value.current_data.danger_level == 1">중</div>
+                                                <div v-else-if="data.data.previolation_value.current_data.danger_level == 2">상</div>
+                                                <div v-else>하</div>
+                                            </v-layout>
+                                        </v-btn>
+                                    </template>
+                                    <v-list>
+                                        <v-list-tile
+                                            v-for="(item, index) in datas.danger_level"
+                                            :key="index"
+                                            @click="clickPrevDangerButton(data,item)"
+                                        >
+                                        <v-list-tile-title>{{item.name}}</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list>
+                                </v-menu>
+                            </template>
                             <DxColumn caption="의견" data-field="previolation_value.current_data.comment" :width="300"></DxColumn>
                         </DxDataGrid>
+                        <zone-prev-opinion
+                            @inputPrevZoneOpinion="inputPrevZoneOpinion($event,boothIndex,zoneIndex)"
+                            v-bind:robotInfo="element.robot"
+                            v-bind:bindingCatch="bindingCatch"
+                        />
                     </v-flex>
                 </v-layout>
             </v-layout>
@@ -155,15 +251,21 @@ import 'devextreme/dist/css/dx.dark.css';
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
 import {mapGetters} from 'vuex';
+import TorqueAnalysisDateTimeBox from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAnalysisDateTimeBox';
+import zoneOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zoneOpinion';
+import zonePrevOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zonePrevOpinion';
 export default {
     components: {
         DxDataGrid,
         DxColumn,
         DxEditing,
         DxLookup,
-        DxSelectBox
+        DxSelectBox,
+        TorqueAnalysisDateTimeBox,
+        zoneOpinion,
+        zonePrevOpinion,
     },
-    props:['selectedReport','reports'],
+    props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch'],
     data() {
         return {
             date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
@@ -171,6 +273,10 @@ export default {
                 header : ''
             },
             datas : {
+                prevIndex: null,
+                prevArray: [],
+                zonePeriod: `2022-02-01 ~ 2022-02-28`,
+                menu: null,
                 selectedReport: {},
                 reportDetail: [],
                 boothInfo: [],
@@ -186,6 +292,8 @@ export default {
                 reports: [],
                 allReportDetail: [],
                 filteredCurrentData: [],
+                filteredPrevData: [],
+                torqueAnalysisReportDetail:[],
             }
         }
     },
@@ -199,9 +307,12 @@ export default {
             reportDatas: 'getReportItems'
         }),
     },
+    created(){
+    },
     mounted(){
         this.datas.selectedReport = deepClone(this.selectedReport)
         this.datas.reports = deepClone(this.reports)
+        this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
         this.setReportHeader();
         this.getReport();
     },
@@ -213,13 +324,61 @@ export default {
         },
         reports(){
             this.datas.reports = deepClone(this.reports)
+        },
+        torqueAnalysisReportDetail(){
+            this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
         }
     },
     methods: {
+        updatePeriod(period){
+            this.datas.zonePeriod = period;
+            var dateFrom = `${this.datas.zonePeriod.substr(0,10)} 00:00:00`;
+            var dateTo = `${this.datas.zonePeriod.substr(13,23)} 23:59:59`;
+            dateFrom, dateTo
+            // this.findZoneData(dateFrom, dateTo);
+        },
+        clickDangerButton(data,item){
+            switch (item.name){
+                case '하':
+                    data.data.violation_value.current_data.danger_level = 0
+                break;
+                case '중':
+                    data.data.violation_value.current_data.danger_level = 1
+                break;
+                case '상':
+                    data.data.violation_value.current_data.danger_level = 2
+                break;
+            default:
+            }
+        },
+        clickPrevDangerButton(data,item){
+            switch (item.name){
+                case '하':
+                    data.data.previolation_value.current_data.danger_level = 0
+                break;
+                case '중':
+                    data.data.previolation_value.current_data.danger_level = 1
+                break;
+                case '상':
+                    data.data.previolation_value.current_data.danger_level = 2
+                break;
+            default:
+            }
+        },
+
+        inputZoneOpinion(opinion,bIndex,zIndex){
+            this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robot => {
+                robot.violation_value.comment = opinion
+            })
+        },
+        inputPrevZoneOpinion(prevOpinion,bIndex,zIndex){
+            this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robot => {
+                robot.previolation_value.comment = prevOpinion
+            })
+        },
+
         async getReport(){
              //뷰엑스 설정하고 수정필요
-            this.datas.reportDetail = [];
-            this.datas.reportDetail = deepClone(this.reportDatas.selectedReport.reportDetail)
             this.datas.boothInfo = [];
             this.datas.zoneInfo = [];
             this.datas.robotInfo = [];
@@ -242,16 +401,16 @@ export default {
             this.datas.zoneInfo = deepClone(this.getZoneInfos)
             this.datas.robotInfo = deepClone(this.getRobotInfos)
             this.datas.allReportDetail.forEach(el => {
-                this.datas.reportDetail.forEach(element => {
+                this.datas.torqueAnalysisReportDetail.forEach(element => {
                     if(el.data_id === element.prev_data_id) {
                         temp.push(el)
                     }
                 })
             })
             this.datas.prevReport = temp;
-            this.datas.robotInfo.forEach(robotElement=> {
+            this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
-                Object.assign(robotElement, { violation_value: this.datas.reportDetail.filter(element => element.robot_id === robotElement.id)[0]})
+                Object.assign(robotElement, { violation_value: this.datas.torqueAnalysisReportDetail.filter(element => element.robot_id === robotElement.id)[0]})
                 if(this.datas.prevReport.length !== 0){
                     Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
                 }
@@ -267,11 +426,43 @@ export default {
             this.datas.boothInfo.forEach(boothElement => {
                 Object.assign(boothElement, {zone: this.datas.zoneInfo.filter(element => element.booth === boothElement.id)})
             })
+            let filteredIndex = null
+            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            this.datas.filteredReport.forEach((filteredElement, index) => {
+                this.datas.prevReport.forEach(prevElement => {
+                    if(filteredElement.report_id === prevElement.report_id){
+                       filteredIndex = index
+                    }
+                })
+            })
+            let tempArr = []
+            this.datas.boothInfo.forEach((b)=>{
+                tempArr = []
+                b.zone.forEach((z)=>{
+                    tempArr.push(filteredIndex)
+                })
+                this.datas.prevArray.push(tempArr)
+            })
+            this.datas.prevIndex = filteredIndex
         },
         setSelectBox(){
             this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
         },
-        async changeSelectBox(selectReport){
+        async changeAllSelectBox(selectReport){
+            this.datas.filteredReport.forEach((item, index) => {
+                if(item.report_id === selectReport.itemData.report_id){
+                    this.datas.prevIndex = index
+                }
+            })
+            this.datas.prevArray = [];
+            let tempArr = []
+            this.datas.boothInfo.forEach((b)=>{
+                tempArr = []
+                b.zone.forEach((z)=>{
+                    tempArr.push(this.datas.prevIndex)
+                })
+                this.datas.prevArray.push(tempArr)
+            })
             let temp = [];
             this.datas.allReportDetail.forEach(el => {
                 if(el.report_id === selectReport.itemData.report_id) {
@@ -279,33 +470,97 @@ export default {
                 }
             })
             this.datas.prevReport = temp
+            this.$refs.prevContainer.forEach(item => {
+                item.instance.getDataSource().reload()
+            })
             this.datas.robotInfo.forEach(robotElement => {
                 delete robotElement.previolation_value
                 if(this.datas.prevReport.length !== 0){
                     Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
                 }
             })
+            this.$emit('bindingCatch')
         },
-        clickSaveButton(){
-            this.datas.filteredCurrentData = [];
-            this.getRowData();
-            this.updateReportDatas();
+        async changeSelectBox(selectReport,selectedboothIndex,selectedZoneIndex){
+            this.datas.filteredReport.forEach((item, index) => {
+                if(item.report_id === selectReport.itemData.report_id){
+                    this.datas.prevArray[selectedboothIndex][selectedZoneIndex] = index
+                }
+            })
+            let temp = [];
+            let tempArr = [];
+            this.datas.allReportDetail.forEach(el => {
+                if(el.report_id === selectReport.itemData.report_id) {
+                    temp.push(el)
+                }                                                                     // 변경할 비교 리포트
+                if(el.report_id === this.datas.filteredReport[this.datas.prevIndex].report_id){
+                    tempArr.push(el)
+                }                                                                   // 이미 선택 되어진 비교 리포트
+            })
+            this.$refs.prevContainer.forEach(item => {
+                item.instance.getDataSource().reload()
+            })
+            let array = [];
+            this.datas.boothInfo[selectedboothIndex].zone[selectedZoneIndex].robot.forEach(el => {
+               array = temp.filter(robotElement => robotElement.zone_id == el.zone)
+            })
+
+            array.forEach(prevReport => {
+                tempArr.splice(tempArr.findIndex(item => item.robot_id == prevReport.robot_id),1)
+                tempArr.push(prevReport)
+            })
+
+            this.datas.prevReport = tempArr
+            this.datas.boothInfo.forEach((booth,bIndex) => {
+                booth.zone.forEach((zone,zIndex) => {
+                    if(selectedboothIndex == bIndex && selectedZoneIndex == zIndex){
+                        zone.robot.forEach(robotElement => {
+                            delete robotElement.previolation_value
+                            if(this.datas.prevReport.length !== 0){
+                                Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
+                            }
+                        })
+                    }
+                })
+            })
+            this.$emit('bindingCatch')
         },
+        async clickSaveButton(){
+            if (window.confirm("저장하시겠습니까?")){
+                this.datas.filteredCurrentData = [];
+                this.datas.filteredPrevData = [];
+                await this.getRowData();
+                await this.updateCurrentReport();
+                await this.updatePrevReport();
+                await this.getReport();
+            }
+        },
+
         async getRowData(){
             await this.$refs.currentContainer.forEach(el => {
                 el.instance.getVisibleRows().forEach(item => this.setCurrentData(item))
             })
+            if(this.$refs.prevContainer !== undefined){
+                await this.$refs.prevContainer.forEach(el => {
+                    el.instance.getVisibleRows().forEach(item => this.setPrevData(item))
+                })
+            }
         },
         setCurrentData(row){
            this.datas.filteredCurrentData.push(row)
         },
-        async updateReportDatas(){
+        setPrevData(row){
+            this.datas.filteredPrevData.push(row)
+        },
+        async updateCurrentReport(){
             for await(let row of this.datas.filteredCurrentData){
+                let report_id = this.datas.selectedReport.report_id
                 let booth_id = row.data.booth
                 let zone_id = row.data.zone
                 let report_type = 0
                 let robot_id = row.key
                 let prev_data_id = null;
+                let comment = row.data.violation_value.comment
                 let data_id = row.data.violation_value.data_id
                 for(let i =0; i < row.values.length; i++){
                     if(row.values[i] === undefined){
@@ -332,51 +587,135 @@ export default {
                 else{
                     prev_data_id = row.data.previolation_value.data_id
                 }
-                if(this.datas.reportDetail.reportDetail !== ''){
-                    console.log('put')
-                    await this.$http.put(`/diagnostics/report/report/${this.datas.selectedReport.report_id}`, {
-                        factory_id: this.getFactoryId,
-                        booth_id : booth_id,
-                        zone_id : zone_id,
-                        robot_id : robot_id,
-                        report_type : report_type,
-                        current_data : current_data,
-                        prev_data_id : prev_data_id,
-                        data_id : data_id
-
+                if(this.datas.torqueAnalysisReportDetail.reportDetail !== ''){
+                    await this.updateReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment
                     })
-                    .then(() => {
-                        // 뷰엑스 디스패치
-                    });
                 }
                 else{
-                    console.log('post')
-                    await this.$http.post(`/diagnostics/report/report/${this.datas.selectedReport.report_id}`, {
-                        factory_id: this.getFactoryId,
-                        booth_id : booth_id,
-                        zone_id : zone_id,
-                        robot_id : robot_id,
-                        report_type : report_type,
-                        current_data : current_data,
-                        prev_data_id : prev_data_id
+                    await this.createReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment
                     })
-                    .then(() => {
-                        // 뷰엑스 디스패치
-                    });
                 }
             }
         },
-        onCellPrepared(e){
-            if(e.column.dataField == 'name'){
-                console.log(e)
-                e.cellElement.classList.add('adaptiveRowStyle');
+        async updatePrevReport(){
+            for await(let row of this.datas.filteredPrevData){
+                let report_id = row.data.previolation_value.report_id
+                let booth_id = row.data.booth
+                let zone_id = row.data.zone
+                let report_type = 0
+                let robot_id = row.key
+                let prev_data_id = null;
+                let comment = row.data.previolation_value.comment
+                let data_id = row.data.previolation_value.data_id
+                for(let i =0; i < row.values.length; i++){
+                    if(row.values[i] === undefined){
+                        row.values[i] = null
+                    }
+                }
+                let current_data= {
+                    danger_level: row.values[8],
+                    violation_count : [
+                        row.values[1],
+                        row.values[2],
+                        row.values[3],
+                        row.values[4],
+                        row.values[5],
+                        row.values[6],
+                        row.values[7],
+                    ],
+                    comment: row.values[9]
+                }
+
+                if(row.data.hasOwnProperty('previolation_value')!==true){
+                    prev_data_id = null
+                }
+                else{
+                    prev_data_id = row.data.previolation_value.prev_data_id
+                }
+                if(this.datas.torqueAnalysisReportDetail.reportDetail !== ''){
+                    await this.updateReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment
+                    })
+                }
+                else{
+                    await this.createReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment
+                    })
+                }
             }
+        },
+        updateReport(item){
+            console.log('put')
+            this.$http.put(`/diagnostics/report/report/${item.report_id}`, {
+                factory_id: this.getFactoryId,
+                booth_id : item.booth_id,
+                zone_id : item.zone_id,
+                robot_id : item.robot_id,
+                report_type : item.report_type,
+                current_data : item.current_data,
+                prev_data_id : item.prev_data_id,
+                data_id : item.data_id,
+                comment : item.comment
+            })
+            .then(() => {
+
+            })
+        },
+        createReport(item){
+            console.log('post')
+            this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
+                factory_id: this.getFactoryId,
+                booth_id : item.booth_id,
+                zone_id : item.zone_id,
+                robot_id : item.robot_id,
+                report_type : item.report_type,
+                current_data : item.current_data,
+                prev_data_id : item.prev_data_id,
+                comment : item.comment
+            })
+            .then(() => {
+
+            })
         }
     },
 }
 </script>
 
-<style scoped>
+<style>
     .reportHeader{
         margin-top: 20px;
         font-size: 2rem;
@@ -386,47 +725,60 @@ export default {
         width: 500px;
         margin-top: 5px;
         margin-bottom: 5px;
-        margin-right: 10px;
     }
     .compareCombobox{
-        flex-grow: 2;
         display: flex;
         justify-content: right;
-        margin-right: 35px !important;
+        margin-right: 55px !important;
         height: 30px;
         margin: auto;
     }
     .compareDataGrid{
+        /* flex-grow: 1; */
         width: 500px;
         margin-top: 5px;
         margin-bottom: 5px;
     }
     .zoneName{
+        margin-top: 5px;
         width: 300px;
-        /* margin: auto; */
+        font-size: 15px;
+        font-weight: bold;
+        color: rgb(210, 218, 142);
     }
     .boothName{
         margin-top: 10px;
         margin-bottom:10px;
         background-color: rgb(54, 83, 163);
+        margin-right: 55px;
         font-weight: bold;
         font-size: 1.3rem;
     }
     .dateBox{
-       margin: auto;
+        margin: auto;
     }
     .saveButton{
         display: flex;
         justify-content: right;
+        margin-right: 55px;
     }
-    .dx-header-row .axis-highlighted {
-        background-color: #d4d4c6;
-        opacity:0.6;
-        color: black;
-        font-weight: bold;
+    .v-input{
+        padding-top: 0px;
+        width: 250px
     }
-    .adaptiveRowStyle{
-        background-color: #0ebb1a !important;
-        font-size: 12pt
+    .prevSelectBox{
+        margin-left: 50px;
+        height: 30px;
     }
+    .dx-data-row .robot-highlighted {
+        background-color: #515dbe;
+    }
+    .dx-data-row .prevRobot-highlighted {
+        background-color: #21976a;;
+    }
+
+/* .dx-datagrid-focus-overlay {
+    border: 2px solid rgb(218, 78, 78);
+} */
+
 </style>
