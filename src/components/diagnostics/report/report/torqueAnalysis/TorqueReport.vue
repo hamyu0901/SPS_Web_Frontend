@@ -265,7 +265,7 @@ export default {
         zoneOpinion,
         zonePrevOpinion,
     },
-    props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch'],
+    props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType'],
     data() {
         return {
             date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
@@ -273,6 +273,7 @@ export default {
                 header : ''
             },
             datas : {
+                reportType: null,
                 prevIndex: null,
                 prevArray: [],
                 zonePeriod: `2022-02-01 ~ 2022-02-28`,
@@ -312,6 +313,7 @@ export default {
     mounted(){
         this.datas.selectedReport = deepClone(this.selectedReport)
         this.datas.reports = deepClone(this.reports)
+        this.datas.reportType = this.reportType
         this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
         this.setReportHeader();
         this.getReport();
@@ -327,6 +329,9 @@ export default {
         },
         torqueAnalysisReportDetail(){
             this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
+        },
+        reportType(){
+            this.datas.reportType = this.reportType
         }
     },
     methods: {
@@ -387,7 +392,7 @@ export default {
         },
         async getDetail(){
             this.datas.allReportDetail = []
-            await this.$http.get(`diagnostics/report/report/detail/type/${this.reportDatas.selectedReport.report_type}`)
+            await this.$http.get(`diagnostics/report/report/detail/type/${this.datas.reportType}`)
             .then((response) => {
                 this.datas.allReportDetail = deepClone(response.data)
             })

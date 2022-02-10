@@ -8,6 +8,7 @@
                 v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
                 @bindingCatch="bindingCatch"
                 v-bind:bindingCatch="datas.rerender"
+                v-bind:reportType="reportType"
             />
         </div>
         <div v-if="datas.reportSwitch === 0">
@@ -88,7 +89,7 @@ export default {
             DxColumn,
             DxEditing,
   },
-  props:['reportSwitch','selectedReport','reports','torqueAnalysisReportDetail'],
+  props:['reportSwitch','selectedReport','reports','torqueAnalysisReportDetail','reportType'],
   data(){
       return{
           ui: {

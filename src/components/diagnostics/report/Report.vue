@@ -37,6 +37,7 @@
                 v-bind:selectedReport="datas.selectedReport"
                 v-bind:reports="datas.reports"
                 v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
+                v-bind:reportType="datas.reportType"
             />
         </div>
         <div v-if="datas.reportType === 1">온도 분석</div>
