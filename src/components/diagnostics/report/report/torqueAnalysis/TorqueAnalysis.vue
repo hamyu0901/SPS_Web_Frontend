@@ -1,10 +1,13 @@
 <template>
     <div>
-        <div>
+        <div class="torqueReport">
             <torque-report
                 v-if="datas.reportSwitch === 1"
                 v-bind:selectedReport="datas.selectedReport"
                 v-bind:reports="datas.reports"
+                v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
+                @bindingCatch="bindingCatch"
+                v-bind:bindingCatch="datas.rerender"
             />
         </div>
         <div v-if="datas.reportSwitch === 0">
@@ -33,7 +36,7 @@
         </div>
         <div>
             <torque-add-report-table
-                v-if="datas.selectedMonth !== null && datas.reportSwitch === 0 "
+                v-if="datas.selectedMonth !== null"
                 v-bind:selectedReport="datas.selectedReport"
                 v-bind:month="datas.selectedMonth"
                 v-bind:year="datas.selectedYear"
@@ -66,7 +69,6 @@ import {mapGetters} from 'vuex';
 // import TorqueReportDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportDlg'
 import TorqueReportAddDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportAddDlg'
 import TorqueAddReportTable from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAddReportTable'
-import TorqueReport from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReport'
 
 import{
     DxDataGrid,
@@ -75,6 +77,7 @@ import{
 } from 'devextreme-vue/data-grid';
 import 'devextreme/dist/css/dx.light.css';
 import 'devextreme/dist/css/dx.dark.css';
+import TorqueReport from './TorqueReport.vue';
 export default {
   components: {
     //   TorqueReportDlg,
@@ -83,9 +86,9 @@ export default {
       TorqueReport,
             DxDataGrid,
             DxColumn,
-            DxEditing
+            DxEditing,
   },
-  props:['reportSwitch','selectedReport','reports'],
+  props:['reportSwitch','selectedReport','reports','torqueAnalysisReportDetail'],
   data(){
       return{
           ui: {
@@ -99,6 +102,8 @@ export default {
               selectedYear: null,
               selectedMonth : null,
               months: [],
+              torqueAnalysisReportDetail:[],
+              rerender : 0
           }
       }
   },
@@ -120,6 +125,7 @@ export default {
         this.datas.reportSwitch = this.reportSwitch
         this.datas.selectedReport = this.selectedReport
         this.datas.reports = this.reports
+        this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
     },
     watch: {
         reportSwitch(){
@@ -128,6 +134,9 @@ export default {
         selectedReport(){
             this.datas.selectedReport = this.selectedReport
         },
+        torqueAnalysisReportDetail(){
+            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+        }
     },
     methods:{
     //   closeTorquePicker(){
@@ -137,6 +146,9 @@ export default {
         //     this.datas.date = date
         //     this.getViolatedAccumulation();
         // },
+        bindingCatch(){
+            this.datas.rerender ++;
+        },
         clickMonth(){
             this.datas.month = [];
             if(this.datas.selectedYear !== null){
