@@ -16,7 +16,7 @@
         </v-layout>
 
         <div v-for="(booth, boothIndex) in datas.boothInfo" :key="boothIndex">
-            <div class="boothName">{{booth.name}} --------------------------------</div>
+            <div class="boothName">{{booth.name}}</div>
             <v-layout column v-for="(element, zoneIndex) in booth.zone" :key="zoneIndex">
                     <div class="zoneName">{{element.name}}</div>
                     <v-layout>
@@ -24,18 +24,21 @@
                             <torque-picker
                                 v-bind:robotInfo="element.robot"
                                 @updateDatePeriod="updateDatePeriod($event,boothIndex,zoneIndex)"
+                                v-bind:bindingCatch="bindingCatch"
                             />
                         </v-flex>
                     <v-flex>
-                        <DxSelectBox class="prevSelectBox"
-                            :data-source="datas.filteredReport"
-                            width="300"
-                            display-expr="report_name"
-                            value-expr="report_id"
-                            :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
-                            @opened="setSelectBox"
-                            @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
-                        />
+                        <div class="prevSelectBox">
+                            <DxSelectBox class="prevSelectContent"
+                                :data-source="datas.filteredReport"
+                                display-expr="report_name"
+                                styling-mode="filled"
+                                value-expr="report_id"
+                                :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
+                                @opened="setSelectBox"
+                                @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
+                            />
+                        </div>
                     </v-flex>
                     </v-layout>
                 <v-layout>
@@ -46,12 +49,15 @@
                             :data-source="element.robot"
                             key-expr="id"
                             :show-borders="true"
+                            :show-column-lines="true"
+                            :show-row-lines="true"
+                            :rowAlternationEnabled="true"
                         >
                             <DxEditing
                                 mode="cell"
-                            :allow-updating="true"
+                                :allow-updating="true"
                             />
-                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false" css-class="robot-highlighted"/>
+                            <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="robot-highlighted"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
@@ -119,20 +125,7 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300"
-
-                            :allow-editing="true"
-                            />
-                            <!-- <template
-                                #commentCurrentTemplate="{data}"
-                            >   <div class="currentRobotOpinion">
-                                    <v-textarea
-                                        v-model="data.data.violation_value.current_data.comment"
-                                        :full-width="true"
-                                    >
-                                    </v-textarea>
-                                </div>
-                            </template> -->
+                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300" :allow-editing="true"/>
                         </DxDataGrid>
                         <div>
                             <zone-opinion
@@ -149,8 +142,11 @@
                             :data-source="element.robot"
                             key-expr="id"
                             :show-borders="true"
+                            :show-column-lines="true"
+                            :show-row-lines="true"
+                            :rowAlternationEnabled="true"
                         >
-                            <DxColumn data-field="name" caption="" :width="50" :allow-editing="false" css-class="prevRobot-highlighted"/>
+                            <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="prevRobot-highlighted"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
@@ -276,7 +272,6 @@ export default {
                 prevIndex: null,
                 prevArray: [],
                 selectedReport: {},
-                reportDetail: [],
                 boothInfo: [],
                 robotInfo: [],
                 zoneInfo: [],
@@ -407,69 +402,24 @@ export default {
                 })
             })
             this.datas.prevReport = temp;
-            await this.getViolatedAccumulation();
             this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
-                if(this.datas.reportSwitch === 0){
-                    let cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0, cnt6 = 0, cnt7 = 0
-                    Object.assign(robotElement, { violation_value : this.datas.violatedAccumulation.filter(element => element.robot_id == robotElement.id)[0]})
-                    if(robotElement.violation_value == undefined){
-                        robotElement.violation_value = {
-                            axis: {axis1:0,axis2:0,axis3:0,axis4:0,axis5:0,axis6:0,axis7:0},
-                        }
-                    }
-                    let month = this.datas.selectedMonth.substr(0, 2)
-                    const month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
-                    cnt1 = robotElement.violation_value.axis.axis1 ? cnt1 + robotElement.violation_value.axis.axis1 : cnt1
-                    cnt2 = robotElement.violation_value.axis.axis2 ? cnt2 + robotElement.violation_value.axis.axis2 : cnt2
-                    cnt3 = robotElement.violation_value.axis.axis3 ? cnt3 + robotElement.violation_value.axis.axis3 : cnt3
-                    cnt4 = robotElement.violation_value.axis.axis4 ? cnt4 + robotElement.violation_value.axis.axis4 : cnt4
-                    cnt5 = robotElement.violation_value.axis.axis5 ? cnt5 + robotElement.violation_value.axis.axis5 : cnt5
-                    cnt6 = robotElement.violation_value.axis.axis6 ? cnt6 + robotElement.violation_value.axis.axis6 : cnt6
-                    cnt7 = robotElement.violation_value.axis.axis7 ? cnt7 + robotElement.violation_value.axis.axis7 : cnt7
+                Object.assign(robotElement, { violation_value: this.datas.torqueAnalysisReportDetail.filter(element => element.robot_id === robotElement.id)[0]})
+                if(robotElement.violation_value == undefined){
                     robotElement.violation_value = {
-                        current_data_range : [`${this.datas.selectedYear}-${month}-01`,`${this.datas.selectedYear}-${month}-${month_last_date}`],
+                        // current_data_range: null,
+                        current_start_date : null,
+                        current_end_date: null,
                         current_data : {
                             violation_count : [0,0,0,0,0,0,0],
                             comment: null,
                             danger_level: null,
-                        }
-                    }
-                    robotElement.violation_value.current_data.violation_count[0] = cnt1; cnt1 = 0;
-                    robotElement.violation_value.current_data.violation_count[1] = cnt2; cnt2 = 0;
-                    robotElement.violation_value.current_data.violation_count[2] = cnt3; cnt3 = 0;
-                    robotElement.violation_value.current_data.violation_count[3] = cnt4; cnt4 = 0;
-                    robotElement.violation_value.current_data.violation_count[4] = cnt5; cnt5 = 0;
-                    robotElement.violation_value.current_data.violation_count[5] = cnt6; cnt6 = 0;
-                    robotElement.violation_value.current_data.violation_count[6] = cnt7; cnt7 = 0;
-
-                }
-                else{
-                    Object.assign(robotElement, { violation_value: this.datas.torqueAnalysisReportDetail.filter(element => element.robot_id === robotElement.id)[0]})
-                    if(robotElement.violation_value == undefined){
-                        robotElement.violation_value = {
-                            current_data_range : null,
-                            current_data : {
-                                violation_count : [0,0,0,0,0,0,0],
-                                comment: null,
-                                danger_level: null,
-                            },
-                        }
+                        },
                     }
                 }
                 if(this.datas.prevReport.length !== 0){
                     Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
                 }
-                // if(robotElement.violation_value == undefined){
-                //     robotElement.violation_value = {
-                //         current_data_range : null,
-                //         current_data : {
-                //             violation_count : [0,0,0,0,0,0,0],
-                //             comment: null,
-                //             danger_level: null,
-                //         },
-                //     }
-                // }
                 if(robotElement.previolation_value == undefined){
                     robotElement.previolation_value = {
                         current_data : {violation_count : [0,0,0,0,0,0,0], comment: null, danger_level: null}
@@ -511,43 +461,7 @@ export default {
             })
             this.datas.prevIndex = filteredIndex
         },
-        async getViolatedAccumulation(){
-            if(this.datas.selectedMonth !== null){
-                this.datas.violatedAccumulation = [];
-                let month = this.datas.selectedMonth.substr(0, 2)
-                let dangerData = [];
-                await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/year/${this.datas.selectedYear}/month/${month}`)
-                .then((response) => {
-                    dangerData = deepClone(response.data)
-                    this.datas.violatedAccumulation = dangerData.reduce((acc, {robot_id, axis})=> {
-                        let axisKey = `axis${axis}`;
-                        let item = acc.find((el) => el.robot_id === robot_id);
-                        if(item) {
-                            if(Object.keys(item.axis).includes(axisKey)){
-                                item.axis[axisKey] += 1;
-                            } else {
-                                item.axis[axisKey] = 1;
-                            }
-                            return acc.map((el) => el.robot_id === robot_id ? {robot_id, axis: item.axis}: el);
-                        } else {
-                            return [...acc, {robot_id, axis: {[axisKey]: 1}}];
-                        }
-                    }, []);
-                    if(response.data == ""){
-                        window.alert('not data')
-                    }
-                })
-                .catch((err) => {
-                    // window.alert('data error')
-                    // this.datas.violatedAccumulation = [];
-                    // this.getRobotInfos.forEach(el => {
-                    //     this.datas.violatedAccumulation.push({
-                    //         robot_id : el.id
-                    //     })
-                    // })
-                })
-            }
-        },
+
         setSelectBox(){
             let tempReportId = [];
             this.datas.allReportDetail.forEach(el => {
@@ -643,8 +557,19 @@ export default {
             this.$emit('bindingCatch')
         },
 
-        updateDatePeriod(period,bIndex,zIndex){
-            console.log(period)
+        async updateDatePeriod(period,bIndex,zIndex){          // 선택 날짜 기준에 맞게 현재 report data 변경
+            this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robotElement => {
+                // robotElement.violation_value.current_data_range = [period.start_date,period.end_date]
+                robotElement.violation_value.current_start_date = period.start_date
+                robotElement.violation_value.current_end_date = period.end_date
+            })
+            let zone_id = this.datas.boothInfo[bIndex].zone[zIndex].robot[0].zone
+            let report_type = 0
+            await this.$http.get(`diagnostics/report/report/detail/type/${report_type}/zone/${zone_id}/start_date/${period.start_date}/end_date/${period.end_date}`)
+            .then((response) => {
+                console.log(response.data)
+            })
+            this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
         },
         async clickSaveButton(){
             if (window.confirm("저장하시겠습니까?")){
@@ -842,36 +767,37 @@ export default {
         font-weight: bold;
     }
     .currentDataGrid{
-        width: 500px;
+        width: 520px;
         margin-top: 5px;
         margin-bottom: 5px;
     }
     .compareCombobox{
         display: flex;
         justify-content: right;
-        margin-right: 55px !important;
+        margin-right: 35px !important;
         height: 30px;
         margin: auto;
     }
     .compareDataGrid{
-        width: 500px;
+        width: 520px;
         margin-top: 5px;
         margin-bottom: 5px;
     }
     .zoneName{
         margin-top: 5px;
-        width: 300px;
         font-size: 15px;
         font-weight: bold;
-        color: rgb(210, 218, 142);
+        color: #ffffff(210, 218, 142);
     }
     .boothName{
         margin-top: 10px;
         margin-bottom:10px;
-        background-color: rgb(54, 83, 163);
-        margin-right: 55px;
+        /* background-color: rgb(54, 83, 163); */
+        background-color: rgba(131, 130, 127, 0.3);
+        margin-right: 35px;
         font-weight: bold;
         font-size: 1.3rem;
+        text-align: center;
     }
     .dateBox{
         margin: auto;
@@ -879,33 +805,26 @@ export default {
     .saveButton{
         display: flex;
         justify-content: right;
-        margin-right: 55px;
+        margin-right: 35px;
     }
     .v-input{
         padding-top: 0px;
         width: 250px
     }
     .prevSelectBox{
-        margin-left: 50px;
-        height: 30px;
+        border: 2px solid #21976a;
+        width: 305px;
     }
     .dx-data-row .robot-highlighted {
-        background-color: #515dbe;
+        background-color: #515dbe!important;
+        text-align: center!important;
     }
     .dx-data-row .prevRobot-highlighted {
-        background-color: #21976a;
+        background-color: #21976a!important;
+        text-align: center!important;
     }
-    .dx-data-row .comment-highlighted{
-        border-style: dotted;
-        border-width : 1.5px;
-        border-color: rgb(132, 156, 156);
+    .prevSelectContent .dx-selectbox-container .dx-texteditor-container  {
+        background: #191d2b;
     }
-    .currentRobotOpinion{
-        width: 100%;
-        height: 30px;
-    }
-/* .dx-datagrid-focus-overlay {
-    border: 2px solid rgb(218, 78, 78);
-} */
 
 </style>

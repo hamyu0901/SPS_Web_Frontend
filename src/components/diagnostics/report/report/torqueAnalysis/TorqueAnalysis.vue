@@ -2,6 +2,10 @@
     <div>
         <div class="torqueReport">
             <torque-report
+            />
+        </div>
+        <div>
+            <torque-report-table
                 v-if="datas.reportSwitch === 1"
                 v-bind:selectedReport="datas.selectedReport"
                 v-bind:reports="datas.reports"
@@ -9,6 +13,9 @@
                 @bindingCatch="bindingCatch"
                 v-bind:bindingCatch="datas.rerender"
                 v-bind:reportType="reportType"
+                v-bind:reportSwitch="datas.reportSwitch"
+                v-bind:selectedMonth="datas.selectedMonth"
+                v-bind:selectedYear="datas.selectedYear"
             />
         </div>
         <div v-if="datas.reportSwitch === 0">
@@ -39,9 +46,13 @@
             <torque-add-report-table
                 v-if="datas.selectedMonth !== null"
                 v-bind:selectedReport="datas.selectedReport"
-                v-bind:month="datas.selectedMonth"
-                v-bind:year="datas.selectedYear"
                 v-bind:reports="datas.reports"
+                v-bind:selectedMonth="datas.selectedMonth"
+                v-bind:selectedYear="datas.selectedYear"
+                v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
+                @bindingCatch="bindingCatch"
+                v-bind:bindingCatch="datas.rerender"
+                v-bind:reportType="reportType"
             />
         </div>
         <!-- <v-menu
@@ -70,7 +81,8 @@ import {mapGetters} from 'vuex';
 // import TorqueReportDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportDlg'
 import TorqueReportAddDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportAddDlg'
 import TorqueAddReportTable from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAddReportTable'
-
+import TorqueReport from './TorqueReport.vue';
+import TorqueReportTable from './TorqueReportTable.vue';
 import{
     DxDataGrid,
     DxColumn,
@@ -78,13 +90,13 @@ import{
 } from 'devextreme-vue/data-grid';
 import 'devextreme/dist/css/dx.light.css';
 import 'devextreme/dist/css/dx.dark.css';
-import TorqueReport from './TorqueReport.vue';
 export default {
   components: {
     //   TorqueReportDlg,
       TorqueReportAddDlg,
       TorqueAddReportTable,
       TorqueReport,
+      TorqueReportTable,
             DxDataGrid,
             DxColumn,
             DxEditing,
@@ -153,7 +165,7 @@ export default {
         clickMonth(){
             this.datas.month = [];
             if(this.datas.selectedYear !== null){
-                this.datas.months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
+                this.datas.months = ['01월','02월','03월','04월','05월','06월','07월','08월','09월','10월','11월','12월']
             }
             else{
                 window.alert('Year is Required')
@@ -163,6 +175,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
   @import './torqueAnalysis';
 </style>
