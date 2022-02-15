@@ -65,12 +65,12 @@ export default {
 <style lang="scss" scoped>
 #opinion{
         margin-top: 10px;
-        width: 770px;
+        width: 780px;
         position: relative;
         display: flex;
         height: 40px;
-        border: 1px solid white;
-        border-radius: 10px;
+        border: 2px solid #21976a;
+        border-radius: 5px;
         #opinion_left{
             flex-grow: 1;
             flex-shrink: 1;
@@ -136,7 +136,6 @@ export default {
     font-size: 20px;
     margin-left: 10px;
     margin-top: 5px;
-    color: #21976a;
     font-weight: bold;
 }
 .expanded{
