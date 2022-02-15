@@ -1,48 +1,48 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import LoginContainer from '@/LoginContainer';
-import MainContainer from '@/MainContainer';
-import Home from '@/components/home/Home';
+import LoginContainer from '../LoginContainer.vue';
+import MainContainer from '../MainContainer.vue';
+import Home from '../components/home/Home.vue';
 
-import Monitoring from '@/components/monitoring/Monitoring'
-import Allmonitoring from '@/components/monitoring/monitoring/Allmonitoring'
-import ZoneMonitoring from '@/components/monitoring/monitoring/ZoneMonitoring'
-import RobotDetail from '@/components/monitoring/monitoring/RobotDetail'
+import Monitoring from '../components/monitoring/Monitoring.vue'
+import Allmonitoring from '../components/monitoring/monitoring/Allmonitoring.vue'
+import ZoneMonitoring from '../components/monitoring/monitoring/ZoneMonitoring.vue'
+import RobotDetail from '../components/monitoring/monitoring/RobotDetail.vue'
 
-import torqueMonitoring from '@/components/torquemonitoring/Monitoring'
-import torqueAllmonitoring from '@/components/torquemonitoring/monitoring/TorqueAllmonitoring'
+import torqueMonitoring from '../components/torquemonitoring/Monitoring.vue'
+import torqueAllmonitoring from '../components/torquemonitoring/monitoring/TorqueAllmonitoring.vue'
 
-import Review from '@/components/review/Review'
+import Review from '../components/review/Review.vue'
 
-import Diagnostics from '@/components/diagnostics/Diagnostics'
-import Predict from '@/components/diagnostics/predict/Predict'
-import TorqueData from '@/components/diagnostics/torquedata/TorqueData'
-import AtomizerData from '@/components/diagnostics/atomizerdata/AtomizerData'
-import AlarmStatistics from '@/components/diagnostics/alarmstatistics/AlarmStatistics'
-import TorqueRange from '@/components/diagnostics/torquerange/TorqueRange'
-import TorqueSimilarity from '@/components/diagnostics/torquesimilarity/TorqueSimilarity'
-import TorqueLoadFactor from '@/components/diagnostics/torqueloadfactor/TorqueLoadFactor'
-import TorqueTemperature  from '@/components/diagnostics/torquetemperature/TorqueTemperature'
+import Diagnostics from '../components/diagnostics/Diagnostics.vue'
+import Predict from '../components/diagnostics/predict/Predict.vue'
+import TorqueData from '../components/diagnostics/torquedata/TorqueData.vue'
+import AtomizerData from '../components/diagnostics/atomizerdata/AtomizerData.vue'
+import AlarmStatistics from '../components/diagnostics/alarmstatistics/AlarmStatistics.vue'
+import TorqueRange from '../components/diagnostics/torquerange/TorqueRange.vue'
+import TorqueSimilarity from '../components/diagnostics/torquesimilarity/TorqueSimilarity.vue'
+import TorqueLoadFactor from '../components/diagnostics/torqueloadfactor/TorqueLoadFactor.vue'
+import TorqueTemperature  from '../components/diagnostics/torquetemperature/TorqueTemperature.vue'
 import Report from '../components/diagnostics/report/Report.vue'
 
 // import TorqueAnalaysis from '../components/diagnostics/report/report/torqueAnalysis/torqueAnalysis.vue'
 // import AlarmAnalaysis from '../components/diagnostics/report/report/alarmAnalysis/AlarmAnalysis.vue'
 // import TempAnalaysis from '../components/diagnostics/report/report/tempAnalysis/TempAnalysis.vue'
 
-import RealTimeView from '@/components/realtimeview/RealTimeView'
-import RealTimeTorque from '@/components/realtimeview/realtimetorque/RealTimeTorque'
+import RealTimeView from '../components/realtimeview/RealTimeView.vue'
+import RealTimeTorque from '../components/realtimeview/realtimetorque/RealTimeTorque.vue'
 
-import Alarm from '@/components/alarm/Alarm'
-import AlarmView from '@/components/alarm/alarmview/AlarmView'
-import AlarmInfos from '@/components/alarm/alarminfos/AlarmInfos'
-import AlarmManual from '@/components/alarm/alarmmanual/AlarmManual'
-import PredictAlarm from '@/components/alarm/predictalarm/PredictAlarm'
+import Alarm from '../components/alarm/Alarm.vue'
+import AlarmView from '../components/alarm/alarmview/AlarmView.vue'
+import AlarmInfos from '../components/alarm/alarminfos/AlarmInfos.vue'
+import AlarmManual from '../components/alarm/alarmmanual/AlarmManual.vue'
+import PredictAlarm from '../components/alarm/predictalarm/PredictAlarm.vue'
 
-import Maintenance from '@/components/maintenance/Maintenance'
-import PostHistory from '@/components/posthistory/PostHistory'
-import SparePart from '@/components/sparepart/SparePart'
-import Manual from '@/components/manual/Manual'
-import BackupView from '@/components/backupview/BackupView'
+import Maintenance from '../components/maintenance/Maintenance.vue'
+import PostHistory from '../components/posthistory/PostHistory.vue'
+import SparePart from '../components/sparepart/SparePart.vue'
+import Manual from '../components/manual/Manual.vue'
+import BackupView from '../components/backupview/BackupView.vue'
 
 import store from '../store/store';
 Vue.use(Router)

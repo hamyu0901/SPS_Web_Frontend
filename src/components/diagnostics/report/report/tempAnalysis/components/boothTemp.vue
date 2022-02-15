@@ -31,6 +31,11 @@ export default {
                 child_comp.childFunc();
             }
         },
+        getReportDetails(report_id) {
+            for(const child_comp of this.$refs.child_component){
+                child_comp.getReportDetails(report_id);
+            }
+        },
         initializeZones(){
             this.boothId = this.boothInfo.booth_id;
             this.boothName = this.boothInfo.booth_name;

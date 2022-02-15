@@ -10,6 +10,7 @@
       :dense="true"
       :hide-details="true"
       :no-data-text="noDataText"
+      :disabled="disable"
       return-object
       @change="changeSelect"
       :menu-props="{top: false, offsetY: true, closeOnClick: false }"
@@ -26,7 +27,7 @@
 </template>
 <script>
 export default {
-    props:['items', 'selectedItem', 'noDataText', 'robotId'],
+    props:['items', 'selectedItem', 'noDataText', 'robotId', 'type', 'disable'],
     data(){
         return{
             itemSelected: null,
@@ -38,11 +39,24 @@ export default {
     watch:{
       selectedItem(){
         this.itemSelected = this.objectFindByKey(this.items, 'index', this.selectedItem);
-      }
+      },
     },
     methods:{
+      updateReport(report_id){
+        if(report_id === null){
+          this.itemSelected = null;
+        }else{
+          this.itemSelected = this.objectFindByKey(this.items, 'report_id', report_id);
+        }
+        
+      },
       changeSelect(changedItem){
-        this.$emit('changeSelect', {robot_id: this.robotId, value: changedItem.index});
+        if(this.type == 'prev_report_selection'){
+          this.$emit('selectItem', {report_id: changedItem.report_id});
+        }else{
+          this.$emit('changeSelect', {robot_id: this.robotId, value: changedItem.index});
+        }
+        
       },
       initializeSelectedItem(){
         this.itemSelected = this.selectedItem !== null ? this.objectFindByKey(this.items, 'index', this.selectedItem) : null;

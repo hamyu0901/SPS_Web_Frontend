@@ -4,8 +4,8 @@
             <h1>{{zoneName}}</h1>
         </div>
         <div id="compareBox">
-            <current-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" :quickPeriod="quickPeriod" ref="current" @onSave="onSave"></current-zone>
-            <prev-zone :robotInfo="robotInfo" ref="prev"></prev-zone>
+            <current-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" :quickPeriod="quickPeriod" ref="current" @onSave="onSave" @sendDataIdList="sendDataIdList"></current-zone>
+            <prev-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" ref="prev" @updateDataId="updateDataId"></prev-zone>
         </div>
     </div>
 </template>
@@ -23,6 +23,8 @@ export default {
     },
     data(){
         return{
+            prev_data_id_list:[],
+            data_id_List_from_curr:[],
             zoneName: null,
             robotInfo: []
             
@@ -36,24 +38,36 @@ export default {
         
     },
     methods:{
-        onSave(value){
+        sendDataIdList(prev_data_id_list){
+            if(this.data_id_List_from_curr !== 0){
+                this.data_id_List_from_curr.splice(0);
+            }
 
-            value.prev_data_id = null;
-            this.$http.post(`/diagnostics/datareport/temperature/save`, value).then(result => {
-                // if(this.tableData.length !== 0){
-                //     this.tableData.splice(0);
-                // }
+            for(const s of prev_data_id_list){
+                this.data_id_List_from_curr.push(s);
+            }
 
-                // for(const list of result.data){
-                //     this.tableData.push(list.robot_info);
-                // }
-                // this.disableTextArea = false;
-            })
+            this.$refs.prev.updataDataId(this.data_id_List_from_curr);
+        },
+        async onSave(value){
+            value.prev_data_id_list = this.prev_data_id_list;
+            await this.$http.post(`/diagnostics/datareport/temperature/save`, value);
         },
         childFunc() {
-            this.$refs.prev.onSave();
-           this.$refs.current.childFunc();
-           
+            this.$refs.current.childFunc();
+        },
+        updateDataId(dataIdList){
+            if(this.prev_data_id_list.length !== 0){
+                this.prev_data_id_list.splice(0);
+            }
+
+            for(const i of dataIdList){
+                this.prev_data_id_list.push(i);
+            }
+        },
+        getReportDetails(report_id){
+            this.$refs.current.getReportCurrDetails(report_id);
+            this.$refs.prev.getReportPrevDetails(report_id);
         },
         setThisZone(){
             this.zoneName = this.zoneInfo.zone_name;

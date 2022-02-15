@@ -1,7 +1,7 @@
 <template>
     <div id="zonePrevBox">
         <div id="zoneComboBox">
-            <selector-vue :noDataText="'조회 가능한 리포트가 없습니다.'"></selector-vue>
+            <selector-vue ref="selector" :noDataText="'조회 가능한 리포트가 없습니다.'" :items="reportList" @selectItem="selectItem" :type="'prev_report_selection'"></selector-vue>
             <v-text-field
                 v-model="zonePeriod"
                 hide-details
@@ -17,15 +17,14 @@
         </div>
     </div>
 </template>
-
 <script>
 import DateFromToVue from '../../../../../../commons/DateFromTo.vue';
 import report_selectorVue from '../../../../../../commons/report_selector.vue';
 import TableVue from '../../../../../../commons/Table.vue'
 import zoneOpinionVue from './zoneOpinion.vue';
-
+import {mapGetters} from 'vuex';
 export default {
-    props:['robotInfo'],
+    props:['robotInfo', 'zoneInfo'],
     components: {
         selectorVue: report_selectorVue,
         tableVue: TableVue,
@@ -34,45 +33,55 @@ export default {
     },
     data(){
         return{
+            dataIdList:[],
+            report_id :null,
+            reportList:[],
             zonePeriod:null,
             menu:false,
-            boothId: null,
-            zoneId: null,
-            zoneName: null,
+            booth_id: null,
+            zone_id: null,
+            zone_name: null,
             column_x:[
                 {
                     colname: '1축',
-                    key: 'temperature',
+                    array_key: 'axis1',
+                    key: ['avg_temperature', 'violation'],
                     colWidth: 5,
                 },
                 {
                     colname: '2축',
-                    key: 'temperature',
+                    array_key: 'axis2',
+                    key: ['avg_temperature', 'violation'],
                     colWidth: 5,
                 },
                 {
                     colname: '3축',
-                    key: 'temperature',
+                    array_key: 'axis3',
+                    key: ['avg_temperature', 'violation'],
                     colWidth: 5,
                 },
                 {
                     colname: '4축',
-                    key: 'temperature',
+                    array_key: 'axis4',
+                    key: ['avg_temperature', 'violation'],
                     colWidth: 5,
                 },
                 {
                     colname: '5축',
-                    key: 'temperature',
+                    array_key: 'axis5',
+                    key: ['avg_temperature', 'violation'],
                     colWidth: 5,
                 },
                 {
                     colname: '6축',
-                    key: 'temperature',
+                    array_key: 'axis6',
+                    key: ['avg_temperature', 'violation'],
                     colWidth: 5,
                 },
                 {
                     colname: '7축',
-                    key: 'temperature',
+                    array_key: 'axis7',
+                    key: ['avg_temperature', 'violation'],
                     colWidth: 5,
                 },
                 {
@@ -86,7 +95,6 @@ export default {
                     colWidth: 30,
                 }
             ],
-
             column_y:[
                 {
                     colname: 'L1',
@@ -138,9 +146,17 @@ export default {
     },
     created(){
         this.setThisZone();
-        this.initializeData();
+        this.initializeReportId();
+        this.initializeItems();
     },
     computed:{
+        reportId(){
+            return this.$store.state.reportItems.selectedReport;
+        },
+        ...mapGetters({
+            getReportItems: 'getReportItems',
+            getFactoryId: 'getFactoryId',
+        }),
         robots(){
             if(this.column_y.length !== 0){
                 this.column_y.splice(0);
@@ -152,24 +168,126 @@ export default {
             return this.column_y;
         }
     },
+    watch:{
+        reportId(){
+            this.report_id = this.getReportItems.selectedReport.report_id;
+
+            var param = {
+                current_report_id: this.report_id,
+            }
+            this.$http.post(`/diagnostics/datareport/temperature/reports`, param).then(result => {
+                if(this.reportList !== null){
+                    this.reportList.splice(0);
+                }
+
+                for(const item of result.data){
+                    this.reportList.push({report_id: item[0], name: item[1]});
+                }
+                
+            });
+        },
+    },
     methods:{
-        onSave() {
-            console.log("부모 컴포넌트에서 직접 발생시킨 이벤트2");
+        async updataDataId(s){
+            var param = {
+                factory_id: this.getFactoryId,
+                booth_id: this.booth_id,
+                zone_id: this.zone_id,
+                data_id_list: s
+            };
+            var report_data = null;
+            await this.$http.post(`/diagnostics/datareport/temperature/reportDetailfromCurr`, param).then(result => {
+                if(result.data !== 'no data'){
+                    report_data = result.data[0][0].report_id;
+                    this.selectItem({report_id: report_data});
+                    this.$refs.selector.updateReport(report_data)
+                }else{
+                    this.zonePeriod = null;
+                    this.tableData.splice(0);
+                    this.$refs.selector.updateReport(null)
+                }
+            });
+            
+        },
+        getRobotList(){
+            var list = [];
+            for(const robot of this.robots){
+                list.push(robot.robot_id);
+            }
+            return list;
+        },
+        async selectItem(report_id){
+            var param = {
+                report_id: report_id.report_id,
+                factory_id: this.getFactoryId,
+                booth_id: this.booth_id,
+                zone_id: this.zone_id
+            };
+            var start_date = null;
+            var end_date = null;
+            await this.$http.post(`/diagnostics/datareport/temperature/reportDetail`, param).then(result => {
+                if(this.tableData.length !== 0){
+                    this.tableData.splice(0);
+                }
+
+                if(this.dataIdList.length !== 0){
+                    this.dataIdList.splice(0);
+                }
+
+                for(const list of result.data){
+                    this.tableData.push(list[0]);
+                    if(start_date === null){
+                        start_date = list[2];
+                    }
+
+                    if(end_date === null){
+                        end_date = list[3];
+                    }
+                    this.dataIdList.push(list[1]);
+                }
+                this.zonePeriod = `${start_date} ~ ${end_date}`
+            });
+
+            var list = [];
+            for(var i = 0; i < this.tableData.length; i++){
+                var obj = {
+                    robot_id: this.tableData[i].robot_id,
+                    data_id: this.dataIdList[i],
+                }
+                list.push(obj);
+            }
+
+            this.$emit('updateDataId', list);
+        },
+        initializeReportId(){
+            this.report_id = this.getReportItems.selectedReport.report_id;
         },
         setThisZone(){
-            this.zoneId = this.zoneInfo.zoneId;
-            this.boothId = this.zoneInfo.boothId;
-            this.zoneName = this.zoneInfo.zoneName;
+            this.zone_id = this.zoneInfo.zone_id;
+            this.booth_id = this.zoneInfo.booth_id;
+            this.zone_name = this.zoneInfo.zone_name;
         },
-        initializeData(){
-            this.findZoneData();
-            // this.zonePeriod = this.zoneInfo.period !== null ? this.zoneInfo.period : null;
+        initializeItems(){
+            var param = {
+                current_report_id: this.report_id,
+            }
+            this.$http.post(`/diagnostics/datareport/temperature/reports`, param).then(result => {
+                if(this.reportList !== null){
+                    this.reportList.splice(0);
+                }
+
+                for(const item of result.data){
+                    this.reportList.push({report_id: item[0], name: item[1]});
+                }
+                
+            });
         },
         findZoneData(){
             //zone_id, booth_id 그리고 factory_id로 리포트 타입에 맞게 찾는다.
             if(this.tableData.length !== 0){
                 this.tableData.splice(0);
             }
+
             this.zonePeriod = '2022-01-01 ~ 2021-01-21';
 
             for(const list of this.testList){

@@ -216,7 +216,7 @@ export default {
                     this.$store.dispatch('setBoothInfos', resBooths.data);
                     this.$store.dispatch('setZoneInfos', resZones.data);
                     this.$store.dispatch('setRobotInfos', resRobots.data);
-                    this.setSPSType(resAuth.data[0].auth);
+                    this.setSPSType(1);
                 })
             });
         },

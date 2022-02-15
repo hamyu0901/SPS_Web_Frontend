@@ -5,6 +5,7 @@
         outlined
         hide-details
         clearable
+        :disabled="disable"
         @input="changeInput"
     ></v-text-field>
 </div>
@@ -12,7 +13,7 @@
 </template>
 <script>
 export default {
-    props:['model', 'robotId'],
+    props:['model', 'robotId', 'disable'],
     data(){
         return{
             inputModel: null,

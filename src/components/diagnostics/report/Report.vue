@@ -40,8 +40,12 @@
                 v-bind:reports="datas.reports"
             />
         </div>
-        <div v-if="datas.reportType === 1">
-            <temp-analysis></temp-analysis>
+        <div>
+            <temp-analysis 
+                v-if="datas.reportType === 1"
+                :reports="datas.reports"
+            
+            ></temp-analysis>
         </div>
         <div v-if="datas.reportType === 2">알람 분석</div>
         <!-- <div id="reportRouterbox"> -->

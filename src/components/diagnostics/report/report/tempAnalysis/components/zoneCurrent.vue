@@ -49,6 +49,7 @@ export default {
     data(){
         return{
             opinionInput: null,
+            report_id:null,
             zonePeriod:null,
             menu:false,
             boothId: null,
@@ -384,16 +385,9 @@ export default {
     },
     created(){
         this.setThisZone();
-        
+        this.initializeReportData();
     },
     computed:{
-        ...mapGetters({
-            baseUrl: 'getBaseUrl',
-            getFactoryId: 'getFactoryId',
-            getBoothInfos: 'getBoothInfos',
-            getZoneInfos: 'getZoneInfos',
-            getRobotInfos: 'getRobotInfos',
-        }),
         robots(){
             if(this.column_y.length !== 0){
                 this.column_y.splice(0);
@@ -404,18 +398,23 @@ export default {
             }
             return this.column_y;
         },
-        
+        reportDatas(){
+            return this.$store.state.reportItems.selectedReport;
+        },
+        ...mapGetters({
+            baseUrl: 'getBaseUrl',
+            getFactoryId: 'getFactoryId',
+            getReportItems: 'getReportItems',
+        }),
     },
     watch:{
         quickPeriod(){
             var quickDate;
             var date = new Date();
-            const formatDate = (date)=>{
-                let formatted_date = date.getFullYear() + "-" + (("00"+ (date.getMonth() + 1))).slice(-2)  
-                return formatted_date;
-            }
+            var form_date = this.formatDate(date)
             var quick_today = (this.quickPeriod.quickYear.toString()+"-"+this.quickPeriod.quickMonth.toString());
-            if(formatDate(date) === quick_today){
+        
+            if(form_date === quick_today){
                 quickDate = (("00"+ date.getDate())).slice(-2);
             }else{
                 switch(this.quickPeriod.quickMonth){
@@ -429,6 +428,15 @@ export default {
                         quickDate = 31;
                         break;
                     }
+                    case '02':{
+                        if( (this.quickPeriod.quickYear%4 == 0 && this.quickPeriod.quickYear%100 != 0) || this.quickPeriod.quickYear%400 == 0 ) {
+                            quickDate= 29 ;
+                        }
+                        else {
+                            quickDate= 28 ;
+                        }
+                        break;
+                    }
                     default:{
                         quickDate = 30;
                         break;
@@ -439,11 +447,62 @@ export default {
             
             this.zonePeriod = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-01 ~ ${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-${quickDate}`;
             var dateFrom = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-01 00:00:00`;
-            var dateTo = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-31 23:59:59`;
+            var dateTo = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-${quickDate} 23:59:59`;
             this.findZoneData(dateFrom, dateTo);
+        },
+        reportDatas(){
+            this.report_id = this.getReportItems.selectedReport.report_id;
+        },
+        async report_id(){
+            const variable ={
+                report_id: this.report_id,
+                factory_id: 2,
+                booth_id: this.boothId,
+                zone_id: this.zoneId
+            };
+            var start_date = null;
+            var end_date = null;
+            var prev_id_list = [];
+            await this.$http.post(`/diagnostics/datareport/temperature/analyzeHasReport`, variable).then(result => {
+                if(result.data !== 'no data'){
+                    if(this.tableData.length !== 0){
+                        this.tableData.splice(0);
+                    }
+                    for(const list of result.data){
+                        this.tableData.push(list.robot_info);
+
+                        if(start_date === null){
+                            start_date = list.start_date;
+                        }
+
+                        if(end_date === null){
+                            end_date = list.end_date;
+                        }
+
+                        prev_id_list.push(list.prev_data_id);
+                        
+                    }
+                    this.disableTextArea = false;
+                    this.zonePeriod = `${start_date} ~ ${end_date}`
+                }else{
+                    this.zonePeriod = null;
+                    this.tableData.splice(0);
+                }
+            });
+
+            this.$emit('sendDataIdList', prev_id_list)
+
+
         }
     },
     methods:{
+        initializeReportData(){
+            this.report_id = this.getReportItems.selectedReport.report_id;
+        },
+        formatDate(date){
+            let formatted_date = date.getFullYear() + "-" + (("00"+ (date.getMonth() + 1))).slice(-2)  
+            return formatted_date;
+        },
         updateText(txt){
             this.opinionInput = txt;
         },
@@ -459,14 +518,15 @@ export default {
         },
         onSave(tableData) {
             var value = {
-                report_id: 1,
+                report_id: this.getReportItems.selectedReport.report_id,
                 report_type: 1,
                 factory_id: this.getFactoryId,
                 booth_id: this.boothId,
                 zone_id: this.zoneId,
                 robot_id_list:this.getRobotList(),
                 data_list:tableData,
-                current_data_range:`[${this.zonePeriod.substr(0,10)}, ${this.zonePeriod.substr(13,23)}]`,
+                start_date : this.zonePeriod.substr(0,10),
+                end_date : this.zonePeriod.substr(13,23),
                 comment:this.opinionInput,
             }
             this.$emit('onSave', value)
@@ -476,22 +536,16 @@ export default {
             this.boothId = this.zoneInfo.booth_id;
             this.zoneName = this.zoneInfo.zone_name;
         },
-        initializeData(){
-            this.findZoneData();
-            // this.zonePeriod = this.zoneInfo.period !== null ? this.zoneInfo.period : null;
-        },
         findZoneData(dateFrom, dateTo){
-            //zone_id, booth_id 그리고 factory_id로 리포트 타입에 맞게 찾는다.
-            
-            
             const variable ={
+                report_id: null,
                 factory_id: 2,
                 booth_id: this.boothId,
                 zone_id: this.zoneId,
                 fromDate: dateFrom,
                 toDate: dateTo
             }
-            this.$http.post(`/diagnostics/datareport/temperature/analyze`, variable).then(result => {
+            this.$http.post(`/diagnostics/datareport/temperature/analyzeNoReport`, variable).then(result => {
                 if(this.tableData.length !== 0){
                     this.tableData.splice(0);
                 }
@@ -502,8 +556,6 @@ export default {
                 this.disableTextArea = false;
             })
 
-
-            
         },
         updatePeriod(period){
             this.zonePeriod = period;

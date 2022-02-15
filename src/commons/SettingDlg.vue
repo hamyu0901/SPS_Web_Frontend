@@ -528,6 +528,7 @@ export default {
         },
 
         getSaveUserSetData(saveUserData, type) {
+            //saveUserData = kr, type = language 식으로 나옴
             this.datas.saveDatas[type] = saveUserData;
             if(type === this.datas.listItems[0].id) {
                 this.datas.comfirm.type = 'save';
@@ -703,6 +704,11 @@ export default {
         },
 
         saveBtnClicked() {
+            
+            // this.datas.comfirm.type = 'save';
+            // this.datas.saveDatas.language = saveUserData;
+            //listItem.active는 설정창 왼쪽 세로 메뉴에서 선택된 (active) 상태의 item을 뜻함
+
             this.datas.listItems.forEach(listItem => {
                 if(listItem.active === true) {
                     this.flags.save[listItem.id] = true;
@@ -713,7 +719,9 @@ export default {
                 } else {
                     this.flags.save[listItem.id] = false;
                 }
-            })
+            });
+
+            
         },
 
         getComfirmFlag() {

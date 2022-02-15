@@ -53,6 +53,7 @@
 export default {
     data(){
         return{
+            datesList:[],
             years:[],
             monthes:[],
             isYearSelected : false,
@@ -65,13 +66,13 @@ export default {
     },
     methods:{
         getYears(){
-            this.$http.get(`/diagnostics/datareport/temperature/quick/getYears`).then(result => {
+            this.$http.get(`/diagnostics/datareport/temperature/quick/getYearsMonthes`).then(result => {
                 if(this.years.length !== 0){
                     this.years.splice(0);
                 }
-                
-                for(const data of result.data){
-                    this.years.push(data);
+                this.datesList.push(result.data[0].dates);
+                for(const data of this.datesList){
+                    this.years.push({years: data.year});
                 }
             })
         },
@@ -79,15 +80,33 @@ export default {
 
             this.isYearSelected = true;
             this.selectedYear = year.years;
-            this.$http.get(`/diagnostics/datareport/temperature/quick/getMonthes/${year.years}`).then(result => {
-                if(this.monthes.length !== 0){
-                    this.monthes.splice(0);
+
+            var monthes = this.objectFindByKey(this.datesList, 'year', this.selectedYear);
+            for(const data of monthes){
+              if(data.toString().length === 1){
+                this.monthes.push({monthes: '0' + data.toString()});
+              }else{
+                this.monthes.push({monthes: data});
+              }
+            }
+
+            // this.$http.get(`/diagnostics/datareport/temperature/quick/getMonthes/${year.years}`).then(result => {
+            //     if(this.monthes.length !== 0){
+            //         this.monthes.splice(0);
+            //     }
+            //     console.log(result.data);
+            //     for(const data of result.data){
+            //         this.monthes.push(data);
+            //     }
+            // });
+        },
+        objectFindByKey(array, key, value) {
+            for (var i = 0; i < array.length; i++) {
+                if (array[i][key] === value) {
+                    return array[i].monthes;
                 }
-                console.log(result.data);
-                for(const data of result.data){
-                    this.monthes.push(data);
-                }
-            });
+            }
+            return null;
         },
         findData(month){
             this.selectedMonth = month.monthes;
