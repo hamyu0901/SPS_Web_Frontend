@@ -7,8 +7,15 @@
           <v-btn @click="close" color="transparent" :ripple="false" ><v-icon>close</v-icon></v-btn>
       </div>
       <div id="dateFromToBox">
-          <torque-analysis-date-time :dateModel.sync="dateFrom"></torque-analysis-date-time>
-          <torque-analysis-date-time :dateModel.sync="dateTo"></torque-analysis-date-time>
+            <torque-analysis-date-time
+                v-bind:dateFrom="datas.dateFrom"
+                @selectDateTimeFrom="selectDateTimeFrom"
+            >
+            </torque-analysis-date-time>
+            <torque-analysis-date-time-to
+                v-bind:dateTo="datas.dateTo"
+                @selectDateTimeTo="selectDateTimeTo"
+            />
       </div>
       <div id="dateSaveBox">
           <v-btn @click="changeDatePeriod" color="success">확인</v-btn>
@@ -18,37 +25,48 @@
 
 <script>
 import TorqueAnalysisDateTime from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAnalysisDateTime'
+import TorqueAnalysisDateTimeTo from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAnalysisDateTimeTo'
 export default {
-    props:['dialog'],
+    props:['zonePeriod'],
     components:{
-        TorqueAnalysisDateTime
+        TorqueAnalysisDateTime,
+        TorqueAnalysisDateTimeTo
     },
     data(){
         return{
-            dateFrom: null,
-            dateTo: null,
+            datas: {
+                dateFrom: "",
+                dateTo: "",
+            }
         }
     },
     created(){
-
+        this.datas.dateFrom = this.zonePeriod.substr(0, 10)
+        this.datas.dateTo = this.zonePeriod.substr(13)
     },
     mounted(){
-
     },
     watch:{
 
     },
     methods:{
         changeDatePeriod(){
-            let period = `${this.dateFrom} ~ ${this.dateTo}`
-            this.$emit('updatePeriod', period);
-            this.close();
-
+            let period = {
+                start_date : this.datas.dateFrom,
+                end_date: this.datas.dateTo
+            }
+            this.$emit('updateDatePeriod',period)
+            this.$emit('closeDateTimeBox');
         },
         close(){
-            this.$emit('update:dialog', false);
+            this.$emit('closeDateTimeBox');
+        },
+        selectDateTimeFrom(dateTimeFrom){
+            this.datas.dateFrom = dateTimeFrom
+        },
+        selectDateTimeTo(dateTimeTo){
+            this.datas.dateTo = dateTimeTo
         }
-
     }
 }
 </script>

@@ -13,7 +13,7 @@
 
 <script>
 export default {
-    props:['dateFrom'],
+    props:['dateTo'],
     components:{},
     data(){
         return{
@@ -21,15 +21,11 @@ export default {
         }
     },
     created(){
-        this.date = this.dateFrom !== "" ? this.dateFrom : new Date().toISOString().substr(0, 10);
+        this.date = this.dateTo !== "" ? this.dateTo : this.now();
     },
     mounted(){
-
     },
     watch:{
-        // date(){
-        //     this.$emit("update:dateModel", this.date);
-        // }
     },
     methods:{
         today(){
@@ -39,8 +35,8 @@ export default {
             return new Date().toISOString().substr(0, 10);
         },
         selectDate(date){
-            this.$emit('selectDateTimeFrom',date)
-        }
+            this.$emit('selectDateTimeTo',date)
+        },
     }
 }
 </script>
