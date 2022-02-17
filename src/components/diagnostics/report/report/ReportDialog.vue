@@ -106,8 +106,6 @@ import{
     DxButton,
     DxSelection
 } from 'devextreme-vue/data-grid';
-import 'devextreme/dist/css/dx.light.css';
-import 'devextreme/dist/css/dx.dark.css';
 import {mapGetters} from 'vuex';
 function isEmptyObj(obj)  {
   if(obj.constructor === Object

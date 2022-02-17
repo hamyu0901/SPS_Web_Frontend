@@ -78,7 +78,6 @@
 // import TorquePicker from '@/components/diagnostics/report/report/torqueAnalysis/TorquePicker'
 
 import {mapGetters} from 'vuex';
-// import TorqueReportDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportDlg'
 import TorqueReportAddDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportAddDlg'
 import TorqueAddReportTable from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAddReportTable'
 import TorqueReport from './TorqueReport.vue';
@@ -88,11 +87,8 @@ import{
     DxColumn,
     DxEditing
 } from 'devextreme-vue/data-grid';
-import 'devextreme/dist/css/dx.light.css';
-import 'devextreme/dist/css/dx.dark.css';
 export default {
   components: {
-    //   TorqueReportDlg,
       TorqueReportAddDlg,
       TorqueAddReportTable,
       TorqueReport,
