@@ -20,26 +20,34 @@
             <v-layout column v-for="(element, zoneIndex) in booth.zone" :key="zoneIndex">
                     <div class="zoneName">{{element.name}}</div>
                     <v-layout>
-                        <v-flex class="zonePeriod">
+                        <div class="currentDataName">현재 데이터</div>
+                        <div class="currentPicker">
                             <torque-picker
                                 v-bind:robotInfo="element.robot"
                                 @updateDatePeriod="updateDatePeriod($event,boothIndex,zoneIndex)"
                                 v-bind:bindingCatch="bindingCatch"
                             />
-                        </v-flex>
-                    <v-flex>
-                        <div class="prevSelectBox">
-                            <DxSelectBox class="prevSelectContent"
-                                :data-source="datas.filteredReport"
-                                display-expr="report_name"
-                                styling-mode="filled"
-                                value-expr="report_id"
-                                :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
-                                @opened="setSelectBox"
-                                @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
-                            />
                         </div>
-                    </v-flex>
+                        <v-layout>
+                            <div class="prevDataName">이전 데이터</div>
+                            <div class="prevPicker">
+                                <torque-prev-picker
+                                    v-bind:robotInfo="element.robot"
+                                    v-bind:bindingCatch="bindingCatch"
+                                />
+                            </div>
+                            <div class="prevSelectBox">
+                                <DxSelectBox class="prevSelectContent"
+                                    :width="300"
+                                    :data-source="datas.filteredReport"
+                                    display-expr="report_name"
+                                    value-expr="report_id"
+                                    :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
+                                    @opened="setSelectBox"
+                                    @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
+                                />
+                            </div>
+                        </v-layout>
                     </v-layout>
                 <v-layout>
                     <v-flex class="currentDataGrid">
@@ -56,19 +64,22 @@
                             <DxEditing
                                 mode="cell"
                                 :allow-updating="true"
+                                start-edit-action="click"
                             />
                             <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="robot-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" />
-                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
                             <DxColumn caption="위험도" data-field="violation_value.current_data.danger_level"
                                 :allow-editing="false"
                                 cell-template="dangerTemplate"
                                 :width="70"
+                                alignment="center"
+                                css-class="danger-highlighted"
                             >
                                 <!-- <DxLookup
                                     :data-source="datas.danger_level"
@@ -83,36 +94,28 @@
                                     offset-x
                                 >
                                     <template v-slot:activator="{on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
+                                        <button
                                             v-bind="attrs"
                                             v-on="on"
                                         >
-                                        <v-layout column>
-                                            <v-icon
-                                                color="#129c60"
-                                                v-if="data.data.violation_value.current_data.danger_level == 1"
-                                            >
-                                            mdi-alert
-                                            </v-icon>
-                                            <v-icon
-                                                color="#ed5565"
-                                                v-else-if="data.data.violation_value.current_data.danger_level == 2"
-                                            >
-                                            mdi-alert
-                                            </v-icon>
-                                            <v-icon
-                                                color="#ffce54"
-                                                v-else
-                                            >
-                                            mdi-alert
-                                            </v-icon>
-                                            <div v-if="data.data.violation_value.current_data.danger_level == 1">중</div>
-                                            <div v-else-if="data.data.violation_value.current_data.danger_level == 2">상</div>
-                                            <div v-else>하</div>
-                                        </v-layout>
-                                        </v-btn>
+                                            <v-layout column>
+                                                <img
+                                                    src="@/images/img_medium.png"
+                                                    v-if="data.data.violation_value.current_data.danger_level == 1"
+                                                />
+                                                <img
+                                                    src="@/images/img_high.png"
+                                                    v-else-if="data.data.violation_value.current_data.danger_level == 2"
+                                                />
+                                                <img
+                                                    src="@/images/img_low.png"
+                                                    v-else
+                                                />
+                                                <div v-if="data.data.violation_value.current_data.danger_level == 1">중</div>
+                                                <div v-else-if="data.data.violation_value.current_data.danger_level == 2">상</div>
+                                                <div v-else>하</div>
+                                            </v-layout>
+                                        </button>
                                     </template>
                                     <v-list>
                                         <v-list-tile
@@ -125,7 +128,9 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300" :allow-editing="true"/>
+                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300" :allow-editing="true"
+                                css-class="comment-highlighted"
+                            />
                         </DxDataGrid>
                         <div>
                             <zone-opinion
@@ -147,14 +152,21 @@
                             :rowAlternationEnabled="true"
                         >
                             <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="prevRobot-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false"/>
-                            <DxColumn caption="위험도" data-field="previolation_value.current_data.danger_level" cell-template="dangerPrevTemplate" :width="70"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn
+                                caption="위험도"
+                                data-field="previolation_value.current_data.danger_level"
+                                cell-template="dangerPrevTemplate"
+                                :width="70"
+                                alignment="center"
+                                css-class="danger-highlighted"
+                            />
                             <template
                                 #dangerPrevTemplate="{data}"
                             >
@@ -162,36 +174,28 @@
                                     offset-x
                                 >
                                     <template v-slot:activator="{on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
+                                        <button
                                             v-bind="attrs"
                                             v-on="on"
                                         >
                                             <v-layout column>
-                                                <v-icon
-                                                    color="#129c60"
+                                                <img
+                                                    src="@/images/img_medium.png"
                                                     v-if="data.data.previolation_value.current_data.danger_level == 1"
-                                                >
-                                                mdi-alert
-                                                </v-icon>
-                                                <v-icon
-                                                    color="#ed5565"
+                                                />
+                                                <img
+                                                    src="@/images/img_high.png"
                                                     v-else-if="data.data.previolation_value.current_data.danger_level == 2"
-                                                >
-                                                mdi-alert
-                                                </v-icon>
-                                                <v-icon
-                                                    color="#ffce54"
+                                                />
+                                                <img
+                                                    src="@/images/img_low.png"
                                                     v-else
-                                                >
-                                                mdi-alert
-                                                </v-icon>
+                                                />
                                                 <div v-if="data.data.previolation_value.current_data.danger_level == 1">중</div>
                                                 <div v-else-if="data.data.previolation_value.current_data.danger_level == 2">상</div>
                                                 <div v-else>하</div>
-                                            </v-layout>
-                                        </v-btn>
+                                        </v-layout>
+                                        </button>
                                     </template>
                                     <v-list>
                                         <v-list-tile
@@ -204,7 +208,7 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field="previolation_value.current_data.comment" :width="300"></DxColumn>
+                            <DxColumn caption="의견" data-field="previolation_value.current_data.comment" :width="300" css-class="comment-highlighted"></DxColumn>
                         </DxDataGrid>
                         <zone-prev-opinion
                             @inputPrevZoneOpinion="inputPrevZoneOpinion($event,boothIndex,zoneIndex)"
@@ -238,14 +242,13 @@ import{
     DxLookup,
 } from 'devextreme-vue/data-grid';
 import DxSelectBox from 'devextreme-vue/select-box';
-import 'devextreme/dist/css/dx.dark.css';
-import 'devextreme/dist/css/dx.common.css';
-import 'devextreme/dist/css/dx.light.css';
+
 import {mapGetters} from 'vuex';
 // import TorqueAnalysisDateTimeBox from '@/components/diagnostics/report/report/torqueAnalysis/TorqueAnalysisDateTimeBox';
 import zoneOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zoneOpinion';
 import zonePrevOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zonePrevOpinion';
 import TorquePicker from '@/components/diagnostics/report/report/torqueAnalysis/TorquePicker';
+import TorquePrevPicker from './TorquePrevPicker.vue'
 export default {
     components: {
         DxDataGrid,
@@ -255,7 +258,8 @@ export default {
         DxSelectBox,
         zoneOpinion,
         zonePrevOpinion,
-        TorquePicker
+        TorquePicker,
+        TorquePrevPicker
     },
     props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType','reportSwitch','selectedMonth','selectedYear'],
     data() {
@@ -422,6 +426,8 @@ export default {
                 }
                 if(robotElement.previolation_value == undefined){
                     robotElement.previolation_value = {
+                        current_start_date: null,
+                        current_end_date: null,
                         current_data : {violation_count : [0,0,0,0,0,0,0], comment: null, danger_level: null}
                     }
                 }
@@ -444,6 +450,7 @@ export default {
             notIncludeReportDetail.forEach(nonReport => {
                this.datas.filteredReport.splice(this.datas.filteredReport.findIndex(item => item.report_id == nonReport.report_id),1)
             })
+
             this.datas.filteredReport.forEach((filteredElement, index) => {
                 this.datas.prevReport.forEach(prevElement => {
                     if(filteredElement.report_id === prevElement.report_id){
@@ -559,16 +566,47 @@ export default {
 
         async updateDatePeriod(period,bIndex,zIndex){          // 선택 날짜 기준에 맞게 현재 report data 변경
             this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robotElement => {
-                // robotElement.violation_value.current_data_range = [period.start_date,period.end_date]
                 robotElement.violation_value.current_start_date = period.start_date
                 robotElement.violation_value.current_end_date = period.end_date
             })
             let zone_id = this.datas.boothInfo[bIndex].zone[zIndex].robot[0].zone
             let report_type = 0
+            let temp = [];
             await this.$http.get(`diagnostics/report/report/detail/type/${report_type}/zone/${zone_id}/start_date/${period.start_date}/end_date/${period.end_date}`)
             .then((response) => {
-                console.log(response.data)
+                temp = response.data
+                let resultArr = [];
+                for(let i = 0; i < temp.length; i++){
+                    let idx = getKeyIndex(resultArr, temp[i]);
+                    if(idx > -1){
+                        resultArr[idx].current_data.violation_count[0] += Number(temp[i].current_data.violation_count[0]);
+                        resultArr[idx].current_data.violation_count[1] += Number(temp[i].current_data.violation_count[1])
+                        resultArr[idx].current_data.violation_count[2] += Number(temp[i].current_data.violation_count[2])
+                        resultArr[idx].current_data.violation_count[3] += Number(temp[i].current_data.violation_count[3])
+                        resultArr[idx].current_data.violation_count[4] += Number(temp[i].current_data.violation_count[4])
+                        resultArr[idx].current_data.violation_count[5] += Number(temp[i].current_data.violation_count[5])
+                        resultArr[idx].current_data.violation_count[6] += Number(temp[i].current_data.violation_count[6])
+                    }
+                    else{
+                        resultArr.push(temp[i])
+                    }
+                }
+                resultArr.forEach(el => {
+                    this.datas.robotInfo.forEach(robotElement => {
+                        if(el.robot_id == robotElement.id){
+                            robotElement.violation_value.current_data = el.current_data
+                        }
+                    })
+                })
             })
+            function getKeyIndex(arr, obj){
+                for(let i=0; i < arr.length; i++){
+                    if(arr[i].robot_id === obj.robot_id){
+                        return i;
+                    }
+                }
+                return -1;
+            }
             this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
         },
         async clickSaveButton(){
@@ -766,10 +804,28 @@ export default {
         font-size: 2rem;
         font-weight: bold;
     }
+    .currentDataName{
+        color: #3c78fa;
+        margin: auto;
+        margin-right: 10px;
+        font-weight: bold;
+        font-size: 15px;
+    }
     .currentDataGrid{
         width: 520px;
         margin-top: 5px;
         margin-bottom: 5px;
+    }
+    .prevDataName{
+        color: #21976a;
+        margin-right: 10px;
+        margin-left: 20px;
+        font-weight: bold;
+        font-size: 15px;
+        padding-top: 10px;
+    }
+    .currentPicker{
+        width: 700px;
     }
     .compareCombobox{
         display: flex;
@@ -807,16 +863,15 @@ export default {
         justify-content: right;
         margin-right: 35px;
     }
+    .prevPicker{
+        margin-right: 10px;
+    }
     .v-input{
         padding-top: 0px;
         width: 250px
     }
-    .prevSelectBox{
-        border: 2px solid #21976a;
-        width: 305px;
-    }
     .dx-data-row .robot-highlighted {
-        background-color: #515dbe!important;
+        background-color: #3c78fa!important;
         text-align: center!important;
     }
     .dx-data-row .prevRobot-highlighted {
@@ -825,6 +880,19 @@ export default {
     }
     .prevSelectContent .dx-selectbox-container .dx-texteditor-container  {
         background: #191d2b;
+        border-radius: 5px;
+    }
+    .dx-header-row .axis-highlighted {
+        text-align: center!important;
+        color: white;
+    }
+    .dx-header-row .danger-highlighted {
+        text-align: center!important;
+        color: white;
+    }
+    .dx-header-row .comment-highlighted {
+        text-align: center!important;
+        color: white;
     }
 
 </style>
