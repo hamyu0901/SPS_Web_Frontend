@@ -30,10 +30,10 @@ import VueMomentJS from 'vue-momentjs';
 import { verify } from 'crypto';
 import http from 'http';
 import cheetahGrid from 'vue-cheetah-grid';
-import 'devextreme/dist/css/dx.dark.css';
-import 'devextreme/dist/css/dx.common.css';
+// import 'devextreme/dist/css/dx.dark.css';
+// import 'devextreme/dist/css/dx.common.css';
 // import 'devextreme/dist/css/dx.light.css';
-// import 'devextreme/dist/css/dx.generic.custom-sps-report-scheme.css'
+import 'devextreme/dist/css/dx.generic.sps_report.css'
 import "@ag-grid-enterprise/all-modules/dist/styles/ag-grid.css";
 import "@ag-grid-enterprise/all-modules/dist/styles/ag-theme-alpine.css";
 let CanvasJS = require('@/commons/canvasjs/canvasjs.min');
