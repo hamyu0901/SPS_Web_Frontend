@@ -263,7 +263,6 @@ export default {
                 report_name : selectReport.selectedRowsData[0].report_name,
                 update_type : selectReport.selectedRowsData[0].update_time
             }
-            this.reportDatas.selectedReport = deepClone(this.datas.selectedReport)
             await this.getReportDetail(this.datas.selectedReport.report_id)
             if(this.datas.torqueAnalysisReportDetail.length === 0){
                 this.datas.reportSwitch = 0
