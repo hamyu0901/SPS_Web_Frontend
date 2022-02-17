@@ -60,20 +60,15 @@
                             :show-row-lines="true"
                             :rowAlternationEnabled="true"
                         >
-                            <DxEditing
-                                mode="cell"
-                                :allow-updating="true"
-                            />
-                            <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="robot-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted" />
-                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="name" caption="" :width="60" css-class="robot-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" css-class="axis-highlighted" />
+                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" css-class="axis-highlighted"/>
                             <DxColumn caption="위험도" data-field="violation_value.current_data.danger_level"
-                                :allow-editing="false"
                                 cell-template="dangerTemplate"
                                 :width="70"
                                 alignment="center"
@@ -121,7 +116,29 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300" css-class="comment-highlighted"/>
+                            <DxColumn
+                                caption="의견"
+                                data-field ="violation_value.current_data.comment"
+                                :width="300"
+                                css-class="comment-highlighted"
+                                cell-template="commentTemplate"
+                            >
+                            </DxColumn>
+                            <template
+                                 #commentTemplate="{data}"
+                            >
+                                <div>
+                                    <div class="commentClass">
+                                    <v-text-field
+                                        color="#3c78fa"
+                                        :value="data.data.violation_value.current_data.comment"
+                                        @change="inputRobotComment($event,data)"
+                                    >
+                                    </v-text-field>
+                                </div>
+                                </div>
+
+                            </template>
                         </DxDataGrid>
                         <div>
                             <zone-opinion
@@ -142,14 +159,14 @@
                             :show-row-lines="true"
                             :rowAlternationEnabled="true"
                         >
-                            <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="prevRobot-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="name" caption="" :width="60" css-class="prevRobot-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" css-class="axis-highlighted"/>
                             <DxColumn
                                 caption="위험도"
                                 data-field="previolation_value.current_data.danger_level"
@@ -199,7 +216,28 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field="previolation_value.current_data.comment" :width="300" css-class="comment-highlighted"></DxColumn>
+                            <DxColumn
+                                caption="의견"
+                                data-field="previolation_value.current_data.comment"
+                                :width="300"
+                                css-class="comment-highlighted"
+                                cell-template="commentPrevTemplate"
+                            >
+                            </DxColumn>
+                            <template
+                                 #commentPrevTemplate="{data}"
+                            >
+                                <div>
+                                    <div class="commentClass">
+                                    <v-text-field
+                                        color="#21976a"
+                                        :value="data.data.previolation_value.current_data.comment"
+                                        @change="inputRobotComment($event,data)"
+                                    >
+                                    </v-text-field>
+                                </div>
+                                </div>
+                            </template>
                         </DxDataGrid>
                         <zone-prev-opinion
                             @inputPrevZoneOpinion="inputPrevZoneOpinion($event,boothIndex,zoneIndex)"
@@ -596,6 +634,9 @@ export default {
             default:
             }
         },
+        inputRobotComment(text,data){
+            data.data.violation_value.current_data.comment = text
+        },
         inputZoneOpinion(opinion,bIndex,zIndex){
             this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robot => {
                 robot.violation_value.comment = opinion
@@ -717,8 +758,7 @@ export default {
             if (window.confirm("저장하시겠습니까?")) {
                 this.datas.filteredCurrentData = [];
                 this.getRowData();
-                console.log(this.datas.torqueAnalysisReportDetail.reportDetail)
-                // this.updateReportDatas();
+                this.updateReportDatas();
 			}
         },
         async getRowData(){
@@ -859,5 +899,16 @@ export default {
     }
     .prevSelectContent .dx-selectbox-container .dx-texteditor-container  {
         background: #191d2b;
+    }
+    .commentClass .v-input__control{
+        height: 30px;
+    }
+    .commentClass .v-input__slot::before{
+        border-style: none !important;
+    }
+    .commentClass .v-text-field input {
+        font-size: 1rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 </style>

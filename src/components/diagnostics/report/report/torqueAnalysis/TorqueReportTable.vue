@@ -61,21 +61,16 @@
                             :show-row-lines="true"
                             :rowAlternationEnabled="true"
                         >
-                            <DxEditing
-                                mode="cell"
-                                :allow-updating="true"
-                                start-edit-action="click"
-                            />
-                            <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="robot-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn caption="위험도" data-field="violation_value.current_data.danger_level"
-                                :allow-editing="false"
+                            <DxColumn data-field="name" caption="" :width="60" css-class="robot-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn caption="위험도"
+                                data-field="violation_value.current_data.danger_level"
                                 cell-template="dangerTemplate"
                                 :width="70"
                                 alignment="center"
@@ -128,9 +123,29 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300" :allow-editing="true"
+                            <DxColumn
+                                caption="의견"
+                                data-field ="violation_value.current_data.comment"
+                                :width="300"
                                 css-class="comment-highlighted"
-                            />
+                                cell-template="commentTemplate"
+                            >
+                            </DxColumn>
+                            <template
+                                 #commentTemplate="{data}"
+                            >
+                                <div>
+                                    <div class="commentClass">
+                                    <v-text-field
+                                        color="#3c78fa"
+                                        :value="data.data.violation_value.current_data.comment"
+                                        @change="inputRobotComment($event,data)"
+                                    >
+                                    </v-text-field>
+                                </div>
+                                </div>
+
+                            </template>
                         </DxDataGrid>
                         <div>
                             <zone-opinion
@@ -151,14 +166,14 @@
                             :show-row-lines="true"
                             :rowAlternationEnabled="true"
                         >
-                            <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="prevRobot-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="name" caption="" :width="60" css-class="prevRobot-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" css-class="axis-highlighted"/>
                             <DxColumn
                                 caption="위험도"
                                 data-field="previolation_value.current_data.danger_level"
@@ -208,7 +223,29 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field="previolation_value.current_data.comment" :width="300" css-class="comment-highlighted"></DxColumn>
+                            <DxColumn
+                                caption="의견"
+                                data-field="previolation_value.current_data.comment"
+                                :width="300"
+                                css-class="comment-highlighted"
+                                cell-template="commentPrevTemplate"
+                            >
+                            </DxColumn>
+                            <template
+                                 #commentPrevTemplate="{data}"
+                            >
+                                <div>
+                                    <div class="commentClass">
+                                    <v-text-field
+                                        color="#21976a"
+                                        :value="data.data.previolation_value.current_data.comment"
+                                        @change="inputRobotComment($event,data)"
+                                    >
+                                    </v-text-field>
+                                </div>
+                                </div>
+
+                            </template>
                         </DxDataGrid>
                         <zone-prev-opinion
                             @inputPrevZoneOpinion="inputPrevZoneOpinion($event,boothIndex,zoneIndex)"
@@ -363,7 +400,9 @@ export default {
             default:
             }
         },
-
+        inputRobotComment(text,data){
+            data.data.violation_value.current_data.comment = text
+        },
         inputZoneOpinion(opinion,bIndex,zIndex){
             this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robot => {
                 robot.violation_value.comment = opinion
@@ -450,7 +489,6 @@ export default {
             notIncludeReportDetail.forEach(nonReport => {
                this.datas.filteredReport.splice(this.datas.filteredReport.findIndex(item => item.report_id == nonReport.report_id),1)
             })
-
             this.datas.filteredReport.forEach((filteredElement, index) => {
                 this.datas.prevReport.forEach(prevElement => {
                     if(filteredElement.report_id === prevElement.report_id){
@@ -511,6 +549,7 @@ export default {
             await this.datas.robotInfo.forEach(robotElement => {
                 delete robotElement.previolation_value
                 if(this.datas.prevReport.length !== 0){
+                    robotElement.violation_value.prev_data_id = this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0].data_id
                     Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
                 }
             })
@@ -555,6 +594,7 @@ export default {
                         zone.robot.forEach(robotElement => {
                             delete robotElement.previolation_value
                             if(this.datas.prevReport.length !== 0){
+                                robotElement.violation_value.prev_data_id = this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0].data_id
                                 Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
                             }
                         })
@@ -645,6 +685,8 @@ export default {
                 let prev_data_id = null;
                 let comment = row.data.violation_value.comment
                 let data_id = row.data.violation_value.data_id
+                let current_start_date = row.data.violation_value.current_start_date
+                let current_end_date = row.data.violation_value.current_end_date
                 for(let i =0; i < row.values.length; i++){
                     if(row.values[i] === undefined){
                         row.values[i] = null
@@ -680,7 +722,9 @@ export default {
                         current_data,
                         prev_data_id,
                         data_id,
-                        comment
+                        comment,
+                        current_start_date,
+                        current_end_date
                     })
                 }
                 else{
@@ -693,7 +737,9 @@ export default {
                         current_data,
                         prev_data_id,
                         data_id,
-                        comment
+                        comment,
+                        current_start_date,
+                        current_end_date
                     })
                 }
             }
@@ -708,6 +754,8 @@ export default {
                 let prev_data_id = null;
                 let comment = row.data.previolation_value.comment
                 let data_id = row.data.previolation_value.data_id
+                let current_start_date = row.data.previolation_value.current_start_date
+                let current_end_date = row.data.previolation_value.current_end_date
                 for(let i =0; i < row.values.length; i++){
                     if(row.values[i] === undefined){
                         row.values[i] = null
@@ -743,7 +791,9 @@ export default {
                         current_data,
                         prev_data_id,
                         data_id,
-                        comment
+                        comment,
+                        current_start_date,
+                        current_end_date
                     })
                 }
                 else{
@@ -756,7 +806,9 @@ export default {
                         current_data,
                         prev_data_id,
                         data_id,
-                        comment
+                        comment,
+                        current_start_date,
+                        current_end_date
                     })
                 }
             }
@@ -772,7 +824,9 @@ export default {
                 current_data : item.current_data,
                 prev_data_id : item.prev_data_id,
                 data_id : item.data_id,
-                comment : item.comment
+                comment : item.comment,
+                current_start_date : item.current_start_date,
+                current_end_date : item.current_end_date
             })
             .then(() => {
 
@@ -868,7 +922,7 @@ export default {
     }
     .v-input{
         padding-top: 0px;
-        width: 250px
+        width: 250px;
     }
     .dx-data-row .robot-highlighted {
         background-color: #3c78fa!important;
@@ -894,5 +948,15 @@ export default {
         text-align: center!important;
         color: white;
     }
-
+    .commentClass .v-input__control{
+        height: 30px;
+    }
+    .commentClass .v-input__slot::before{
+        border-style: none !important;
+    }
+    .commentClass .v-text-field input {
+        font-size: 1rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 </style>
