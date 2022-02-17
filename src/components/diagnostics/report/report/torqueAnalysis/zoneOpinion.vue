@@ -68,7 +68,7 @@ export default {
         display: flex;
         height: 40px;
         // border: 2px solid #515dbe;
-        border: 2px solid #3c78fa;
+        border: 2px solid #3b69ce;
         border-radius: 5px;
         #opinion_left{
             flex-grow: 1;
