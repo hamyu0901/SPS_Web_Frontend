@@ -20,26 +20,34 @@
             <v-layout column v-for="(element, zoneIndex) in booth.zone" :key="zoneIndex">
                     <div class="zoneName">{{element.name}}</div>
                     <v-layout>
-                        <v-flex class="zonePeriod">
+                        <div class="currentDataName">현재 데이터</div>
+                        <div class="currentPicker">
                             <torque-picker
                                 v-bind:robotInfo="element.robot"
                                 @updateDatePeriod="updateDatePeriod($event,boothIndex,zoneIndex)"
-                            />
-                        </v-flex>
-                    <v-flex>
-                        <div class="prevSelectBox">
-                            <DxSelectBox class="prevSelectContent"
-                                :data-source="datas.filteredReport"
-                                width="300"
-                                display-expr="report_name"
-                                styling-mode="filled"
-                                value-expr="report_id"
-                                :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
-                                @opened="setSelectBox"
-                                @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
+                                v-bind:bindingCatch="bindingCatch"
                             />
                         </div>
-                    </v-flex>
+                        <v-layout>
+                            <div class="prevDataName">이전 데이터</div>
+                            <div class="prevPicker">
+                                <torque-prev-picker
+                                    v-bind:robotInfo="element.robot"
+                                    v-bind:bindingCatch="bindingCatch"
+                                />
+                            </div>
+                            <div class="prevSelectBox">
+                                <DxSelectBox class="prevSelectContent"
+                                    :width="300"
+                                    :data-source="datas.filteredReport"
+                                    display-expr="report_name"
+                                    value-expr="report_id"
+                                    :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
+                                    @opened="setSelectBox"
+                                    @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
+                                />
+                            </div>
+                        </v-layout>
                     </v-layout>
                 <v-layout>
                     <v-flex class="currentDataGrid">
@@ -54,20 +62,22 @@
                         >
                             <DxEditing
                                 mode="cell"
-                            :allow-updating="true"
+                                :allow-updating="true"
                             />
                             <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="robot-highlighted"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" />
-                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted" />
+                            <DxColumn data-field="violation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="violation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
                             <DxColumn caption="위험도" data-field="violation_value.current_data.danger_level"
                                 :allow-editing="false"
                                 cell-template="dangerTemplate"
                                 :width="70"
+                                alignment="center"
+                                css-class="danger-highlighted"
                             >
                             </DxColumn>
                             <template
@@ -77,36 +87,28 @@
                                     offset-x
                                 >
                                     <template v-slot:activator="{on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
+                                        <button
                                             v-bind="attrs"
                                             v-on="on"
                                         >
-                                        <v-layout column>
-                                            <v-icon
-                                                color="#129c60"
-                                                v-if="data.data.violation_value.current_data.danger_level == 1"
-                                            >
-                                            mdi-alert
-                                            </v-icon>
-                                            <v-icon
-                                                color="#ed5565"
-                                                v-else-if="data.data.violation_value.current_data.danger_level == 2"
-                                            >
-                                            mdi-alert
-                                            </v-icon>
-                                            <v-icon
-                                                color="#ffce54"
-                                                v-else
-                                            >
-                                            mdi-alert
-                                            </v-icon>
-                                            <div v-if="data.data.violation_value.current_data.danger_level == 1">중</div>
-                                            <div v-else-if="data.data.violation_value.current_data.danger_level == 2">상</div>
-                                            <div v-else>하</div>
-                                        </v-layout>
-                                        </v-btn>
+                                            <v-layout column>
+                                                <img
+                                                    src="@/images/img_medium.png"
+                                                    v-if="data.data.violation_value.current_data.danger_level == 1"
+                                                />
+                                                <img
+                                                    src="@/images/img_high.png"
+                                                    v-else-if="data.data.violation_value.current_data.danger_level == 2"
+                                                />
+                                                <img
+                                                    src="@/images/img_low.png"
+                                                    v-else
+                                                />
+                                                <div v-if="data.data.violation_value.current_data.danger_level == 1">중</div>
+                                                <div v-else-if="data.data.violation_value.current_data.danger_level == 2">상</div>
+                                                <div v-else>하</div>
+                                            </v-layout>
+                                        </button>
                                     </template>
                                     <v-list>
                                         <v-list-tile
@@ -119,10 +121,7 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300"
-
-                            :allow-editing="true"
-                            />
+                            <DxColumn caption="의견" data-field ="violation_value.current_data.comment" :width="300" css-class="comment-highlighted"/>
                         </DxDataGrid>
                         <div>
                             <zone-opinion
@@ -144,14 +143,21 @@
                             :rowAlternationEnabled="true"
                         >
                             <DxColumn data-field="name" caption="" :width="60" :allow-editing="false" css-class="prevRobot-highlighted"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false"/>
-                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false"/>
-                            <DxColumn caption="위험도" data-field="previolation_value.current_data.danger_level" cell-template="dangerPrevTemplate" :width="70"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[3]" caption="4축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[4]" caption="5축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[5]" caption="6축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn data-field="previolation_value.current_data.violation_count[6]" caption="7축" :width="50" :allow-editing="false" css-class="axis-highlighted"/>
+                            <DxColumn
+                                caption="위험도"
+                                data-field="previolation_value.current_data.danger_level"
+                                cell-template="dangerPrevTemplate"
+                                :width="70"
+                                alignment="center"
+                                css-class="danger-highlighted"
+                            />
                             <template
                                 #dangerPrevTemplate="{data}"
                             >
@@ -159,36 +165,28 @@
                                     offset-x
                                 >
                                     <template v-slot:activator="{on, attrs }">
-                                        <v-btn
-                                            icon
-                                            small
+                                        <button
                                             v-bind="attrs"
                                             v-on="on"
                                         >
                                             <v-layout column>
-                                                <v-icon
-                                                    color="#129c60"
+                                                <img
+                                                    src="@/images/img_medium.png"
                                                     v-if="data.data.previolation_value.current_data.danger_level == 1"
-                                                >
-                                                mdi-alert
-                                                </v-icon>
-                                                <v-icon
-                                                    color="#ed5565"
+                                                />
+                                                <img
+                                                    src="@/images/img_high.png"
                                                     v-else-if="data.data.previolation_value.current_data.danger_level == 2"
-                                                >
-                                                mdi-alert
-                                                </v-icon>
-                                                <v-icon
-                                                    color="#ffce54"
+                                                />
+                                                <img
+                                                    src="@/images/img_low.png"
                                                     v-else
-                                                >
-                                                mdi-alert
-                                                </v-icon>
+                                                />
                                                 <div v-if="data.data.previolation_value.current_data.danger_level == 1">중</div>
                                                 <div v-else-if="data.data.previolation_value.current_data.danger_level == 2">상</div>
                                                 <div v-else>하</div>
                                             </v-layout>
-                                        </v-btn>
+                                        </button>
                                     </template>
                                     <v-list>
                                         <v-list-tile
@@ -201,7 +199,7 @@
                                     </v-list>
                                 </v-menu>
                             </template>
-                            <DxColumn caption="의견" data-field="previolation_value.current_data.comment" :width="300"></DxColumn>
+                            <DxColumn caption="의견" data-field="previolation_value.current_data.comment" :width="300" css-class="comment-highlighted"></DxColumn>
                         </DxDataGrid>
                         <zone-prev-opinion
                             @inputPrevZoneOpinion="inputPrevZoneOpinion($event,boothIndex,zoneIndex)"
@@ -232,26 +230,24 @@ import{
     DxDataGrid,
     DxColumn,
     DxEditing,
-    DxLookup,
 } from 'devextreme-vue/data-grid';
 import DxSelectBox from 'devextreme-vue/select-box';
-import 'devextreme/dist/css/dx.dark.css';
-import 'devextreme/dist/css/dx.common.css';
-import 'devextreme/dist/css/dx.light.css';
+
 import {mapGetters} from 'vuex';
 import zoneOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zoneOpinion';
 import zonePrevOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zonePrevOpinion';
 import TorquePicker from '@/components/diagnostics/report/report/torqueAnalysis/TorquePicker';
+import TorquePrevPicker from './TorquePrevPicker.vue'
 export default {
     components: {
         DxDataGrid,
         DxColumn,
         DxEditing,
-        DxLookup,
         DxSelectBox,
         zoneOpinion,
         zonePrevOpinion,
-        TorquePicker
+        TorquePicker,
+        TorquePrevPicker
     },
 
     props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType','selectedMonth','selectedYear'],
@@ -307,11 +303,11 @@ export default {
         this.getReport();
     },
     watch: {
-        month(){
+        selectedMonth(){
             this.datas.selectedMonth =this.selectedMonth
             this.datas.selectedYear = this.selectedYear
             this.setReportHeader();
-            // this.getReport();
+            this.getReport();
         },
         selectedReport(){
             this.datas.selectedReport = deepClone(this.selectedReport)
@@ -346,8 +342,11 @@ export default {
         async getViolatedAccumulation(){
             this.datas.violatedAccumulation = [];
             let month = this.datas.selectedMonth.substr(0, 2)
+            let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
+            let start_date = `${this.datas.selectedYear}-${month}-01`
+            let end_date = `${this.datas.selectedYear}-${month}-${month_last_date}`
             let dangerData = [];
-            await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/year/${this.datas.selectedYear}/month/${month}`)
+            await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${start_date}/enddate/${end_date}`)
             .then((response) => {
                 dangerData = deepClone(response.data)
                 this.datas.violatedAccumulation = dangerData.reduce((acc, {robot_id, axis})=> {
@@ -390,17 +389,37 @@ export default {
                     }
                 })
             })
-            this.datas.prevReport = temp;
-            await this.getViolatedAccumulation();
+            this.datas.prevReport = temp; // 현재 선택된 리포트에  prev_data_id를 확인해서 해당하는 비교 리포트를 prevReport에 넣음.
+            await this.getViolatedAccumulation(); // his_violation_accum 테이블에서 적산 경고 data 가져오는 함수 호출
+            let filteredIndex = null
+            let tempReportId = [];
+            this.datas.allReportDetail.forEach(el => {
+                tempReportId.push(el.report_id)
+            })
+            let set = [...new Set(tempReportId)]
+            let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
+            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            if(this.datas.filteredReport.length !==0){
+                notIncludeReportDetail.forEach(nonReport => {
+                    this.datas.filteredReport.forEach((el,index) => {
+                        if(nonReport.report_id == el.report_id){
+                            this.datas.filteredReport.splice(index,1)
+                        }
+                    })
+                })
+                let filteredReportId = null
+                filteredReportId = this.datas.filteredReport[this.datas.filteredReport.length-1].report_id
+                this.datas.prevReport = this.datas.allReportDetail.filter(el => el.report_id == filteredReportId)
+            }
             this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
                 let cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0, cnt6 = 0, cnt7 = 0
-                    Object.assign(robotElement, { violation_value : this.datas.violatedAccumulation.filter(element => element.robot_id == robotElement.id)[0]})
-                    if(robotElement.violation_value == undefined){
-                        robotElement.violation_value = {
-                            axis: {axis1:0,axis2:0,axis3:0,axis4:0,axis5:0,axis6:0,axis7:0},
-                        }
+                Object.assign(robotElement, { violation_value : this.datas.violatedAccumulation.filter(element => element.robot_id == robotElement.id)[0]})
+                if(robotElement.violation_value == undefined){
+                    robotElement.violation_value = {
+                        axis: {axis1:0,axis2:0,axis3:0,axis4:0,axis5:0,axis6:0,axis7:0},
                     }
+                }
                 let month = this.datas.selectedMonth.substr(0, 2)
                 const month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
                 cnt1 = robotElement.violation_value.axis.axis1 ? cnt1 + robotElement.violation_value.axis.axis1 : cnt1
@@ -411,7 +430,6 @@ export default {
                 cnt6 = robotElement.violation_value.axis.axis6 ? cnt6 + robotElement.violation_value.axis.axis6 : cnt6
                 cnt7 = robotElement.violation_value.axis.axis7 ? cnt7 + robotElement.violation_value.axis.axis7 : cnt7
                 robotElement.violation_value = {
-                    // current_data_range : [`${this.datas.selectedYear}-${month}-01`,`${this.datas.selectedYear}-${month}-${month_last_date}`],
                     current_start_date : `${this.datas.selectedYear}-${month}-01`,
                     current_end_date : `${this.datas.selectedYear}-${month}-${month_last_date}`,
                     current_data : {
@@ -432,6 +450,8 @@ export default {
                 }
                 if(robotElement.previolation_value == undefined){
                     robotElement.previolation_value = {
+                        current_start_date: null,
+                        current_end_date: null,
                         current_data : {violation_count : [0,0,0,0,0,0,0], comment: null, danger_level: null}
                     }
                 }
@@ -443,9 +463,27 @@ export default {
             this.datas.boothInfo.forEach(item => {
                 Object.assign(item, {zone: this.datas.zoneInfo.filter(element => element.booth === item.id)})
             })
-            let filteredIndex = null
-            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
 
+            // let filteredIndex = null
+            // let tempReportId = [];
+            // this.datas.allReportDetail.forEach(el => {
+            //     tempReportId.push(el.report_id)
+            // })
+            // let set = [...new Set(tempReportId)]
+            // let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
+            // this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            // if(this.datas.filteredReport.length !==0){
+            //     notIncludeReportDetail.forEach(nonReport => {
+            //         this.datas.filteredReport.forEach((el,index) => {
+            //             if(nonReport.report_id == el.report_id){
+            //                 this.datas.filteredReport.splice(index,1)
+            //             }
+            //         })
+            //     })
+            //     let filteredReportId = null
+            //     filteredReportId = this.datas.filteredReport[this.datas.filteredReport.length-1].report_id
+            //     this.datas.prevReport = this.datas.allReportDetail.filter(el => el.report_id == filteredReportId)
+            // }
             this.datas.filteredReport.forEach((filteredElement, index) => {
                 this.datas.prevReport.forEach(prevElement => {
                     if(filteredElement.report_id === prevElement.report_id){
@@ -462,6 +500,73 @@ export default {
                 this.datas.prevArray.push(tempArr)
             })
             this.datas.prevIndex = filteredIndex
+        },
+        async updateDatePeriod(period,bIndex,zIndex){
+            this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robotElement => {
+                robotElement.violation_value.current_start_date = period.start_date
+                robotElement.violation_value.current_end_date = period.end_date
+            })
+            let zone_id = this.datas.boothInfo[bIndex].zone[zIndex].robot[0].zone
+            let temp = [];
+            await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${period.start_date}/enddate/${period.end_date}`)
+            .then((response) => {
+                temp = response.data.filter(el => el.zone_id == zone_id)
+                temp.forEach(el => {
+                    Object.assign(el, {current_data : {violation_count: [0,0,0,0,0,0,0]}})
+                })
+                let resultArr = [];
+                for(let i = 0; i < temp.length; i++){
+                    let idx = getKeyIndex(resultArr, temp[i]);
+                    if(idx > -1){
+                        switch(temp[i].axis){
+                            case 1 :
+                                resultArr[idx].current_data.violation_count[0] += Number(temp[i].axis)
+                            break;
+                            case 2:
+                                resultArr[idx].current_data.violation_count[1] += Number(temp[i].axis)
+                            break;
+                            case 3:
+                                resultArr[idx].current_data.violation_count[2] += Number(temp[i].axis)
+                            break;
+                            case 4:
+                                resultArr[idx].current_data.violation_count[3] += Number(temp[i].axis)
+                            break;
+                            case 5:
+                                resultArr[idx].current_data.violation_count[4] += Number(temp[i].axis)
+                            break;
+                            case 6:
+                                resultArr[idx].current_data.violation_count[5] += Number(temp[i].axis)
+                            break;
+                            case 7:
+                                resultArr[idx].current_data.violation_count[6] += Number(temp[i].axis)
+                            break;
+                        default:
+                        }
+                    }
+                    else{
+                        resultArr.push(temp[i])
+                    }
+                }
+                this.$refs.currentContainer.forEach(item => {
+                    item.instance.getDataSource().reload()
+                })
+                resultArr.forEach(el => {
+                    this.datas.robotInfo.forEach(robotElement => {
+                        if(el.robot_id == robotElement.id){
+                            robotElement.violation_value.current_data.violation_count = el.current_data.violation_count
+                        }
+                    })
+                })
+                function getKeyIndex(arr, obj){
+                    for(let i=0; i < arr.length; i++){
+                        if(arr[i].robot_id === obj.robot_id){
+                            return i;
+                        }
+                    }
+                    return -1;
+                }
+                this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
+            })
         },
         clickDangerButton(data,item){
             switch (item.name){
@@ -503,7 +608,28 @@ export default {
         },
 
        setSelectBox(){
-           this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            let tempReportId = [];
+            this.datas.allReportDetail.forEach(el => {
+                tempReportId.push(el.report_id)
+            })
+            let set = [...new Set(tempReportId)]
+            let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
+            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            if(this.datas.filteredReport.length !==0){
+                notIncludeReportDetail.forEach(nonReport => {
+                    this.datas.filteredReport.forEach((el,index) => {
+                        if(nonReport.report_id == el.report_id){
+                            this.datas.filteredReport.splice(index,1)
+                        }
+                    })
+                }) //리포트 디테일 테이블에 없는 (즉, 저장이 안된 리포트는 리포트 리스트에서 제외시킴)
+                let filteredReportId = null
+                filteredReportId = this.datas.filteredReport[this.datas.filteredReport.length-1].report_id
+                this.datas.prevReport = this.datas.allReportDetail.filter(el => el.report_id == filteredReportId)
+                // 리포트 목록 중, prev_data_id가 없는 리포트는 가장 최근 리포트를 띄워줌
+
+            }
+
         },
         async changeAllSelectBox(selectReport){
             this.datas.filteredReport.forEach((item, index) => {
@@ -657,10 +783,28 @@ export default {
         font-size: 2rem;
         font-weight: bold;
     }
+    .currentDataName{
+        color: #3c78fa;
+        margin: auto;
+        margin-right: 10px;
+        font-weight: bold;
+        font-size: 15px;
+    }
     .currentDataGrid{
         width: 520px;
         margin-top: 5px;
         margin-bottom: 5px;
+    }
+    .prevDataName{
+        color: #21976a;
+        margin-right: 10px;
+        margin-left: 20px;
+        font-weight: bold;
+        font-size: 15px;
+        padding-top: 10px;
+    }
+    .currentPicker{
+        width: 700px;
     }
     .compareCombobox{
         display: flex;
@@ -698,13 +842,12 @@ export default {
         justify-content: right;
         margin-right: 35px;
     }
+    .prevPicker{
+        margin-right: 10px;
+    }
     .v-input{
         padding-top: 0px;
         width: 250px !important
-    }
-    .prevSelectBox{
-        border: 2px solid #21976a;
-        width: 305px;
     }
     .dx-data-row .robot-highlighted {
         background-color: #515dbe!important;
