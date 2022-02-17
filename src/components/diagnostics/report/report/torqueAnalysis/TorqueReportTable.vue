@@ -358,6 +358,7 @@ export default {
     watch: {
         selectedReport(){
             this.datas.selectedReport = deepClone(this.selectedReport)
+            this.datas.reportSwitch = this.reportSwitch
             this.setReportHeader();
             this.getReport();
         },
@@ -497,6 +498,7 @@ export default {
                 })
             })
             let tempArr = []
+            this.datas.prevArray = [];
             this.datas.boothInfo.forEach((b)=>{
                 tempArr = []
                 b.zone.forEach((z)=>{
@@ -650,6 +652,7 @@ export default {
             this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
         },
         async clickSaveButton(){
+            console.log(this.datas.reportSwitch)
             if (window.confirm("저장하시겠습니까?")){
                 this.datas.filteredCurrentData = [];
                 this.datas.filteredPrevData = [];

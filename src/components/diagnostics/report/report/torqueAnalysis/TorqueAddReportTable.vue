@@ -288,13 +288,14 @@ export default {
         TorquePrevPicker
     },
 
-    props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType','selectedMonth','selectedYear'],
+    props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType','selectedMonth','selectedYear','reportSwitch'],
     data(){
         return {
             ui: {
                 header: ''
             },
             datas : {
+                reportSwitch: null,
                 selectedMonth: null,
                 selectedYear: null,
                 reportType: null,
@@ -336,6 +337,7 @@ export default {
         this.datas.reportType = this.reportType
         this.datas.selectedMonth = this.selectedMonth
         this.datas.selectedYear = this.selectedYear
+        this.datas.reportSwitch = this.reportSwitch
         this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
         this.setReportHeader();
         this.getReport();
@@ -349,6 +351,7 @@ export default {
         },
         selectedReport(){
             this.datas.selectedReport = deepClone(this.selectedReport)
+            this.datas.reportSwitch = this.reportSwitch
             this.setReportHeader();
             this.getReport();
         },
@@ -754,28 +757,46 @@ export default {
             this.$emit('bindingCatch')
         },
 
-        clickSaveButton(){
-            if (window.confirm("저장하시겠습니까?")) {
+        async clickSaveButton(){
+            console.log(this.datas.reportSwitch)
+            if (window.confirm("저장하시겠습니까?")){
                 this.datas.filteredCurrentData = [];
-                this.getRowData();
-                this.updateReportDatas();
-			}
+                this.datas.filteredPrevData = [];
+                await this.getRowData();
+                await this.updateCurrentReport();
+                await this.updatePrevReport();
+                await this.getReport();
+            }
         },
         async getRowData(){
             await this.$refs.currentContainer.forEach(el => {
                 el.instance.getVisibleRows().forEach(item => this.setCurrentData(item))
             })
+            if(this.$refs.prevContainer !== undefined){
+                await this.$refs.prevContainer.forEach(el => {
+                    el.instance.getVisibleRows().forEach(item => this.setPrevData(item))
+                })
+            }
         },
         setCurrentData(row){
            this.datas.filteredCurrentData.push(row)
         },
-        async updateReportDatas(){
+        setPrevData(row){
+            this.datas.filteredPrevData.push(row)
+        },
+
+        async updateCurrentReport(){
             for await(let row of this.datas.filteredCurrentData){
+                let report_id = this.datas.selectedReport.report_id
                 let booth_id = row.data.booth
                 let zone_id = row.data.zone
                 let report_type = 0
                 let robot_id = row.key
                 let prev_data_id = null;
+                let comment = row.data.violation_value.comment
+                let data_id = row.data.violation_value.data_id
+                let current_start_date = row.data.violation_value.current_start_date
+                let current_end_date = row.data.violation_value.current_end_date
                 for(let i =0; i < row.values.length; i++){
                     if(row.values[i] === undefined){
                         row.values[i] = null
@@ -801,19 +822,142 @@ export default {
                 else{
                     prev_data_id = row.data.previolation_value.data_id
                 }
-                this.$http.post(`/diagnostics/report/report/${this.datas.selectedReport.report_id}`, {
-                    factory_id: this.getFactoryId,
-                    booth_id : booth_id,
-                    zone_id : zone_id,
-                    robot_id : robot_id,
-                    report_type : report_type,
-                    current_data : current_data,
-                    prev_data_id : prev_data_id
-                })
-                .then(() => {
-                });
+                if(this.datas.torqueAnalysisReportDetail.reportDetail !== ''){
+                    await this.updateReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment,
+                        current_start_date,
+                        current_end_date
+                    })
+                }
+                else{
+                    await this.createReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment,
+                        current_start_date,
+                        current_end_date
+                    })
+                }
             }
         },
+        async updatePrevReport(){
+            for await(let row of this.datas.filteredPrevData){
+                let report_id = row.data.previolation_value.report_id
+                let booth_id = row.data.booth
+                let zone_id = row.data.zone
+                let report_type = 0
+                let robot_id = row.key
+                let prev_data_id = null;
+                let comment = row.data.previolation_value.comment
+                let data_id = row.data.previolation_value.data_id
+                let current_start_date = row.data.previolation_value.current_start_date
+                let current_end_date = row.data.previolation_value.current_end_date
+                for(let i =0; i < row.values.length; i++){
+                    if(row.values[i] === undefined){
+                        row.values[i] = null
+                    }
+                }
+                let current_data= {
+                    danger_level: row.values[8],
+                    violation_count : [
+                        row.values[1],
+                        row.values[2],
+                        row.values[3],
+                        row.values[4],
+                        row.values[5],
+                        row.values[6],
+                        row.values[7],
+                    ],
+                    comment: row.values[9]
+                }
+
+                if(row.data.hasOwnProperty('previolation_value')!==true){
+                    prev_data_id = null
+                }
+                else{
+                    prev_data_id = row.data.previolation_value.prev_data_id
+                }
+                if(this.datas.torqueAnalysisReportDetail.reportDetail !== ''){
+                    await this.updateReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment,
+                        current_start_date,
+                        current_end_date
+                    })
+                }
+                else{
+                    await this.createReport({
+                        report_id,
+                        booth_id,
+                        zone_id,
+                        robot_id,
+                        report_type,
+                        current_data,
+                        prev_data_id,
+                        data_id,
+                        comment,
+                        current_start_date,
+                        current_end_date
+                    })
+                }
+            }
+        },
+        updateReport(item){
+            console.log('put')
+            this.$http.put(`/diagnostics/report/report/${item.report_id}`, {
+                factory_id: this.getFactoryId,
+                booth_id : item.booth_id,
+                zone_id : item.zone_id,
+                robot_id : item.robot_id,
+                report_type : item.report_type,
+                current_data : item.current_data,
+                prev_data_id : item.prev_data_id,
+                data_id : item.data_id,
+                comment : item.comment,
+                current_start_date : item.current_start_date,
+                current_end_date : item.current_end_date
+            })
+            .then(() => {
+
+            })
+        },
+        createReport(item){
+            console.log('post')
+            this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
+                factory_id: this.getFactoryId,
+                booth_id : item.booth_id,
+                zone_id : item.zone_id,
+                robot_id : item.robot_id,
+                report_type : item.report_type,
+                current_data : item.current_data,
+                prev_data_id : item.prev_data_id,
+                comment : item.comment
+            })
+            .then(() => {
+
+            })
+        }
     },
 }
 </script>

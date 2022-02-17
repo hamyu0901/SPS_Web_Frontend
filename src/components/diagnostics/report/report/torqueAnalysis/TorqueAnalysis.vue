@@ -44,7 +44,7 @@
         </div>
         <div>
             <torque-add-report-table
-                v-if="datas.selectedMonth !== null"
+                v-if="datas.selectedMonth !== null && datas.reportSwitch == 0"
                 v-bind:selectedReport="datas.selectedReport"
                 v-bind:reports="datas.reports"
                 v-bind:selectedMonth="datas.selectedMonth"
@@ -53,6 +53,7 @@
                 @bindingCatch="bindingCatch"
                 v-bind:bindingCatch="datas.rerender"
                 v-bind:reportType="reportType"
+                v-bind:reportSwitch="datas.reportSwitch"
             />
         </div>
         <!-- <v-menu
@@ -139,15 +140,23 @@ export default {
     watch: {
         reportSwitch(){
             this.datas.reportSwitch = this.reportSwitch
+            this.resetDate();
         },
         selectedReport(){
             this.datas.selectedReport = this.selectedReport
+            this.datas.reportSwitch = this.reportSwitch
+            this.resetDate();
         },
         torqueAnalysisReportDetail(){
             this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+            this.resetDate();
         }
     },
     methods:{
+        resetDate(){
+            this.datas.selectedYear = null
+            this.datas.selectedMonth = null
+        },
     //   closeTorquePicker(){
     //       this.datas.pickerModal = false
     //   },
