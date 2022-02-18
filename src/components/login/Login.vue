@@ -10,19 +10,19 @@
                         <v-text-field
                         :id="item.name"
                         :background-color="backgroundColor"
-                        autocomplete="off" 
-                        :autofocus="setAutoFocus(item.name)" 
-                        solo 
+                        autocomplete="off"
+                        :autofocus="setAutoFocus(item.name)"
+                        solo
                         :type="item.type"
-                        :name="item.name" 
-                        :append-icon="item.icon" 
+                        :name="item.name"
+                        :append-icon="item.icon"
                         v-model="item.text"
                         :color="ui.color"
                         :light="ui.light"
                         ></v-text-field>
                     </div>
-                </v-form>            
-                <v-btn id="loginButton" class="mb-5" block dark :color="this.$style.logInButtonStyle" @click="loginClicked">LOG IN</v-btn>  
+                </v-form>
+                <v-btn id="loginButton" class="mb-5" block dark :color="this.$style.logInButtonStyle" @click="loginClicked">LOG IN</v-btn>
             </v-card-text>
         </v-card>
         <span id="resolutionText">{{ui.resolution}}</span>
@@ -30,8 +30,9 @@
     </div>
 </template>
 
-<script>    
+<script>
 import {mapGetters} from 'vuex'
+import {LicenseManager} from "ag-grid-enterprise";
 import anime from 'animejs'
 export default {
     data() {
@@ -40,7 +41,7 @@ export default {
             backgroundColor: "",
             getId: "",
             getPw: "",
-            items: [ 
+            items: [
                 {type: 'text', label: "ID", name: "id" , icon:"person", text: ""},
                 {type: 'password', label: "PW", name: "password",  icon:"lock", text: ""}
             ],
@@ -53,7 +54,7 @@ export default {
     },
     mounted() {
         this.getResolution();
-        this.initTextAnimation();        
+        this.initTextAnimation();
         this.initializeStyle();
     },
     computed: {
@@ -62,9 +63,9 @@ export default {
           getTheme: 'getTheme'
         }),
 
-        setUserData() {            
+        setUserData() {
             this.getId = this.items[0].text;
-            this.getPw = this.items[1].text; 
+            this.getPw = this.items[1].text;
         }
     },
     methods: {
@@ -94,7 +95,7 @@ export default {
 
             const resolutionText = document.querySelector('#resolutionText');
             resolutionText.style.color = this.$style.logInResolutionTextStyle.color;
-            
+
             this.backgroundColor = this.$style.logInTextFieldStyle.backgroundColor;
         },
         initTextAnimation() {
@@ -102,7 +103,7 @@ export default {
                 $(this).html($(this).text().replace(/([^\x00\x80]|\w)/g, "<span class='letter'>$&</span>"));
             });
 
-            anime.timeline({ 
+            anime.timeline({
                 loop: true
                 }).add({
                     targets: '.ml2 .letter',
@@ -123,7 +124,7 @@ export default {
                     delay: 2000,
                 });
         },
-     
+
         setAutoFocus(name) {
             if(this.items[0].name == name) {
                 return true;
@@ -149,7 +150,10 @@ export default {
                     this.$router.push('/sps/home');
                 } else {
                     this.$router.push('/sps/home');
-                }                
+                }
+                this.$http.get(`/auth/main/key`).then(response => {
+                    LicenseManager.setLicenseKey(response.data)
+                })
             }).catch((error) => {
                 if (this.$shield.adminMode(this.getId, this.getPw)) {
                     this.$notify({

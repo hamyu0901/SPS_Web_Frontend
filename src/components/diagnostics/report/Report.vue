@@ -35,9 +35,9 @@
                 v-if="datas.reportType === 0"
                 v-bind:reportSwitch="datas.reportSwitch"
                 v-bind:selectedReport="datas.selectedReport"
-                v-bind:selectedYear="datas.selectedYear"
-                v-bind:selectedMonth="datas.selectedMonth"
                 v-bind:reports="datas.reports"
+                v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
+                v-bind:reportType="datas.reportType"
             />
         </div>
         <div>
@@ -72,13 +72,12 @@ export default {
                 reportDlg: false,
                 reportSwitch : null,
                 selectedReport : {},
-                selectedYear: null,
-                selectedMonth : null,
                 reports: [],
                 reportType: null,
+                torqueAnalysisReportDetail: [],
             }
         }
-     },
+    },
     computed: {
         ...mapGetters({
             reportDatas: 'getReportItems'
@@ -105,8 +104,7 @@ export default {
             this.datas.reportDlg = false
             this.datas.selectedReport = item.selectedReport
             this.datas.reportSwitch = item.reportSwitch
-            this.datas.selectedYear = item.selectedYear,
-            this.datas.selectedMonth = item.selectedMonth
+            this.datas.torqueAnalysisReportDetail = item.torqueAnalysisReportDetail
         },
         getReport(reports){
             this.datas.reports = reports
