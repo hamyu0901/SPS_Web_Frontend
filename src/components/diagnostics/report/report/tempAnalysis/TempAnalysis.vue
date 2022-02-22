@@ -1,8 +1,11 @@
 <template>
   <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
-  <div id="tempMainContainer" v-if="report_id !== null && report_id !== undefined" >
+  <div id="tempMainContainer" v-if="report !== null && report !== undefined" >
       <div id="tempHeader">
         <quick-combo-vue @quickSetting="quickSetting"></quick-combo-vue>
+        <div id="report-title-box">
+          {{report.report_name}}
+        </div>
         <save-reset-vue @onSave="onSave" @onReset="onReset"></save-reset-vue>
       </div>
       <booth-vue  v-for="(booth, index) in boothes"  :key="index"  :boothInfo="booth" :quickPeriod="quickPeriod" ref="child_component"></booth-vue>
@@ -21,7 +24,7 @@ export default {
     },
     data(){
         return{
-          report_id:null,
+          report:null,
           boothes:[
           ],
           quickPeriod: null,
@@ -33,20 +36,21 @@ export default {
     },
     computed: {
       ...mapGetters({
-        getReportItems : 'getReportItems'
+        getReport : 'getReport'
       }),
       reportDatas(){
-        return this.$store.state.reportItems.selectedReport;
+        return this.$store.getters['getReport'];
       }
     },
     watch:{
       reportDatas(){
-        this.report_id = this.getReportItems.selectedReport.report_id;
+        this.report = this.$store.getters['getReport'];
       },
     },
     methods:{
       initializeReportData(){
-        this.report_id = this.getReportItems.selectedReport.report_id;
+        this.report = this.$store.getters['getReport'];
+        console.log(this.report.report_id);
       },
       initializeBoothes(){
           this.$http.get(`/diagnostics/datareport/temperature/factoryInfo`).then(result => {

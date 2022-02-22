@@ -103,6 +103,10 @@ export default new Vuex.Store({
         //test
         getReportItems(state) {
             return state.reportItems;
+        },
+
+        getReport(state) {
+            return state.reportItems.selectedReport;
         }
     },
 
@@ -165,6 +169,9 @@ export default new Vuex.Store({
                     state.reportItems[key] = payload[key];
                 }
             })
+        },
+        setReportItems(state, payload){
+            state.reportItems.selectedReport = payload;
         }
     },
 
@@ -218,7 +225,7 @@ export default new Vuex.Store({
             return context.commit('initReportItems', payload);
         },
         setReportItems(context, payload){
-            return context.commit('setReportItems', payload)
+            context.commit('setReportItems', payload)
         }
     },
     plugins: [

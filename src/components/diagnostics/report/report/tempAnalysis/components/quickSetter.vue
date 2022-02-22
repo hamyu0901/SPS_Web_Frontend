@@ -4,7 +4,7 @@
         <v-select
           :items="years"
           outline
-          :attach="false"
+          attach
           :dense="true"
           :hide-details="true"
           :no-data-text="noDataTextYear"
@@ -27,7 +27,7 @@
           :items="monthes"
           :disabled="!isYearSelected"
           outline
-          :attach="false"
+          attach
           :dense="true"
           :hide-details="true"
           :no-data-text="noDataTextMonth"
