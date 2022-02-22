@@ -35,14 +35,14 @@
                 </td>
             </tr>
         </tbody>
-        <tbody v-else>
+        <!-- <tbody v-else>
             <tr v-for="(rows, index) in propsData" :key="index" >
                 <td v-for="(data, data_index) in rows" :key="data_index" @mouseover="mouseover(index, data_index)" @mouseleave="mouseleave()" >
                     <label>{{data}}{{propsFormat}}</label>
                 </td>
                 <slot name="additionals_td"></slot>
             </tr>
-        </tbody>
+        </tbody> -->
     </table>
 </template>
 <script>
@@ -151,17 +151,17 @@ table{
                 color: #dedede;
                 border-right: 1px solid #4d4d4d;
 
-                label{
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
+                    label{
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
 
-                    &:hover{
-                    background-color:yellow;
-                    color: black;
-                }
+                        &:hover{
+                        background-color:yellow;
+                        color: black;
+                    }
                 }
 
                 

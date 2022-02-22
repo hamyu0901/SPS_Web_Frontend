@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
-  <div id="tempMainContainer" v-if="report !== null && report !== undefined" >
+  <div id="tempMainContainer" v-if="report.report_id" >
       <div id="tempHeader">
         <quick-combo-vue @quickSetting="quickSetting"></quick-combo-vue>
         <div id="report-title-box">
@@ -50,7 +50,7 @@ export default {
     methods:{
       initializeReportData(){
         this.report = this.$store.getters['getReport'];
-        console.log(this.report.report_id);
+        console.log(this.report);
       },
       initializeBoothes(){
           this.$http.get(`/diagnostics/datareport/temperature/factoryInfo`).then(result => {

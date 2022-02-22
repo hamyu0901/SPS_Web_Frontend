@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view v-on:themeItem="getThemeItem" v-on:languageItem="getLanguageItem" v-bind="setThemeStyle"/>
+    <router-view v-on:themeItem="getThemeItem"  v-bind="setThemeStyle"/>
     <notifications class="loginPop" group="dyloginerror" position="top center" :max="3" :width="400" />
     <notifications class="pushPop" group="push" position="top left" :max="3" :width="500" />
     <notifications class="pushAlarm" group="pushAlarm" position="bottom left" :max="3" :width="500" />
@@ -18,8 +18,8 @@ export default {
   },
 
   created() {
-    this.setSessionStorageValue();
-    this.setStoreValues();
+    // this.setSessionStorageValue();
+    // this.setStoreValues();
   },
 
   mounted() {
@@ -54,9 +54,8 @@ export default {
       })
       if(themeFlag === false && languageFlag === false) {
         sessionStorage.setItem('theme', true);
-        sessionStorage.setItem('language','en');
         // sessionStorage.setItem('theme', this.getTheme);
-        // sessionStorage.setItem('language',this.getLanguage);
+        sessionStorage.setItem('language',this.getLanguage);
       }
     },
 

@@ -304,15 +304,17 @@ export default {
 
         setSPSType(authType) { // store set auth
             this.$store.dispatch('setAuth', authType);
-            if(Boolean(authType)) {
-                // Premium
-                this.changePremiumMenuItems();
-            }
-            else {
-                // Basic
-                // main: maintenance / diagnostics: similarity, accum, atomizer, statistics
-                this.changeBasicMenuItems();
-            }
+            this.changePremiumMenuItems();
+            // this.$store.dispatch('setAuth', authType);
+            // if(Boolean(authType)) {
+            //     // Premium
+            //     this.changePremiumMenuItems();
+            // }
+            // else {
+            //     // Basic
+            //     // main: maintenance / diagnostics: similarity, accum, atomizer, statistics
+            //     this.changeBasicMenuItems();
+            // }
         },
 
         changePremiumMenuItems() {

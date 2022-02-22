@@ -722,6 +722,7 @@ export default {
       }
     },
     initDataTable() {
+      
       if (this.datas.length === 0 && this.headerData.length !== 0) {
         for (let i = 0; i < this.typeDatas.length; ++i) {
           this.datas.push({
@@ -731,11 +732,12 @@ export default {
       }
     },
     initSetBtnClicked() {
-      if (this.datas[0].value != '-') {
-        this.handle.setWarningDataDlg = true;
-      } else {
-        this.$popmsg(this.ui.text.setAllDataTable.dataavailable);
-      }
+      this.handle.setWarningDataDlg = true;
+      // if (this.datas[0].value != '-') {
+      //   this.handle.setWarningDataDlg = true;
+      // } else {
+      //   this.$popmsg(this.ui.text.setAllDataTable.dataavailable);
+      // }
     },
    
     setAllWarningDataClick() {

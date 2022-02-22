@@ -328,12 +328,12 @@ export default {
                 {
                     colname: '위험도',
                     key:'severity',
-                    colWidth: 5,
+                    colWidth: 11,
                 },
                 {
                     colname: '의견',
                     key:'comment',
-                    colWidth: 30,
+                    colWidth: 25,
                 }
             ],
             column_y:[
