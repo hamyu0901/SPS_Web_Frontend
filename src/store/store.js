@@ -9,7 +9,7 @@ Vue.use(Vuex)
 
 let baseAddress = '';
 
-const GET_DEFAULT_STATE = () => {
+const GET_DEFAULT_STATE = (language) => {
     return{
         baseUrl: baseAddress,
         factory_id: '',
@@ -17,8 +17,8 @@ const GET_DEFAULT_STATE = () => {
         booth_infos: [],
         zone_infos: [],
         robot_infos: [],
-        theme: false, // light,
-        language: 'kr',
+        theme: true, // dark,
+        language: (language) ? language : 'kr',
         navigationFlag: true, // navigation drawer flag
         mainMenuItems: [
             {id: 'home', name: i18n.t(`tabtitle.home`), target: "/sps/home", show: true, active: false, normalImg: require("@/images/tabicons/tab_home_normal.png"), overImg: require("@/images/tabicons/tab_home_over.png"), menuImg: require("@/images/menuicons/main_menu_home.png"), menuLightImg: require("@/images/menuicons/main_menu_home_light.png")},
@@ -178,6 +178,9 @@ export default new Vuex.Store({
         },
         setReportItems(state, payload){
             state.reportItems.selectedReport = payload;
+        },
+        resetAll(state, payload){
+            Object.assign(state, GET_DEFAULT_STATE(state.language));
         }
     },
 
@@ -231,6 +234,10 @@ export default new Vuex.Store({
         },
         setReportItems(context, payload){
             context.commit('setReportItems', payload)
+        },
+
+        resetALL(context, payload){
+            context.commit('resetAll', payload)
         }
     },
     plugins: [

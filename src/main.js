@@ -163,17 +163,19 @@ Vue.component('slide-up-down', SlideUpDown);
 Vue.component('file-upload', VueUploadComponent);
 
 router.beforeEach(function (to, from, next) {
-  
   const isLogin = store.getters['getAuth'];
+  console.log(isLogin);
+  console.log(to.path);
   if(to.path.substring(1) === 'login') {
     if(isLogin !== 1){
       next();
     }else{
-      next({name: 'home'});
+      next({path: '/sps/home'});
+
     }
   }else{
     if(isLogin !== 1){
-      next({name: 'login'});
+      next({path: '/login'});
     }else{
       next();
     }
