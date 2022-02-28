@@ -7,9 +7,7 @@
                 <DxSelectBox
                     :data-source="datas.filteredReport"
                     display-expr="report_name"
-                    value-expr="report_id"
                     width="300"
-                    :value="datas.prevIndex !== null ? datas.filteredReport[datas.prevIndex].report_id : null"
                     @item-click="changeAllSelectBox"
                 />
             </v-flex>
@@ -286,6 +284,8 @@ import zoneOpinion from '@/components/diagnostics/report/report/torqueAnalysis/z
 import zonePrevOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zonePrevOpinion';
 import TorquePicker from '@/components/diagnostics/report/report/torqueAnalysis/TorquePicker';
 import TorquePrevPicker from './TorquePrevPicker.vue'
+import EventBus from "@/commons/EventBus"
+
 export default {
     components: {
         DxDataGrid,
@@ -329,7 +329,7 @@ export default {
                 filteredPrevData: [],
                 torqueAnalysisReportDetail:[],
                 violatedAccumulation: [],
-                tempReportId: []
+                tempReportId: [],
             }
         }
     },
@@ -354,10 +354,13 @@ export default {
         },
         async selectedMonth(){
             await this.resetData();
+        },
+        async torqueAnalysisReportDetail(){
+            await this.resetData();
         }
     },
     methods: {
-        resetData(){
+        async resetData(){
             this.datas.selectedReport = deepClone(this.selectedReport)
             this.datas.reports = deepClone(this.reports)
             this.datas.reportType = this.reportType
@@ -366,7 +369,7 @@ export default {
             this.datas.selectedYear = this.selectedYear
             this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
             this.setReportHeader();
-            this.getReport();
+            await this.getReport();
         },
         clickDangerButton(data,item){
             switch (item.name){
@@ -397,7 +400,12 @@ export default {
             }
         },
         inputRobotComment(text,data){
-            data.data.violation_value.current_data.comment = text
+            if(data.column.cellTemplate == "commentTemplate"){
+                data.data.violation_value.current_data.comment = text
+            }
+            else{
+                data.data.previolation_value.current_data.comment = text
+            }
         },
         inputZoneOpinion(opinion,bIndex,zIndex){
             this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robot => {
@@ -449,12 +457,11 @@ export default {
                     }
                 })
             })
-
-            this.datas.prevReport = temp;
+            this.datas.prevReport = deepClone(temp);
             if(reportSwitch == 0){
                 await this.getViolatedAccumulation();
             }
-            this.getFilteredReport(tempReportId)
+            this.setFilteredReportList(tempReportId)
             // let set = [...new Set(tempReportId)]
             // let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
             // this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
@@ -470,7 +477,6 @@ export default {
             this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
                 if(reportSwitch == 0){
-                    console.log('add')
                     let cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0, cnt6 = 0, cnt7 = 0
                     let month = this.datas.selectedMonth.substr(0, 2)
                     let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
@@ -513,7 +519,6 @@ export default {
 
                 }
                 else{
-                    console.log('get')
                     Object.assign(robotElement, { violation_value: this.datas.torqueAnalysisReportDetail.filter(element => element.robot_id === robotElement.id)[0]})
                     if(robotElement.violation_value == undefined){
                         robotElement.violation_value = {
@@ -547,47 +552,49 @@ export default {
             })
             this.datas.boothInfo.forEach(boothElement => {
                 Object.assign(boothElement, {zone: this.datas.zoneInfo.filter(element => element.booth === boothElement.id)})
-            })
-            // let set = [...new Set(tempReportId)]
-            // let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
-            // this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
-            // notIncludeReportDetail.forEach(nonReport => {
-            //    this.datas.filteredReport.splice(this.datas.filteredReport.findIndex(item => item.report_id == nonReport.report_id),1)
-            // })
+                boothElement.zone.sort(function (a, b) {
 
-            this.datas.filteredReport.forEach((filteredElement, index) => {
-                this.datas.prevReport.forEach(prevElement => {
-                    if(filteredElement.report_id === prevElement.report_id){
-                       filteredIndex = index
-                    }
-                })
+	                return a.id < b.id ? -1 : 1;
+
+                });
             })
+            // let test = []
+            // this.datas.filteredReport.forEach((filteredElement, index) => {
+            //     this.datas.prevReport.forEach(prevElement => {
+            //         if(filteredElement.report_id === prevElement.report_id){
+            //            filteredIndex = index
+            //            if(!test.find(el => el == filteredElement.report_id)){
+            //                test.push(filteredElement.report_id)
+            //            }
+            //         }
+            //     })
+            // })
+            // console.log(test)
+            // this.datas.prevReport.forEach(el => console.log(el.report_id))
+            this.datas.prevReport.sort(function (a,b) {
+                return a.zone_id < b.zone_id ? -1 : 1;
+            })
+            let numTest = 0;
             let tempArr = []
             this.datas.prevArray = [];
             this.datas.boothInfo.forEach((b)=>{
                 tempArr = []
                 b.zone.forEach((z)=>{
-                    tempArr.push(filteredIndex)
+                    tempArr.push(this.datas.filteredReport.findIndex(el => el.report_id == this.datas.prevReport[numTest].report_id))
+                    numTest += z.robot.length
                 })
                 this.datas.prevArray.push(tempArr)
             })
-            this.datas.prevIndex = filteredIndex
+            // this.datas.prevIndex = filteredIndex
         },
-
         setSelectBox(){
             let tempReportId = [];
             this.datas.allReportDetail.forEach(el => {
                 tempReportId.push(el.report_id)        // his_report_detail db에 있는 report_id
             })
-            this.getFilteredReport(tempReportId);
-            // let set = [...new Set(tempReportId)]       // 중복 제거
-            // let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
-            // this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
-            // notIncludeReportDetail.forEach(nonReport => {
-            //    this.datas.filteredReport.splice(this.datas.filteredReport.findIndex(item => item.report_id == nonReport.report_id),1)
-            // })
+            this.setFilteredReportList(tempReportId);
         },
-        getFilteredReport(allreportid){
+        setFilteredReportList(allreportid){
             let set = [...new Set(allreportid)]
             let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
             this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
@@ -686,26 +693,39 @@ export default {
             })
             let temp = [];
             let tempArr = [];
+
             this.datas.allReportDetail.forEach(el => {
                 if(el.report_id === selectReport.itemData.report_id) {
                     temp.push(el)
                 }                                                                     // 변경할 비교 리포트
-                // if(el.report_id === this.datas.filteredReport[this.datas.prevIndex].report_id){
+                // if(el.report_id == this.datas.filteredReport[this.datas.prevIndex].report_id){
                 //     tempArr.push(el)
                 // }                                                                   // 이미 선택 되어진 비교 리포트
             })
-            // let array = [];
-            // this.datas.boothInfo[selectedboothIndex].zone[selectedZoneIndex].robot.forEach(el => {
-            //    array = temp.filter(robotElement => robotElement.zone_id == el.zone)
-            // })
+            // temp.forEach(el => console.log('temp',el.report_id))
+            // this.datas.prevReport.forEach(el => console.log('prev', el.report_id))
+
+            let array = [];
+            this.datas.boothInfo[selectedboothIndex].zone[selectedZoneIndex].robot.forEach(el => {
+               array = temp.filter(robotElement => robotElement.zone_id == el.zone)
+            })
+
+            this.datas.prevReport.forEach(el => {
+                array.forEach(arrayElement => {
+                    if(el.robot_id == arrayElement.robot_id){
+                        el = arrayElement
+                    }
+                })
+                tempArr.push(el)
+            })
 
             // array.forEach(prevReport => {
             //     tempArr.splice(tempArr.findIndex(item => item.robot_id == prevReport.robot_id),1)
             //     tempArr.push(prevReport)
             // })
 
-            // this.datas.prevReport = tempArr
-            this.datas.prevReport = temp
+            this.datas.prevReport = tempArr
+            // this.datas.prevReport = temp
             this.$refs.prevContainer.forEach(item => {
                 item.instance.getDataSource().reload()
             })
@@ -770,6 +790,9 @@ export default {
             }
             this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
         },
+        getFilteredReportDetail(){
+             EventBus.$emit('getFilteredReportDetail',this.datas.selectedReport.report_id);
+        },
         async clickSaveButton(){
             if (window.confirm("저장하시겠습니까?")){
                 this.datas.filteredCurrentData = [];
@@ -780,8 +803,8 @@ export default {
                     this.datas.tempReportId.push(el.report_id)
                 })
                 await this.updateCurrentReport();
-                // await this.updatePrevReport();
-                await this.getReport();
+                await this.updatePrevReport();
+                await this.getFilteredReportDetail();
             }
         },
         async getRowData(){
@@ -801,7 +824,6 @@ export default {
             this.datas.filteredPrevData.push(row)
         },
         async updateCurrentReport(){
-            console.log('current')
             for await(let row of this.datas.filteredCurrentData){
                 let report_id = this.datas.selectedReport.report_id
                 let reportSwitch = null;
@@ -814,24 +836,6 @@ export default {
                 let data_id = row.data.violation_value.data_id
                 let current_start_date = row.data.violation_value.current_start_date
                 let current_end_date = row.data.violation_value.current_end_date
-                // for(let i =0; i < row.values.length; i++){
-                //     if(row.values[i] === undefined){
-                //         row.values[i] = null
-                //     }
-                // }
-                // let current_data= {
-                //     danger_level: row.values[8],
-                //     violation_count : [
-                //         row.values[1],
-                //         row.values[2],
-                //         row.values[3],
-                //         row.values[4],
-                //         row.values[5],
-                //         row.values[6],
-                //         row.values[7],
-                //     ],
-                //     comment: row.values[9]
-                // }
                 let current_data= {
                     danger_level: row.data.violation_value.current_data.danger_level,
                     violation_count : [
@@ -889,7 +893,6 @@ export default {
             }
         },
         async updatePrevReport(){
-            console.log('prev')
             for await(let row of this.datas.filteredPrevData){
                 let report_id = row.data.previolation_value.report_id
                 let reportSwitch = null;
@@ -902,24 +905,6 @@ export default {
                 let data_id = row.data.previolation_value.data_id
                 let current_start_date = row.data.previolation_value.current_start_date
                 let current_end_date = row.data.previolation_value.current_end_date
-                // for(let i =0; i < row.values.length; i++){
-                //     if(row.values[i] === undefined){
-                //         row.values[i] = null
-                //     }
-                // }
-                // let current_data= {
-                //     danger_level: row.values[8],
-                //     violation_count : [
-                //         row.values[1],
-                //         row.values[2],
-                //         row.values[3],
-                //         row.values[4],
-                //         row.values[5],
-                //         row.values[6],
-                //         row.values[7],
-                //     ],
-                //     comment: row.values[9]
-                // }
                 let current_data= {
                     danger_level: row.data.previolation_value.current_data.danger_level,
                     violation_count : [
@@ -975,9 +960,9 @@ export default {
                 }
             }
         },
-        updateReport(item){
-            console.log('put')
-            this.$http.put(`/diagnostics/report/report/${item.report_id}`, {
+        async updateReport(item){
+            if(item.report_id !== undefined){
+                await this.$http.put(`/diagnostics/report/report/${item.report_id}`, {
                 factory_id: this.getFactoryId,
                 booth_id : item.booth_id,
                 zone_id : item.zone_id,
@@ -990,13 +975,12 @@ export default {
                 current_start_date : item.current_start_date,
                 current_end_date : item.current_end_date
             })
-            .then(() => {
-
-            })
+            .then(() => {})
+            }
         },
         createReport(item){
-            console.log('post')
-            this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
+            if(item.report_id !==undefined){
+                this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
                 factory_id: this.getFactoryId,
                 booth_id : item.booth_id,
                 zone_id : item.zone_id,
@@ -1008,9 +992,8 @@ export default {
                 current_start_date : item.current_start_date,
                 current_end_date : item.current_end_date
             })
-            .then(() => {
-
-            })
+            .then(() => {})
+            }
         }
     },
 }
