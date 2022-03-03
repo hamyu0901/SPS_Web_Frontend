@@ -441,10 +441,10 @@ export default {
             this.datas.boothInfo = deepClone(this.getBoothInfos)
             this.datas.zoneInfo = deepClone(this.getZoneInfos)
             this.datas.robotInfo = deepClone(this.getRobotInfos)
-            let filteredIndex = null // 선택한 리포트 인덱스 표시
             let tempReportId = [];
             let reportSwitch = null // report_detail 테이블에 저장되어있는지 안했는지 표시
-            this.datas.allReportDetail.forEach(el => {
+            if(this.datas.allReportDetail !== ""){
+                this.datas.allReportDetail.forEach(el => {
                 tempReportId.push(el.report_id)
                 if(tempReportId.includes(this.datas.selectedReport.report_id)){
                     reportSwitch = 1
@@ -456,6 +456,17 @@ export default {
                         temp.push(el)
                     }
                 })
+            })
+            }
+            else{
+                reportSwitch = 0
+            }
+
+             this.datas.torqueAnalysisReportDetail.forEach(element => {
+                if(element.prev_data_id == null){
+
+                    temp.push(element)
+                }
             })
             this.datas.prevReport = deepClone(temp);
             if(reportSwitch == 0){
@@ -535,8 +546,9 @@ export default {
                 if(this.datas.prevReport.length !== 0){
                     Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
                 }
-                if(robotElement.previolation_value == undefined){
+                if(robotElement.previolation_value == undefined || robotElement.violation_value.prev_data_id == null){
                     robotElement.previolation_value = {
+                        comment : null,
                         current_start_date : null,
                         current_end_date: null,
                         current_data : {
@@ -579,9 +591,21 @@ export default {
             this.datas.prevArray = [];
             this.datas.boothInfo.forEach((b)=>{
                 tempArr = []
-                b.zone.forEach((z)=>{
-                    tempArr.push(this.datas.filteredReport.findIndex(el => el.report_id == this.datas.prevReport[numTest].report_id))
+                b.zone.forEach((z, zIndex)=>{
+                    if(this.datas.prevReport.length !==0){
+                        if(this.datas.prevReport[numTest] !== undefined){
+                            tempArr.push(this.datas.filteredReport.findIndex(el => el.report_id == this.datas.prevReport[numTest].report_id))
+                        }
+                        else{
+                            tempArr.push(null)
+                        }
+
+                    }
+                    else{
+                        tempArr.push(null)
+                    }
                     numTest += z.robot.length
+                    if(tempArr[zIndex] == -1){tempArr[zIndex] = null}
                 })
                 this.datas.prevArray.push(tempArr)
             })
@@ -589,9 +613,11 @@ export default {
         },
         setSelectBox(){
             let tempReportId = [];
-            this.datas.allReportDetail.forEach(el => {
-                tempReportId.push(el.report_id)        // his_report_detail db에 있는 report_id
-            })
+            if(this.datas.allReportDetail !== ""){
+                this.datas.allReportDetail.forEach(el => {
+                    tempReportId.push(el.report_id)        // his_report_detail db에 있는 report_id
+                })
+            }
             this.setFilteredReportList(tempReportId);
         },
         setFilteredReportList(allreportid){
@@ -693,24 +719,19 @@ export default {
             })
             let temp = [];
             let tempArr = [];
-
             this.datas.allReportDetail.forEach(el => {
                 if(el.report_id === selectReport.itemData.report_id) {
                     temp.push(el)
-                }                                                                     // 변경할 비교 리포트
-                // if(el.report_id == this.datas.filteredReport[this.datas.prevIndex].report_id){
-                //     tempArr.push(el)
-                // }                                                                   // 이미 선택 되어진 비교 리포트
+                }
             })
-            // temp.forEach(el => console.log('temp',el.report_id))
-            // this.datas.prevReport.forEach(el => console.log('prev', el.report_id))
 
             let array = [];
             this.datas.boothInfo[selectedboothIndex].zone[selectedZoneIndex].robot.forEach(el => {
                array = temp.filter(robotElement => robotElement.zone_id == el.zone)
             })
 
-            this.datas.prevReport.forEach(el => {
+            if(this.datas.prevReport.length !== 0){
+                this.datas.prevReport.forEach(el => {
                 array.forEach(arrayElement => {
                     if(el.robot_id == arrayElement.robot_id){
                         el = arrayElement
@@ -718,14 +739,13 @@ export default {
                 })
                 tempArr.push(el)
             })
-
-            // array.forEach(prevReport => {
-            //     tempArr.splice(tempArr.findIndex(item => item.robot_id == prevReport.robot_id),1)
-            //     tempArr.push(prevReport)
-            // })
-
             this.datas.prevReport = tempArr
-            // this.datas.prevReport = temp
+            }
+            else{
+                this.datas.prevReport = temp
+            }
+
+            //
             this.$refs.prevContainer.forEach(item => {
                 item.instance.getDataSource().reload()
             })
@@ -799,9 +819,11 @@ export default {
                 this.datas.filteredPrevData = [];
                 await this.getRowData();
                 this.datas.tempReportId = [];
-                this.datas.allReportDetail.forEach(el => {
-                    this.datas.tempReportId.push(el.report_id)
-                })
+                if(this.datas.allReportDetail !== ""){
+                    this.datas.allReportDetail.forEach(el => {
+                        this.datas.tempReportId.push(el.report_id)
+                    })
+                }
                 await this.updateCurrentReport();
                 await this.updatePrevReport();
                 await this.getFilteredReportDetail();
@@ -978,9 +1000,9 @@ export default {
             .then(() => {})
             }
         },
-        createReport(item){
+        async createReport(item){
             if(item.report_id !==undefined){
-                this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
+                await this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
                 factory_id: this.getFactoryId,
                 booth_id : item.booth_id,
                 zone_id : item.zone_id,

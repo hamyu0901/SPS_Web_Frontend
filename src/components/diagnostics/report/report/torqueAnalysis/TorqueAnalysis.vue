@@ -154,11 +154,17 @@ export default {
             this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
             await this.resetDate();
         },
+        torqueAnalysisReportDetail(){
+            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+        }
     },
     methods:{
         resetDate(){
             this.datas.selectedYear = null
             this.datas.selectedMonth = null
+        },
+        resetTorqueAnalysisReportDetail(){
+            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
         },
         bindingCatch(){
             this.datas.rerender ++;
