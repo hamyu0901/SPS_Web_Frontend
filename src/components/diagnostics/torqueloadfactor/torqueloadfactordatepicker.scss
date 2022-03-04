@@ -14,3 +14,6 @@
   .torqueloadpicker /deep/ .mx-input-append {
     background-color: var(--datePickerAppendBackgroundColor) !important;
   }
+  .torqueloadpicker /deep/ .mx-calendar-content td.cell.inrange {
+    background-color: rgba(190, 189, 189, 0.562);
+  }
