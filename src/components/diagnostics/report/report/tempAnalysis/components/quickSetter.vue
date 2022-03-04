@@ -4,18 +4,15 @@
         <v-select
           :items="years"
           outline
-          :attach="false"
+          attach
           :dense="true"
           :hide-details="true"
           :no-data-text="noDataTextYear"
           return-object
           @change="getMonth"
-          :menu-props="{top: false, offsetY: true, closeOnClick: false }"
         >
           <template v-slot:item="{ item }">
-            <div>
               {{ item['years']}}년
-            </div>
           </template>
           <template v-slot:selection="{ item }">
             <div>
@@ -27,13 +24,12 @@
           :items="monthes"
           :disabled="!isYearSelected"
           outline
-          :attach="false"
+          attach
           :dense="true"
           :hide-details="true"
           :no-data-text="noDataTextMonth"
           return-object
           @change="findData"
-          :menu-props="{top: false, offsetY: true, closeOnClick: false }"
         >
           <template v-slot:item="{ item }">
             <div>
@@ -132,6 +128,9 @@ export default {
             width: 70px;
         }
         height: 100px;
+    }
+    .v-input >>> .v-menu__content{
+      top: 44px !important;
     }
     .v-input >>> .v-input__control .v-input__slot{
         min-height:0 !important;

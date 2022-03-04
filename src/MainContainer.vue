@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import clock from '@/commons/DigitalClock'
 import SettingDlg from '@/commons/SettingDlg'
 export default {
@@ -67,7 +67,7 @@ export default {
                 version: '',
                 year: '',
                 tabStyle: null,
-                tabLogoImg: ''
+                tabLogoImg: '',
             },
             dialog: false,
             tab: '',
@@ -104,7 +104,6 @@ export default {
         },
     },
     created() {
-        
         this.getFactoryInfos();
         this.setLanguage();
         this.setCopyRight();
@@ -140,6 +139,9 @@ export default {
         this.destorySocket();
     },
     methods: {
+        ...mapActions({
+            resetALL: 'resetALL',
+        }),
         initializeStyle() {
             const main = document.querySelector('#main');
             main.style.backgroundColor = this.$style.mainContainerMainStyle;
@@ -156,12 +158,12 @@ export default {
         },
 
         setLogoImg() {
-            if(Boolean(this.getAuth)) {
-                
-                this.ui.tabLogoImg = require('@/images/tabicons/tab_logo_premium.png');
-            } else {
-                 this.ui.tabLogoImg = require('@/images/tabicons/tab_logo_basic.png');
-            }
+            this.ui.tabLogoImg = require('@/images/tabicons/tab_logo_premium.png');
+            // if(Boolean(this.getAuth)) {
+            //     this.ui.tabLogoImg = require('@/images/tabicons/tab_logo_premium.png');
+            // } else {
+            //      this.ui.tabLogoImg = require('@/images/tabicons/tab_logo_basic.png');
+            // }
         },
 
         destroyHandle() {
@@ -216,7 +218,7 @@ export default {
                     this.$store.dispatch('setBoothInfos', resBooths.data);
                     this.$store.dispatch('setZoneInfos', resZones.data);
                     this.$store.dispatch('setRobotInfos', resRobots.data);
-                    this.setSPSType(1);
+                    // this.setSPSType(1);
                 })
             });
         },
@@ -272,7 +274,8 @@ export default {
         logoutClicked() {
             this.$http.post(`${this.baseUrl}/auth/logout`, {}).then((result) => {
                     if (result.data == 'logout') {
-                        sessionStorage.removeItem('userid');
+                        this.resetALL();
+                        sessionStorage.clear();
                         this.$router.push('/login');
                         this.$notify({
                             group: 'push',
@@ -303,16 +306,18 @@ export default {
         },
 
         setSPSType(authType) { // store set auth
-            this.$store.dispatch('setAuth', authType);
-            if(Boolean(authType)) {
-                // Premium
-                this.changePremiumMenuItems();
-            }
-            else {
-                // Basic
-                // main: maintenance / diagnostics: similarity, accum, atomizer, statistics
-                this.changeBasicMenuItems();
-            }
+            // this.$store.dispatch('setAuth', authType);
+            this.changePremiumMenuItems();
+            // this.$store.dispatch('setAuth', authType);
+            // if(Boolean(authType)) {
+            //     // Premium
+            //     this.changePremiumMenuItems();
+            // }
+            // else {
+            //     // Basic
+            //     // main: maintenance / diagnostics: similarity, accum, atomizer, statistics
+            //     this.changeBasicMenuItems();
+            // }
         },
 
         changePremiumMenuItems() {

@@ -106,8 +106,8 @@ import{
     DxButton,
     DxSelection
 } from 'devextreme-vue/data-grid';
-import {mapGetters} from 'vuex';
 import EventBus from "@/commons/EventBus"
+import {mapGetters, mapActions} from 'vuex';
 function isEmptyObj(obj)  {
   if(obj.constructor === Object
      && Object.keys(obj).length === 0)  {
@@ -187,6 +187,9 @@ export default {
     mounted(){
     },
     methods: {
+        ...mapActions({
+            setReportItems: 'setReportItems'
+        }),
         clickListTile(number){
             switch(number){
                 case 1 :
@@ -291,6 +294,7 @@ export default {
                 report_name : selectReport.selectedRowsData[0].report_name,
                 update_type : selectReport.selectedRowsData[0].update_time
             }
+            this.setReportItems(this.datas.selectedReport);
             await this.getReportDetail(this.datas.selectedReport.report_id)
             if(this.datas.torqueAnalysisReportDetail.length === 0){
                 this.datas.reportSwitch = 0

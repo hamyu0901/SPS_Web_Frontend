@@ -140,17 +140,23 @@ export default {
                 if (result.data == "success") {
                     sessionStorage.setItem('userid', this.getId);
                 }
+                this.$store.dispatch('setAuth', 1);
+                this.$router.push('/sps/home').catch( () => {
+                    alert('잘못된 접근입니다.');
+                });
             }).then(() => {
-                const isMobile = () => {
-                    let isMobile = (/iphone|ipod|android|ie|blackberry|fennec/).test(navigator.userAgent.toLowerCase());
-                    return isMobile;
-                }
-                if (isMobile()) {
-                    //this.$router.push('/spsm/home'); <-- after
-                    this.$router.push('/sps/home');
-                } else {
-                    this.$router.push('/sps/home');
-                }
+                
+                // const isMobile = () => {
+                //     let isMobile = (/iphone|ipod|android|ie|blackberry|fennec/).test(navigator.userAgent.toLowerCase());
+                //     return isMobile;
+                // }
+                // if (isMobile()) {
+                //     //this.$router.push('/spsm/home'); <-- after
+                //     this.$router.push.catch('/sps/home');
+                // } else {
+                    
+                // }
+                
                 this.$http.get(`/auth/main/key`).then(response => {
                     LicenseManager.setLicenseKey(response.data)
                 })
@@ -164,7 +170,7 @@ export default {
                         group: 'pushAlarm',
                         text: this.$t(`login.basicFunction`),
                     });
-                    this.$router.push('/sps/home');
+                    this.$router.push.catch('/sps/home');
                 }
                 else {
                     this.$notify({
