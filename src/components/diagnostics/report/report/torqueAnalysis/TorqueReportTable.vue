@@ -473,18 +473,6 @@ export default {
                 await this.getViolatedAccumulation();
             }
             this.setFilteredReportList(tempReportId)
-            // let set = [...new Set(tempReportId)]
-            // let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
-            // this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
-            // if(this.datas.filteredReport.length !==0){
-            //     notIncludeReportDetail.forEach(nonReport => {
-            //         this.datas.filteredReport.forEach((el,index) => {
-            //             if(nonReport.report_id == el.report_id){
-            //                 this.datas.filteredReport.splice(index,1)
-            //             }
-            //         })
-            //     })
-            // }
             this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
                 if(reportSwitch == 0){
@@ -570,19 +558,7 @@ export default {
 
                 });
             })
-            // let test = []
-            // this.datas.filteredReport.forEach((filteredElement, index) => {
-            //     this.datas.prevReport.forEach(prevElement => {
-            //         if(filteredElement.report_id === prevElement.report_id){
-            //            filteredIndex = index
-            //            if(!test.find(el => el == filteredElement.report_id)){
-            //                test.push(filteredElement.report_id)
-            //            }
-            //         }
-            //     })
-            // })
-            // console.log(test)
-            // this.datas.prevReport.forEach(el => console.log(el.report_id))
+
             this.datas.prevReport.sort(function (a,b) {
                 return a.zone_id < b.zone_id ? -1 : 1;
             })
@@ -609,7 +585,7 @@ export default {
                 })
                 this.datas.prevArray.push(tempArr)
             })
-            // this.datas.prevIndex = filteredIndex
+
         },
         setSelectBox(){
             let tempReportId = [];
@@ -664,13 +640,6 @@ export default {
             })
             .catch((err) => {
                 console.log(err)
-                // window.alert('data error')
-                // this.datas.violatedAccumulation = [];
-                // this.getRobotInfos.forEach(el => {
-                //     this.datas.violatedAccumulation.push({
-                //         robot_id : el.id
-                //     })
-                // })
             })
         },
         async changeAllSelectBox(selectReport){
@@ -858,6 +827,9 @@ export default {
                 let data_id = row.data.violation_value.data_id
                 let current_start_date = row.data.violation_value.current_start_date
                 let current_end_date = row.data.violation_value.current_end_date
+                if(row.data.violation_value.current_data.danger_level == null){
+                    row.data.violation_value.current_data.danger_level = 0
+                }
                 let current_data= {
                     danger_level: row.data.violation_value.current_data.danger_level,
                     violation_count : [
@@ -927,6 +899,9 @@ export default {
                 let data_id = row.data.previolation_value.data_id
                 let current_start_date = row.data.previolation_value.current_start_date
                 let current_end_date = row.data.previolation_value.current_end_date
+                if(row.data.previolation_value.current_data.danger_level == null){
+                    row.data.violation_value.current_data.danger_level = 0
+                }
                 let current_data= {
                     danger_level: row.data.previolation_value.current_data.danger_level,
                     violation_count : [
