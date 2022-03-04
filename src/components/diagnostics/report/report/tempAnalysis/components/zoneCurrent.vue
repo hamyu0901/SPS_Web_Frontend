@@ -48,7 +48,7 @@ export default {
     },
     data(){
         return{
-            opinionInput: null,
+            opinionInput: '',
             report_id:null,
             zonePeriod:null,
             menu:false,
@@ -452,8 +452,10 @@ export default {
         },
         reportDatas(){
             this.report_id = this.getReportItems.selectedReport.report_id;
+            this.opinionInput = '';
         },
         async report_id(){
+            console.log('sss');
             const variable ={
                 report_id: this.report_id,
                 factory_id: 2,
@@ -463,12 +465,14 @@ export default {
             var start_date = null;
             var end_date = null;
             var prev_id_list = [];
+            console.log(variable);
             await this.$http.post(`/diagnostics/datareport/temperature/analyzeHasReport`, variable).then(result => {
                 if(result.data !== 'no data'){
                     if(this.tableData.length !== 0){
                         this.tableData.splice(0);
                     }
                     for(const list of result.data){
+                        console.log(list)
                         this.tableData.push(list.robot_info);
 
                         if(start_date === null){
@@ -481,9 +485,13 @@ export default {
 
                         prev_id_list.push(list.prev_data_id);
                         
+                        if(this.opinionInput.length === 0){
+                            this.opinionInput = list.comment;
+                        }
                     }
                     this.disableTextArea = false;
                     this.zonePeriod = `${start_date} ~ ${end_date}`
+                    
                 }else{
                     this.zonePeriod = null;
                     this.tableData.splice(0);
@@ -529,6 +537,7 @@ export default {
                 end_date : this.zonePeriod.substr(13,23),
                 comment:this.opinionInput,
             }
+            
             this.$emit('onSave', value)
         },
         setThisZone(){
@@ -545,6 +554,7 @@ export default {
                 fromDate: dateFrom,
                 toDate: dateTo
             }
+            
             this.$http.post(`/diagnostics/datareport/temperature/analyzeNoReport`, variable).then(result => {
                 if(this.tableData.length !== 0){
                     this.tableData.splice(0);
@@ -555,6 +565,7 @@ export default {
                 }
                 this.disableTextArea = false;
             })
+            this.opinionInput = '';
 
         },
         updatePeriod(period){

@@ -10,7 +10,7 @@
     </div>
     <div id="opinion_content" v-if="showDetail">
         <v-textarea
-            :disabled="disable"
+            :readonly="disabled"
             v-model="opinion"
             placeholder="의견을 입력해 주세요"
             no-resize
@@ -23,7 +23,7 @@
 
 <script>
 export default {
-    props:['opinionInput', 'disable'],
+    props:['opinionInput', 'disabled'],
     data(){
         return{
             opinion:null,

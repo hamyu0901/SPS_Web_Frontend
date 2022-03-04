@@ -13,7 +13,7 @@
             <table-vue :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/>
         </div>
         <div id="opinionBox">
-            <zone-opinion-vue></zone-opinion-vue>
+            <zone-opinion-vue :disabled="true" :opinionInput="opinionInput"></zone-opinion-vue>
         </div>
     </div>
 </template>
@@ -33,6 +33,7 @@ export default {
     },
     data(){
         return{
+            opinionInput: null,
             dataIdList:[],
             report_id :null,
             reportList:[],
@@ -150,13 +151,13 @@ export default {
         this.initializeItems();
     },
     computed:{
-        reportId(){
-            return this.$store.state.reportItems.selectedReport;
-        },
         ...mapGetters({
             getReportItems: 'getReportItems',
             getFactoryId: 'getFactoryId',
         }),
+        reportId(){
+            return this.$store.state.reportItems.selectedReport;
+        },
         robots(){
             if(this.column_y.length !== 0){
                 this.column_y.splice(0);
@@ -171,7 +172,7 @@ export default {
     watch:{
         reportId(){
             this.report_id = this.getReportItems.selectedReport.report_id;
-
+            
             var param = {
                 current_report_id: this.report_id,
             }
@@ -179,7 +180,6 @@ export default {
                 if(this.reportList !== null){
                     this.reportList.splice(0);
                 }
-
                 for(const item of result.data){
                     this.reportList.push({report_id: item[0], name: item[1]});
                 }
@@ -196,15 +196,18 @@ export default {
                 data_id_list: s
             };
             var report_data = null;
+            
             await this.$http.post(`/diagnostics/datareport/temperature/reportDetailfromCurr`, param).then(result => {
                 if(result.data !== 'no data'){
                     report_data = result.data[0][0].report_id;
-                    this.selectItem({report_id: report_data});
+                    this.selectItem({report_id: report_data}); 
                     this.$refs.selector.updateReport(report_data)
+                    
                 }else{
                     this.zonePeriod = null;
                     this.tableData.splice(0);
                     this.$refs.selector.updateReport(null)
+                    this.opinionInput = '';
                 }
             });
             
@@ -217,6 +220,7 @@ export default {
             return list;
         },
         async selectItem(report_id){
+            this.opinionInput = '';
             var param = {
                 report_id: report_id.report_id,
                 factory_id: this.getFactoryId,
@@ -244,6 +248,12 @@ export default {
                         end_date = list[3];
                     }
                     this.dataIdList.push(list[1]);
+                    
+                    if(this.opinionInput === ''){
+                        this.opinionInput = list[4];
+                        console.log(this.opinionInput)
+                    }
+                    
                 }
                 this.zonePeriod = `${start_date} ~ ${end_date}`
             });

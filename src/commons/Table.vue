@@ -1,6 +1,6 @@
 <template>
     <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
-    <table class="no-drag" style="height: 250px;" :style="`background-color: ${propsTheme === 'dark' ? '#2a2a2a' : 'white'}`">
+    <table class="no-drag" :style="`background-color: ${propsTheme === 'dark' ? '#2a2a2a' : 'white'}`">
         <thead v-if="withRowHeaders === true">
             <tr style="height: 30px;">
                 <th style="width: 5%"></th>
@@ -133,7 +133,7 @@ table{
     tbody{
         tr{
             border-bottom: 1px solid #4d4d4d;
-
+            height: 40px;
             th{
                 color:#929292;
                 border-top: 1px solid #4d4d4d;
@@ -148,17 +148,20 @@ table{
             
             
             td{
-                color: #dedede;
+                
                 border-right: 1px solid #4d4d4d;
+                #selectorBox >>> .v-input >>> .v-menu-content{
+                    top:0 !important;
+                }
 
-                    label{
-                        width: 100%;
-                        height: 100%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
+                label{
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
 
-                        &:hover{
+                    &:hover{
                         background-color:yellow;
                         color: black;
                     }

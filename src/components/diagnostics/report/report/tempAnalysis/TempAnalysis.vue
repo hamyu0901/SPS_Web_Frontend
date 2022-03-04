@@ -50,7 +50,6 @@ export default {
     methods:{
       initializeReportData(){
         this.report = this.$store.getters['getReport'];
-        console.log(this.report);
       },
       initializeBoothes(){
           this.$http.get(`/diagnostics/datareport/temperature/factoryInfo`).then(result => {

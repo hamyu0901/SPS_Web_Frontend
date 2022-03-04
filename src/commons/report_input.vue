@@ -4,8 +4,8 @@
         v-model="inputModel"
         outlined
         hide-details
-        clearable
-        :disabled="disable"
+        :clearable="!disable"
+        :readonly="disable"
         @input="changeInput"
     ></v-text-field>
 </div>
