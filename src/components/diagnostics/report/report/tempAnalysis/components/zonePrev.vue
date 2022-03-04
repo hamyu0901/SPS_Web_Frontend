@@ -1,5 +1,6 @@
 <template>
     <div id="zonePrevBox">
+        <loading-spinner v-if="isLoading"></loading-spinner>
         <div id="zoneComboBox">
             <selector-vue ref="selector" :noDataText="'조회 가능한 리포트가 없습니다.'" :items="reportList" @selectItem="selectItem" :type="'prev_report_selection'"></selector-vue>
             <v-text-field
@@ -22,7 +23,9 @@ import DateFromToVue from '../../../../../../commons/DateFromTo.vue';
 import report_selectorVue from '../../../../../../commons/report_selector.vue';
 import TableVue from '../../../../../../commons/Table.vue'
 import zoneOpinionVue from './zoneOpinion.vue';
+
 import {mapGetters} from 'vuex';
+import LoadingSpinnerVue from '../../../../../../commons/LoadingSpinner.vue';
 export default {
     props:['robotInfo', 'zoneInfo'],
     components: {
@@ -30,9 +33,11 @@ export default {
         tableVue: TableVue,
         DateFromToVue: DateFromToVue,
         zoneOpinionVue: zoneOpinionVue,
+        loadingSpinner: LoadingSpinnerVue,
     },
     data(){
         return{
+            isLoading: false,
             opinionInput: null,
             dataIdList:[],
             report_id :null,
@@ -189,6 +194,7 @@ export default {
     },
     methods:{
         async updataDataId(s){
+            this.isLoading = true;
             var param = {
                 factory_id: this.getFactoryId,
                 booth_id: this.booth_id,
@@ -210,7 +216,7 @@ export default {
                     this.opinionInput = '';
                 }
             });
-            
+            this.isLoading = false;
         },
         getRobotList(){
             var list = [];
@@ -220,6 +226,7 @@ export default {
             return list;
         },
         async selectItem(report_id){
+            this.isLoading = true;
             this.opinionInput = '';
             var param = {
                 report_id: report_id.report_id,
@@ -266,7 +273,7 @@ export default {
                 }
                 list.push(obj);
             }
-
+            this.isLoading = false;
             this.$emit('updateDataId', list);
         },
         initializeReportId(){
@@ -315,7 +322,7 @@ export default {
 
 <style lang="scss" scoped>
 #zonePrevBox{
-    width: inherit; display: flex; flex-direction: column;
+    width: inherit; display: flex; flex-direction: column; position:relative;
     #zoneComboBox{
         height: 50px;
         display: flex;

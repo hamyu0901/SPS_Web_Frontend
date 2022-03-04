@@ -1,5 +1,6 @@
 <template>
     <div id="zoneCurrentBox">
+        <loading-spinner v-if="isLoading"></loading-spinner>
         <div id="zoneDataBox">
             <v-menu
                 v-model="menu"
@@ -36,18 +37,23 @@
 <script>
 import {mapGetters} from 'vuex';
 import DateFromToVue from '../../../../../../commons/DateFromTo.vue';
+import LoadingSpinnerVue from '../../../../../../commons/LoadingSpinner.vue';
 import TableVue from '../../../../../../commons/Table.vue'
 import zoneOpinionVue from './zoneOpinion.vue';
+import LoadingSpinner from '../../../../../../commons/LoadingSpinner.vue';
 
 export default {
     props:['zoneInfo', 'robotInfo', 'quickPeriod'],
     components: {
-        tableVue: TableVue,
-        DateFromToVue: DateFromToVue,
-        zoneOpinionVue: zoneOpinionVue,
-    },
+    tableVue: TableVue,
+    DateFromToVue: DateFromToVue,
+    zoneOpinionVue: zoneOpinionVue,
+    loadingSpinner: LoadingSpinnerVue,
+    LoadingSpinner
+},
     data(){
         return{
+            isLoading:false,
             opinionInput: '',
             report_id:null,
             zonePeriod:null,
@@ -386,6 +392,7 @@ export default {
     created(){
         this.setThisZone();
         this.initializeReportData();
+        
     },
     computed:{
         robots(){
@@ -455,7 +462,7 @@ export default {
             this.opinionInput = '';
         },
         async report_id(){
-            console.log('sss');
+            this.isLoading = true;
             const variable ={
                 report_id: this.report_id,
                 factory_id: 2,
@@ -465,14 +472,12 @@ export default {
             var start_date = null;
             var end_date = null;
             var prev_id_list = [];
-            console.log(variable);
             await this.$http.post(`/diagnostics/datareport/temperature/analyzeHasReport`, variable).then(result => {
                 if(result.data !== 'no data'){
                     if(this.tableData.length !== 0){
                         this.tableData.splice(0);
                     }
                     for(const list of result.data){
-                        console.log(list)
                         this.tableData.push(list.robot_info);
 
                         if(start_date === null){
@@ -484,7 +489,7 @@ export default {
                         }
 
                         prev_id_list.push(list.prev_data_id);
-                        
+
                         if(this.opinionInput.length === 0){
                             this.opinionInput = list.comment;
                         }
@@ -496,8 +501,9 @@ export default {
                     this.zonePeriod = null;
                     this.tableData.splice(0);
                 }
-            });
 
+            });
+            this.isLoading = false;
             this.$emit('sendDataIdList', prev_id_list)
 
 
@@ -581,7 +587,7 @@ export default {
 
 <style lang="scss" scoped>
 #zoneCurrentBox{
-    width: inherit; display: flex; flex-direction: column;
+    width: inherit; display: flex; flex-direction: column; position: relative;
     #zoneDataBox{
         width:fit-content;
         height: 50px;
