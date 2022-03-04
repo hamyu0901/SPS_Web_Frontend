@@ -12,7 +12,7 @@
                 >
                 <v-card class="warningSetDlgCard">
                     <v-card-title class="headline">{{ui.text.setDataTable.setStandardData}}</v-card-title>
-                    <init-data-setting-dlg 
+                    <init-data-setting-dlg
                         class="pl-3 pr-3"
                         v-bind:saveSettingData="datas"
                         v-bind:dialogFlag="handle.setWarningDataDlg"
@@ -43,14 +43,14 @@
               persistent
               v-model="handle.setAllWarningDataDlg">
               <v-card class="warningSetDlgCard">
-                <v-card-title class="headline">{{date + ' ' + ui.text.setAllDataTable.setAllWarningData}}</v-card-title>
-                <div id="dyGrid" :style="ui.style.dyGrid"></div>    
+                <v-card-title class="headline">{{startdate + '~' + enddate + ' ' + ui.text.setAllDataTable.setAllWarningData}}</v-card-title>
+                <div id="dyGrid" :style="ui.style.dyGrid"></div>
                 <v-layout>
                   <v-spacer/>
                   <v-btn
                     class="buttonItem"
                     :style="ui.size.setAllDataTableCloseBtn.xPos"
-                    :color="ui.color.btn"                        
+                    :color="ui.color.btn"
                     @click="onCloseToAllSumData()">
                     {{ui.text.common.close}}
                   </v-btn>
@@ -71,7 +71,7 @@
           <template slot="items" slot-scope="props">
             <tr>
               <td class="text-xs-center tdText" v-for="(header, index) in headers" :key="index">{{ props.item[header.id]}}</td>
-            </tr> 
+            </tr>
           </template>
         </v-data-table>
         <v-layout>
@@ -96,7 +96,7 @@
                     <input class="warningTotalSetDlgInput" v-model="warnData.data">
                   </v-flex>
                   <v-flex>
-                    <v-btn 
+                    <v-btn
                     class="buttonItem"
                     @click="onAcceptWarnValue()"
                     >{{ui.text.setAllDataTable.setAllWarningDataAccept}}</v-btn>
@@ -118,7 +118,7 @@
 <script>
 import {mapGetters} from 'vuex';
 import * as dyGrid from 'cheetah-grid';
-import CountRange from '@/commons/CountRange' 
+import CountRange from '@/commons/CountRange'
 import InitDataSettingDlg from '@/components/diagnostics/torqueloadfactor/torqueloadfactor/abnormalstandardsettingtable/InitDataSettingDlg';
 export default {
   components: {
@@ -126,13 +126,15 @@ export default {
     InitDataSettingDlg,
     },
   props: [
-    'headerData', 
-    'contentData', 
-    'date'
+    'headerData',
+    'contentData',
+    'date',
+    'startdate',
+    'enddate'
     ],
   data() {
     return {
-      ui: {                
+      ui: {
         titleStyle: null,
         tableHeaderStyle: null,
         style: {
@@ -221,15 +223,15 @@ export default {
       datas: [],
       typeDatas: [
         {
-          type: this.$t(`diagnostics.torqueLoadFactor.child.abnormalStandardSettingTable.typeDatas.summxv`), 
+          type: this.$t(`diagnostics.torqueLoadFactor.child.abnormalStandardSettingTable.typeDatas.summxv`),
           id: 'summxv',
         },
         {
-          type: this.$t(`diagnostics.torqueLoadFactor.child.abnormalStandardSettingTable.typeDatas.summmv`), 
+          type: this.$t(`diagnostics.torqueLoadFactor.child.abnormalStandardSettingTable.typeDatas.summmv`),
           id: 'summmv',
         },
         {
-          type: this.$t(`diagnostics.torqueLoadFactor.child.abnormalStandardSettingTable.typeDatas.cycle`), 
+          type: this.$t(`diagnostics.torqueLoadFactor.child.abnormalStandardSettingTable.typeDatas.cycle`),
           id: 'cycle',
         }
       ],
@@ -250,8 +252,8 @@ export default {
           } = args;
           if (frozenRowCount - 1 === row) {
             return [
-              '#2a2f44', 
-              '#2a2f44', 
+              '#2a2f44',
+              '#2a2f44',
               '#2a2f44'
               ];
           } else {
@@ -314,7 +316,7 @@ export default {
       this.ui.color.btn = this.$style.diagnostics.torqueLoadFactorBtnColor;
       this.ui.color.loadingProgress = this.$style.diagnostics.torqueLoadFactorLoadingProgressColor;
       this.ui.color.cardColor = this.$style.common.tableCardBottomColor;
-      
+
       document.documentElement.style.setProperty("--dialogContentBackgroundColor", this.$style.diagnostics.abnormalStandardSettingTableItemDialogContentBackgroundColor);
       document.documentElement.style.setProperty("--cardTitleBackgroundColor", this.$style.common.gridTableItemCardTitleBackgroundColor);
       document.documentElement.style.setProperty("--theadBackgroundColor", this.$style.common.gridTableItemTheadBackgroundColor);
@@ -338,66 +340,66 @@ export default {
       parentElement: document.querySelector('#dyGrid'),
       header: [
         {
-          field: 'booth', 
-          caption: this.ui.text.setAllDataTable.booth, 
-          width: gridWidth, 
+          field: 'booth',
+          caption: this.ui.text.setAllDataTable.booth,
+          width: gridWidth,
           headerStyle: { textAlign: 'center' },
         },
         {
-          field: 'zone', 
-          caption: this.ui.text.setAllDataTable.zone, 
-          width: gridWidth, 
+          field: 'zone',
+          caption: this.ui.text.setAllDataTable.zone,
+          width: gridWidth,
           headerStyle: { textAlign: 'center' },
         },
         {
-          field: 'robot', 
-          caption: this.ui.text.setAllDataTable.robot, 
-          width: gridWidth, 
+          field: 'robot',
+          caption: this.ui.text.setAllDataTable.robot,
+          width: gridWidth,
           headerStyle: {textAlign: 'center'},
         },
         {
-          field: 'job', 
-          caption: this.ui.text.setAllDataTable.job, 
-          width: gridWidth, 
+          field: 'job',
+          caption: this.ui.text.setAllDataTable.job,
+          width: gridWidth,
           headerStyle: {textAlign: 'center'},
         },
         {
-          field: 'axis', 
-          caption: this.ui.text.setAllDataTable.axis, 
-          width: gridWidth-80, 
+          field: 'axis',
+          caption: this.ui.text.setAllDataTable.axis,
+          width: gridWidth-80,
           headerStyle: {textAlign: 'center'},
         },
         {
-          field: 'maxsum', 
-          caption: this.ui.text.setAllDataTable.maxsum, 
-          width: gridWidth, 
+          field: 'maxsum',
+          caption: this.ui.text.setAllDataTable.maxsum,
+          width: gridWidth,
           headerStyle: {textAlign: 'center'},
         },
         {
-          field: 'minsum', 
-          caption: this.ui.text.setAllDataTable.minsum, 
-          width: gridWidth, 
+          field: 'minsum',
+          caption: this.ui.text.setAllDataTable.minsum,
+          width: gridWidth,
           headerStyle: {textAlign: 'center'},
         },
         {
-          field: 'cycle', 
-          caption: this.ui.text.setAllDataTable.avgcycle, 
-          width: gridWidth, 
+          field: 'cycle',
+          caption: this.ui.text.setAllDataTable.avgcycle,
+          width: gridWidth,
           headerStyle: {textAlign: 'center'},
         },
         {
-          field: 'avgsum', 
-          caption: this.ui.text.setAllDataTable.avgvalue, 
-          width: gridWidth, 
+          field: 'avgsum',
+          caption: this.ui.text.setAllDataTable.avgvalue,
+          width: gridWidth,
           headerStyle: {textAlign: 'center'},
         },
         {
-          field: 'updatemaxsum', 
-          caption: this.ui.text.setAllDataTable.updatemaxsum, 
-          width: gridWidth+40, 
-          action: inputEditor, 
+          field: 'updatemaxsum',
+          caption: this.ui.text.setAllDataTable.updatemaxsum,
+          width: gridWidth+40,
+          action: inputEditor,
           headerStyle: {textAlign: 'center', color: '#02a757', sortArrowColor: '#02a757'},
-          style: {color: '#02a757'}, 
+          style: {color: '#02a757'},
           message(rec) {
             return inner.isOnlyNumber(rec.updatemaxsum);
           },
@@ -408,12 +410,12 @@ export default {
           },
         },
         {
-          field: 'updateminsum', 
-          caption: this.ui.text.setAllDataTable.updateminsum, 
-          width: gridWidth+40, 
-          action: inputEditor, 
+          field: 'updateminsum',
+          caption: this.ui.text.setAllDataTable.updateminsum,
+          width: gridWidth+40,
+          action: inputEditor,
           headerStyle: {textAlign: 'center', color: '#f25500', sortArrowColor: '#f25500'},
-          style: {color: '#f25500'}, 
+          style: {color: '#f25500'},
           message(rec) {
             return inner.isOnlyNumber(rec.updateminsum);
           },
@@ -424,12 +426,12 @@ export default {
           },
         },
         {
-          field: 'updatecycle', 
-          caption: this.ui.text.setAllDataTable.updatecycle, 
-          width: gridWidth, 
-          action: inputEditor, 
+          field: 'updatecycle',
+          caption: this.ui.text.setAllDataTable.updatecycle,
+          width: gridWidth,
+          action: inputEditor,
           headerStyle: {textAlign: 'center', color: '#3086ff', sortArrowColor: '#3086ff'},
-          style: {color: '#3086ff'}, 
+          style: {color: '#3086ff'},
           message(rec) {
             return inner.isOnlyNumber(rec.updatecycle);
           },
@@ -451,10 +453,10 @@ export default {
               const regex = /^(-?)[0-9]+$/;
               try {
                 if(
-                  !regex.test(rec.updatemaxsum) || 
-                  !regex.test(rec.updateminsum) || 
-                  !regex.test(rec.updatecycle) || 
-                  (rec.updatemaxsum === '') || 
+                  !regex.test(rec.updatemaxsum) ||
+                  !regex.test(rec.updateminsum) ||
+                  !regex.test(rec.updatecycle) ||
+                  (rec.updatemaxsum === '') ||
                   (rec.updateminsum === '') ||
                   (rec.updatecycle === '')
                   ){
@@ -514,7 +516,7 @@ export default {
             .catch((err) => {
               inner.setLoadingDialog(false);
               inner.$popmsg(`${inner.ui.text.setAllDataTable.cantmodify}`);
-              inner.$log.error(err); 
+              inner.$log.error(err);
             });
           }
         }
@@ -542,13 +544,15 @@ export default {
       fitToCanvas(canvas);
       fitToGridScrollable(gridScrollable);
     },
-    getAllRobotData() {    
+    getAllRobotData() {
       this.setLoadingDialog(true);
       this.setLoadAllWarningDataFlag(true);
         this.$http.get(`${this.baseUrl}/diagnostics/torqueLoadfactor/data/sum/list`, {
           params: {
             factoryid: this.getFactoryId,
-            date: this.date,
+            // date: this.date,
+            startDate: this.startDate,
+            endDate: this.endDate
           },
         }).then((result) => {
           if (result.data.length === 0) {
@@ -597,7 +601,7 @@ export default {
           }).catch((error) => {
             this.setLoadingDialog(false);
             this.setLoadAllWarningDataFlag(false);
-            this.$log.error(error); 
+            this.$log.error(error);
           });
     },
     getWarningMargin(warningMargin) {
@@ -623,7 +627,7 @@ export default {
           throw new Error('Error');
         }
       }).catch((error) => {
-        this.$log.error(error); 
+        this.$log.error(error);
       });
     },
     setAllModify(data) {
@@ -635,7 +639,7 @@ export default {
           throw new Error('Empty Data');
         }
       }).catch((error) => {
-        this.$log.error(error); 
+        this.$log.error(error);
       });
     },
     invalidate() {
@@ -655,7 +659,7 @@ export default {
         this.$emit('reloadPage');
         this.records = [];
         this.handle.dyGrid.records = [];
-        this.handle.setAllWarningDataDlg = false;        
+        this.handle.setAllWarningDataDlg = false;
       }
     },
     onCloseToSumData() {
@@ -712,11 +716,11 @@ export default {
     getHeaderData() {
       if(this.headerData.length !== 0) {
           this.headers = this.headerData;
-      }            
+      }
     },
     getContentData() {
       if (this.contentData.length !== 0) {
-        this.setContentData(this.contentData);            
+        this.setContentData(this.contentData);
       } else {
         this.setContentData(null);
       }
@@ -728,7 +732,7 @@ export default {
           this.datas.push({
             type: this.typeDatas[i].type
           });
-        }   
+        }
       }
     },
     initSetBtnClicked() {
@@ -739,7 +743,7 @@ export default {
       //   this.$popmsg(this.ui.text.setAllDataTable.dataavailable);
       // }
     },
-   
+
     setAllWarningDataClick() {
       if (this.datas[0].value != '-') {
         this.handle.setAllWarningDataDlg = true;
@@ -756,7 +760,7 @@ export default {
             this.datas[0]['value'] = datas[0]['maxsum'];
             this.datas[1]['value'] = datas[0]['minsum'];
             this.datas[2]['value'] = datas[0]['workingtime'];
-        } 
+        }
         else {
             this.datas[0]['value'] = '-';
             this.datas[1]['value'] = '-';

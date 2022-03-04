@@ -106,6 +106,7 @@ import{
     DxButton,
     DxSelection
 } from 'devextreme-vue/data-grid';
+import EventBus from "@/commons/EventBus"
 import {mapGetters, mapActions} from 'vuex';
 function isEmptyObj(obj)  {
   if(obj.constructor === Object
@@ -158,6 +159,9 @@ export default {
                 torqueAnalysisReportDetail: []
             }
         }
+    },
+    created(){
+        EventBus.$on('getFilteredReportDetail', this.getFilteredReportDetail)
     },
     computed: {
         ...mapGetters({
@@ -253,6 +257,30 @@ export default {
             .catch((err) => {
                 console.error(err);
             })
+        },
+        async getFilteredReportDetail(report_id){
+            this.datas.torqueAnalysisReportDetail = [];
+            await this.$http.get(`diagnostics/report/report/detail/${report_id}`)
+            .then((response) => {
+                if(response.data !== ''){
+                    response.data.forEach(el => {
+                        switch(el.report_type){
+                            case 0: this.datas.torqueAnalysisReportDetail.push(el)
+                            break;
+                        default:
+                        }
+                    })
+                }
+                else{
+                    this.datas.torqueAnalysisReportDetail = [];
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+            this.$emit('updateTorqueAnalysisReportDetail', {
+                torqueAnalysisReportDetail: this.datas.torqueAnalysisReportDetail
+            });
         },
         customizeText({value}){
             return value.substr(0, 10)

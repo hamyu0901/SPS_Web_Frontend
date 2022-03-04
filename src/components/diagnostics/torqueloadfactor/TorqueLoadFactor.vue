@@ -3,16 +3,20 @@
         <v-layout column>
             <v-layout>
                 <v-flex class="pr-2" lg2>
-                    <date-picker 
+                    <!-- <date-picker
                         :conditionalDate="datas.predict.date"
                         v-on:getDate="getPrevDate"
-                    ></date-picker>
+                    ></date-picker> -->
+                    <torque-load-factor-date-picker
+                        v-on:getDate="getPrevPickerDate"
+
+                    />
                 </v-flex>
                 <a><img class="pt-1 pr-2" src="@/images/selector_icon.png"/></a>
                 <v-flex lg2>
-                    <selector 
-                        class="torqueLoadFactorSelector pl-2 pr-2" 
-                        v-bind:selectorTitle="$t(String(`selector.booth`))" 
+                    <selector
+                        class="torqueLoadFactorSelector pl-2 pr-2"
+                        v-bind:selectorTitle="$t(String(`selector.booth`))"
                         v-bind:selectorOptions="getBoothInfos"
                         v-bind:selectorTRATarget="datas.predict.booth"
                         v-on:selectedTarget="getTargetBoothId"
@@ -20,20 +24,20 @@
                     ></selector>
                 </v-flex>
                 <v-flex lg2>
-                    <selector 
-                        class="torqueLoadFactorSelector pl-2 pr-2" 
-                        v-bind:selectorTitle="$t(String(`selector.zone`))" 
+                    <selector
+                        class="torqueLoadFactorSelector pl-2 pr-2"
+                        v-bind:selectorTitle="$t(String(`selector.zone`))"
                         v-bind:selectorOptions="getSelectedTargetZoneInfos"
                         v-bind:selectorTRATarget="datas.predict.zone"
                         v-on:selectedTarget="getTargetZoneId"
                         v-bind:predictInUse="getPredictUse()"
                     ></selector>
                 </v-flex>
-                
+
                 <v-flex lg2>
-                    <selector 
-                        class="torqueLoadFactorSelector pl-2 pr-2" 
-                        v-bind:selectorTitle="$t(String(`selector.robot`))" 
+                    <selector
+                        class="torqueLoadFactorSelector pl-2 pr-2"
+                        v-bind:selectorTitle="$t(String(`selector.robot`))"
                         v-bind:selectorOptions="getSelectedTargetRobotInfos"
                         v-bind:selectorTRATarget="datas.predict.robot"
                         v-on:selectedTarget="getTargetRobotId"
@@ -42,8 +46,8 @@
                 </v-flex>
                 <!-- <v-btn class="smallBtn" @click="jobUpdateBtnClicked">{{ui.jobUpdate}}</v-btn> -->
                 <v-flex lg2>
-                    <selector 
-                        class="torqueLoadFactorSelector pl-2 pr-2" 
+                    <selector
+                        class="torqueLoadFactorSelector pl-2 pr-2"
                         v-bind:selectorTitle="ui.selectJobFile"
                         v-bind:selectorOptions="getSelectedTargetJobInfos"
                         v-bind:selectorTRATarget="datas.predict.job"
@@ -53,8 +57,8 @@
                 </v-flex>
 
                  <v-flex lg2>
-                    <selector 
-                        class="torqueLoadFactorSelector pl-2 pr-2" 
+                    <selector
+                        class="torqueLoadFactorSelector pl-2 pr-2"
                         v-bind:selectorTitle="ui.selectAxis"
                         v-bind:selectorOptions="datasByAxis"
                         v-bind:selectorTRATarget="datas.predict.axis"
@@ -98,10 +102,12 @@
                         v-bind:headerData="abnormalStandardSettingTableHeaderDatas"
                         v-bind:contentData="abnormalStandardSettingTableContentDatas"
                         v-bind:date="prevDate"
+                        v-bind:startdate="prevStartDate"
+                        v-bind:enddate="prevEndDate"
                         v-on:settingAbnormalData="getSettingAbnormalData"
                         v-on:reloadPage="reloadPage"
                     ></abnormal-standard-setting-table>
-                </v-flex>   
+                </v-flex>
             </v-layout>
         </v-layout>
         <loading-dlg
@@ -121,8 +127,10 @@ import WorkListTable from '@/components/diagnostics/torqueloadfactor/torqueloadf
 import LoadFactorByAxis from '@/components/diagnostics/torqueloadfactor/torqueloadfactor/LoadFactorByAxis'
 import ComfirmDlg from '@/commons/ComfirmDlg'
 import LoadingDlg from '@/commons/LoadingDlg'
+import TorqueLoadFactorDatePicker from './TorqueLoadFactorDatePicker.vue'
 export default {
-    components: {DatePicker, Selector, GridTable, AbnormalStandardSettingTable, ViolationRecordTable, WorkListTable, LoadFactorByAxis, ComfirmDlg, LoadingDlg},
+    components: {DatePicker, Selector, GridTable, AbnormalStandardSettingTable, ViolationRecordTable, WorkListTable, LoadFactorByAxis, ComfirmDlg, LoadingDlg,
+    TorqueLoadFactorDatePicker},
     data() {
         return {
             ui: {
@@ -133,6 +141,8 @@ export default {
                 chartTitle: this.$t(`diagnostics.torqueLoadFactor.child.loadFactorByAxis.sumChartTitle`)
             },
             prevDate: '',
+            prevStartDate: '',
+            prevEndDate: '',
             currDate: '',
             updateBtnIcon: require("@/images/update_icon.png"),
             searchBtnIcon: require("@/images/search_icon.png"),
@@ -186,7 +196,7 @@ export default {
             }
         }
     },
-    
+
     mounted() {
         this.initalizeStyle();
     },
@@ -197,9 +207,9 @@ export default {
             getFactoryId: 'getFactoryId',
             getBoothInfos: 'getBoothInfos',
             getZoneInfos: 'getZoneInfos',
-            getRobotInfos: 'getRobotInfos'     
+            getRobotInfos: 'getRobotInfos'
         }),
-      
+
         initPredictSetting() {
             if (this.fromPredict()) {
                 this.prevDate =  this.datas.predict.date = this.$route.query.date;
@@ -229,7 +239,7 @@ export default {
                         }
                         this.setRobotID(this.getRobotInfos[i].id);
                     }
-                }                
+                }
                 this.$http.post(`${this.baseUrl}/diagnostics/torquerange/data/joblist`, {
                     factoryid: this.getFactoryId,
                     boothid: this.$route.query.boothid,
@@ -329,6 +339,10 @@ export default {
         getPrevDate(prevDate) {
             this.prevDate = prevDate;
         },
+        getPrevPickerDate(item){
+            this.prevStartDate = item.startDate
+            this.prevEndDate = item.endDate
+        },
         getCurrDate(currDate) {
             this.currDate = currDate;
         },
@@ -341,7 +355,7 @@ export default {
                 }
             }
             if (!this.fromPredict()) {
-                
+
             }
         },
         getTargetZoneId(targetId) {
@@ -353,7 +367,7 @@ export default {
                 }
             }
             if (!this.fromPredict()) {
-                
+
             }
         },
         getTargetRobotId(targetId) {
@@ -361,25 +375,39 @@ export default {
             if(this.targetRobotId != undefined) {
                 this.getJobList();
             } else {
-                this.getSelectedTargetJobInfos = [];   
+                this.getSelectedTargetJobInfos = [];
             }
             if (!this.fromPredict()) {
-                
+
             }
         },
+        // getJobList() {
+        //     let tempJobList = [];
+        //     this.$http.get(`/diagnostics/joblist/factoryid/${this.getFactoryId}/boothid/${this.targetBoothId}/zoneid/${this.targetZoneId}/robotid/${this.targetRobotId}/date/${this.prevDate}`)
+        //     .then((result) => {
+        //         if(result.data.length > 0) {
+        //             result.data.forEach(joblist => {
+        //                 tempJobList.push({id: joblist.job_name, name: joblist.job_name})
+        //             });
+        //             this.getSelectedTargetJobInfos = tempJobList;
+        //         } else {
+        //             this.getSelectedTargetJobInfos = [];
+        //         }
+        //     })
+        // },
         getJobList() {
             let tempJobList = [];
-            this.$http.get(`/diagnostics/joblist/factoryid/${this.getFactoryId}/boothid/${this.targetBoothId}/zoneid/${this.targetZoneId}/robotid/${this.targetRobotId}/date/${this.prevDate}`)
+            this.$http.get(`/diagnostics/joblist/factoryid/${this.getFactoryId}/boothid/${this.targetBoothId}/zoneid/${this.targetZoneId}/robotid/${this.targetRobotId}/startdate/${this.prevStartDate}/enddate/${this.prevEndDate}`)
             .then((result) => {
                 if(result.data.length > 0) {
                     result.data.forEach(joblist => {
                         tempJobList.push({id: joblist.job_name, name: joblist.job_name})
                     });
-                    this.getSelectedTargetJobInfos = tempJobList;  
+                    this.getSelectedTargetJobInfos = tempJobList;
                 } else {
                     this.getSelectedTargetJobInfos = [];
-                }              
-            }) 
+                }
+            })
         },
         getTargetJobFile(targetJobFile) {
             if(targetJobFile != undefined) {
@@ -394,9 +422,24 @@ export default {
         listBtnClicked() {
             this.dialog = true;
         },
+        // searchBtnClicked() {
+        //     if(this.prevDate != undefined && this.targetBoothId != undefined
+        //         && this.targetZoneId != undefined && this.targetRobotId != undefined
+        //         && this.targetJobFile != undefined && this.targetAxisNum != undefined)
+        //     {
+        //         this.getAbnormalStandardDatas();
+        //         this.getWorkListTableDatas();
+        //         this.getLoadFactorTrendDatas();
+        //     } else {
+        //         this.abnormalStandardSettingTableContentDatas = [];
+        //         this.workListTableContentDatas = [];
+        //         this.loadFactorTrendDatas = [];
+        //         this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.checkSearchData`));
+        //     }
+        // },
         searchBtnClicked() {
-            if(this.prevDate != undefined && this.targetBoothId != undefined 
-                && this.targetZoneId != undefined && this.targetRobotId != undefined 
+            if(this.prevStartDate != undefined && this.prevEndDate != undefined && this.targetBoothId != undefined
+                && this.targetZoneId != undefined && this.targetRobotId != undefined
                 && this.targetJobFile != undefined && this.targetAxisNum != undefined)
             {
                 this.getAbnormalStandardDatas();
@@ -404,7 +447,7 @@ export default {
                 this.getLoadFactorTrendDatas();
             } else {
                 this.abnormalStandardSettingTableContentDatas = [];
-                this.workListTableContentDatas = [];  
+                this.workListTableContentDatas = [];
                 this.loadFactorTrendDatas = [];
                 this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.checkSearchData`));
             }
@@ -416,15 +459,15 @@ export default {
             this.$http.post(`${this.baseUrl}/diagnostics/torqueloadfactor/data/abn/list`, postDatas)
             .then((result) => {
                 if(result.data != '') {
-                    this.abnormalStandardSettingTableContentDatas = result.data;      
-                } 
+                    this.abnormalStandardSettingTableContentDatas = result.data;
+                }
                 else {
                     this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.abnormalRefData`));
-                }                    
+                }
             })
         },
         reloadPage() {
-            this.getAbnormalStandardDatas();    
+            this.getAbnormalStandardDatas();
             this.getWorkListTableDatas();
             this.getLoadFactorTrendDatas();
         },
@@ -448,18 +491,20 @@ export default {
         },
         getWorkListTableDatas() {
             let postDatas = {};
-            this.workListTableContentDatas = [];  
+            this.workListTableContentDatas = [];
             postDatas = this.checkTargetDatas(this.targetBoothId, this.targetZoneId, this.targetRobotId, this.targetJobFile, this.targetAxisNum);
             postDatas['excpt'] = Boolean(this.exceptCheckFlag);
             postDatas['prevtime'] = this.prevDate;
+            postDatas['startDate'] = this.prevStartDate;
+            postDatas['endDate'] = this.prevEndDate;
             this.setLoadingDialog(true);
             this.$http.post(`${this.baseUrl}/diagnostics/torqueloadfactor/data`, postDatas)
             .then((result) => {
                 if(result.data != '') {
-                    this.workListTableContentDatas = [];                        
+                    this.workListTableContentDatas = [];
                     this.workListTableContentDatas = result.data;
                     this.setLoadingDialog(false);
-                } 
+                }
                 else {
                     this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.currentData`));
                     if(this.workListTableContentDatas.length == 0) {
@@ -468,7 +513,7 @@ export default {
                         }
                     }
                     this.setLoadingDialog(false);
-                }                    
+                }
             }).catch((error) => {
                 this.$log.error(error);
                 this.setLoadingDialog(false);
@@ -479,6 +524,8 @@ export default {
             postDatas = this.checkTargetDatas(this.targetBoothId, this.targetZoneId, this.targetRobotId, this.targetJobFile, this.targetAxisNum);
             postDatas['excpt'] = Boolean(this.exceptCheckFlag);
             postDatas['prevtime'] = this.prevDate;
+            postDatas['startDate'] = this.prevStartDate;
+            postDatas['endDate'] = this.prevEndDate;
             this.loadFactorTrendDatas = [];
             this.setLoadingDialog(true);
             this.$http.post(`${this.baseUrl}/diagnostics/torqueloadfactor/data`, postDatas)
@@ -486,11 +533,11 @@ export default {
                 if(result.data != '') {
                     this.loadFactorTrendDatas = result.data;
                     this.setLoadingDialog(false);
-                } 
+                }
                 else {
                     this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.trendData`));
                     this.setLoadingDialog(false);
-                }                    
+                }
             }).catch((error) => {
                 this.$log.error(error);
                 this.setLoadingDialog(false);
@@ -500,7 +547,7 @@ export default {
         jobUpdateBtnClicked() {
             if(this.prevDate != undefined && this.targetBoothId != undefined && this.targetZoneId != undefined && this.targetRobotId != undefined) {
                 this.comfirmDlgFlag = true;
-            } 
+            }
             else {
                 this.$popmsg(this.$t(`diagnostics.torqueRange.popMsg.jobNotUpdate`));
             }
@@ -519,11 +566,11 @@ export default {
                 this.$popmsg(this.$t(`diagnostics.torqueRange.popMsg.jobUpdate`));
                 this.setLoadingDialog(false);
                 this.getJobList();
-            })  
+            })
             .catch((error) => {
-                this.$log.error(error); 
+                this.$log.error(error);
                 this.setLoadingDialog(false);
-            }) 
+            })
         },
 
         getComfirmFlag() {
@@ -533,7 +580,7 @@ export default {
 
         dateCompare(preDate, currDate) {
             var preDate = new Date(preDate);
-            var currDate = new Date(currDate);    
+            var currDate = new Date(currDate);
             return preDate <= currDate;
         },
 
