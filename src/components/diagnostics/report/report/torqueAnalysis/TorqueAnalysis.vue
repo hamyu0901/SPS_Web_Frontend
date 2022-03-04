@@ -6,7 +6,7 @@
         </div>
         <div>
             <torque-report-table
-                v-if="datas.reportSwitch === 1"
+                v-if="datas.selectedMonth !== null || datas.reportSwitch == 1"
                 v-bind:selectedReport="datas.selectedReport"
                 v-bind:reports="datas.reports"
                 v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
@@ -18,7 +18,7 @@
                 v-bind:selectedYear="datas.selectedYear"
             />
         </div>
-        <div v-if="datas.reportSwitch === 0">
+        <div v-if="datas.reportSwitch == 0">
             <div class="combobox">
                 <div class="yearCombobox">
                     <v-combobox
@@ -36,13 +36,13 @@
                         @click="clickMonth"
                         label="Select Month"
                         outlined
-                        :items="datas.months"
+                        :items="month"
                     >
                     </v-combobox>
                 </div>
             </div>
         </div>
-        <div>
+        <!-- <div>
             <torque-add-report-table
                 v-if="datas.selectedMonth !== null && datas.reportSwitch == 0"
                 v-bind:selectedReport="datas.selectedReport"
@@ -55,7 +55,7 @@
                 v-bind:reportType="reportType"
                 v-bind:reportSwitch="datas.reportSwitch"
             />
-        </div>
+        </div> -->
         <!-- <v-menu
             ref="menu"
             v-model="datas.pickerModal"
@@ -130,26 +130,32 @@ export default {
             years.push(Number(new Date().getFullYear()),Number(new Date().getFullYear())-1)
             return years
         },
+        month(){
+            let month = [];
+            if(this.datas.selectedYear !== null){
+                month = ['01월','02월','03월','04월','05월','06월','07월','08월','09월','10월','11월','12월']
+                return month
+            }
+
+        }
     },
     mounted(){
         this.datas.reportSwitch = this.reportSwitch
         this.datas.selectedReport = this.selectedReport
         this.datas.reports = this.reports
         this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+        this.resetDate();
     },
     watch: {
-        reportSwitch(){
+        async selectedReport(){
             this.datas.reportSwitch = this.reportSwitch
-            this.resetDate();
-        },
-        selectedReport(){
             this.datas.selectedReport = this.selectedReport
-            this.datas.reportSwitch = this.reportSwitch
-            this.resetDate();
+            this.datas.reports = this.reports
+            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+            await this.resetDate();
         },
         torqueAnalysisReportDetail(){
             this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
-            this.resetDate();
         }
     },
     methods:{
@@ -157,22 +163,14 @@ export default {
             this.datas.selectedYear = null
             this.datas.selectedMonth = null
         },
-    //   closeTorquePicker(){
-    //       this.datas.pickerModal = false
-    //   },
-        // clickPickerMonth(date){
-        //     this.datas.date = date
-        //     this.getViolatedAccumulation();
-        // },
+        resetTorqueAnalysisReportDetail(){
+            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+        },
         bindingCatch(){
             this.datas.rerender ++;
         },
         clickMonth(){
-            this.datas.month = [];
-            if(this.datas.selectedYear !== null){
-                this.datas.months = ['01월','02월','03월','04월','05월','06월','07월','08월','09월','10월','11월','12월']
-            }
-            else{
+            if(this.datas.selectedYear == null){
                 window.alert('Year is Required')
             }
         }

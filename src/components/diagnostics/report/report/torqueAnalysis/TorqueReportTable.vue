@@ -7,9 +7,7 @@
                 <DxSelectBox
                     :data-source="datas.filteredReport"
                     display-expr="report_name"
-                    value-expr="report_id"
                     width="300"
-                    :value="datas.prevIndex !== null ? datas.filteredReport[datas.prevIndex].report_id : null"
                     @item-click="changeAllSelectBox"
                 />
             </v-flex>
@@ -155,7 +153,7 @@
                         </div>
                     </v-flex>
 
-                    <v-flex class="compareDataGrid" v-if="datas.prevReport.length !== 0">
+                    <v-flex class="compareDataGrid">
                         <!-- <torque-ag-prev-grid/> -->
                         <DxDataGrid
                             ref="prevContainer"
@@ -286,6 +284,8 @@ import zoneOpinion from '@/components/diagnostics/report/report/torqueAnalysis/z
 import zonePrevOpinion from '@/components/diagnostics/report/report/torqueAnalysis/zonePrevOpinion';
 import TorquePicker from '@/components/diagnostics/report/report/torqueAnalysis/TorquePicker';
 import TorquePrevPicker from './TorquePrevPicker.vue'
+import EventBus from "@/commons/EventBus"
+
 export default {
     components: {
         DxDataGrid,
@@ -329,6 +329,7 @@ export default {
                 filteredPrevData: [],
                 torqueAnalysisReportDetail:[],
                 violatedAccumulation: [],
+                tempReportId: [],
             }
         }
     },
@@ -345,34 +346,31 @@ export default {
     created(){
     },
     mounted(){
-        this.datas.selectedReport = deepClone(this.selectedReport)
-        this.datas.reports = deepClone(this.reports)
-        this.datas.reportType = this.reportType
-        this.datas.reportSwitch = this.reportSwitch
-        this.datas.selectedMonth = this.selectedMonth
-        this.datas.selectedYear = this.selectedYear
-        this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
-        this.setReportHeader();
-        this.getReport();
+        this.resetData();
     },
     watch: {
-        selectedReport(){
-            this.datas.selectedReport = deepClone(this.selectedReport)
-            this.datas.reportSwitch = this.reportSwitch
-            this.setReportHeader();
-            this.getReport();
+        async selectedReport(){
+            await this.resetData();
         },
-        reports(){
-            this.datas.reports = deepClone(this.reports)
+        async selectedMonth(){
+            await this.resetData();
         },
-        torqueAnalysisReportDetail(){
-            this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
-        },
-        reportType(){
-            this.datas.reportType = this.reportType
+        async torqueAnalysisReportDetail(){
+            await this.resetData();
         }
     },
     methods: {
+        async resetData(){
+            this.datas.selectedReport = deepClone(this.selectedReport)
+            this.datas.reports = deepClone(this.reports)
+            this.datas.reportType = this.reportType
+            this.datas.reportSwitch = this.reportSwitch
+            this.datas.selectedMonth = this.selectedMonth
+            this.datas.selectedYear = this.selectedYear
+            this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
+            this.setReportHeader();
+            await this.getReport();
+        },
         clickDangerButton(data,item){
             switch (item.name){
                 case '하':
@@ -402,7 +400,12 @@ export default {
             }
         },
         inputRobotComment(text,data){
-            data.data.violation_value.current_data.comment = text
+            if(data.column.cellTemplate == "commentTemplate"){
+                data.data.violation_value.current_data.comment = text
+            }
+            else{
+                data.data.previolation_value.current_data.comment = text
+            }
         },
         inputZoneOpinion(opinion,bIndex,zIndex){
             this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robot => {
@@ -438,37 +441,121 @@ export default {
             this.datas.boothInfo = deepClone(this.getBoothInfos)
             this.datas.zoneInfo = deepClone(this.getZoneInfos)
             this.datas.robotInfo = deepClone(this.getRobotInfos)
-            this.datas.allReportDetail.forEach(el => {
+            let tempReportId = [];
+            let reportSwitch = null // report_detail 테이블에 저장되어있는지 안했는지 표시
+            if(this.datas.allReportDetail !== ""){
+                this.datas.allReportDetail.forEach(el => {
+                tempReportId.push(el.report_id)
+                if(tempReportId.includes(this.datas.selectedReport.report_id)){
+                    reportSwitch = 1
+                }else{
+                    reportSwitch = 0
+                }
                 this.datas.torqueAnalysisReportDetail.forEach(element => {
                     if(el.data_id === element.prev_data_id) {
                         temp.push(el)
                     }
                 })
             })
-            this.datas.prevReport = temp;
+            }
+            else{
+                reportSwitch = 0
+            }
+
+             this.datas.torqueAnalysisReportDetail.forEach(element => {
+                if(element.prev_data_id == null){
+
+                    temp.push(element)
+                }
+            })
+            this.datas.prevReport = deepClone(temp);
+            if(reportSwitch == 0){
+                await this.getViolatedAccumulation();
+            }
+            this.setFilteredReportList(tempReportId)
+            // let set = [...new Set(tempReportId)]
+            // let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
+            // this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            // if(this.datas.filteredReport.length !==0){
+            //     notIncludeReportDetail.forEach(nonReport => {
+            //         this.datas.filteredReport.forEach((el,index) => {
+            //             if(nonReport.report_id == el.report_id){
+            //                 this.datas.filteredReport.splice(index,1)
+            //             }
+            //         })
+            //     })
+            // }
             this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
-                Object.assign(robotElement, { violation_value: this.datas.torqueAnalysisReportDetail.filter(element => element.robot_id === robotElement.id)[0]})
-                if(robotElement.violation_value == undefined){
+                if(reportSwitch == 0){
+                    let cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0, cnt6 = 0, cnt7 = 0
+                    let month = this.datas.selectedMonth.substr(0, 2)
+                    let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
+                    Object.assign(robotElement, { violation_value : this.datas.violatedAccumulation.filter(element => element.robot_id == robotElement.id)[0]})
+                    if(robotElement.violation_value == undefined){
+                        robotElement.violation_value = {
+                            axis: {axis1:0,axis2:0,axis3:0,axis4:0,axis5:0,axis6:0,axis7:0},
+                            current_start_date : `${this.datas.selectedYear}-${month}-01 00:00:00`,
+                            current_end_date : `${this.datas.selectedYear}-${month}-${month_last_date} 00:00:00`,
+                            current_data : {
+                                violation_count : [null,null,null,null,null,null,null],
+                                comment: null,
+                                danger_level: null,
+                            }
+                        }
+                    }
+                    cnt1 = robotElement.violation_value.axis.axis1 ? cnt1 + robotElement.violation_value.axis.axis1 : cnt1
+                    cnt2 = robotElement.violation_value.axis.axis2 ? cnt2 + robotElement.violation_value.axis.axis2 : cnt2
+                    cnt3 = robotElement.violation_value.axis.axis3 ? cnt3 + robotElement.violation_value.axis.axis3 : cnt3
+                    cnt4 = robotElement.violation_value.axis.axis4 ? cnt4 + robotElement.violation_value.axis.axis4 : cnt4
+                    cnt5 = robotElement.violation_value.axis.axis5 ? cnt5 + robotElement.violation_value.axis.axis5 : cnt5
+                    cnt6 = robotElement.violation_value.axis.axis6 ? cnt6 + robotElement.violation_value.axis.axis6 : cnt6
+                    cnt7 = robotElement.violation_value.axis.axis7 ? cnt7 + robotElement.violation_value.axis.axis7 : cnt7
                     robotElement.violation_value = {
-                        // current_data_range: null,
-                        current_start_date : null,
-                        current_end_date: null,
+                        current_start_date : `${this.datas.selectedYear}-${month}-01 00:00:00`,
+                        current_end_date : `${this.datas.selectedYear}-${month}-${month_last_date} 00:00:00`,
                         current_data : {
-                            violation_count : [0,0,0,0,0,0,0],
+                            violation_count : [null,null,null,null,null,null,null],
                             comment: null,
                             danger_level: null,
-                        },
+                        }
+                    }
+                    robotElement.violation_value.current_data.violation_count[0] = cnt1; cnt1 = 0;
+                    robotElement.violation_value.current_data.violation_count[1] = cnt2; cnt2 = 0;
+                    robotElement.violation_value.current_data.violation_count[2] = cnt3; cnt3 = 0;
+                    robotElement.violation_value.current_data.violation_count[3] = cnt4; cnt4 = 0;
+                    robotElement.violation_value.current_data.violation_count[4] = cnt5; cnt5 = 0;
+                    robotElement.violation_value.current_data.violation_count[5] = cnt6; cnt6 = 0;
+                    robotElement.violation_value.current_data.violation_count[6] = cnt7; cnt7 = 0;
+
+                }
+                else{
+                    Object.assign(robotElement, { violation_value: this.datas.torqueAnalysisReportDetail.filter(element => element.robot_id === robotElement.id)[0]})
+                    if(robotElement.violation_value == undefined){
+                        robotElement.violation_value = {
+                            current_start_date : null,
+                            current_end_date: null,
+                            current_data : {
+                                violation_count : [null,null,null,null,null,null,null],
+                                comment: null,
+                                danger_level: null,
+                            },
+                        }
                     }
                 }
                 if(this.datas.prevReport.length !== 0){
                     Object.assign(robotElement, { previolation_value: this.datas.prevReport.filter(element => element.robot_id === robotElement.id)[0]})
                 }
-                if(robotElement.previolation_value == undefined){
+                if(robotElement.previolation_value == undefined || robotElement.violation_value.prev_data_id == null){
                     robotElement.previolation_value = {
-                        current_start_date: null,
+                        comment : null,
+                        current_start_date : null,
                         current_end_date: null,
-                        current_data : {violation_count : [0,0,0,0,0,0,0], comment: null, danger_level: null}
+                        current_data : {
+                            violation_count : [null,null,null,null,null,null,null],
+                            comment: null,
+                            danger_level: null,
+                        },
                     }
                 }
             })
@@ -477,49 +564,113 @@ export default {
             })
             this.datas.boothInfo.forEach(boothElement => {
                 Object.assign(boothElement, {zone: this.datas.zoneInfo.filter(element => element.booth === boothElement.id)})
-            })
-            let filteredIndex = null
+                boothElement.zone.sort(function (a, b) {
 
-            let tempReportId = [];
-            this.datas.allReportDetail.forEach(el => {
-                tempReportId.push(el.report_id)
+	                return a.id < b.id ? -1 : 1;
+
+                });
             })
-            let set = [...new Set(tempReportId)]
-            let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
-            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
-            notIncludeReportDetail.forEach(nonReport => {
-               this.datas.filteredReport.splice(this.datas.filteredReport.findIndex(item => item.report_id == nonReport.report_id),1)
+            // let test = []
+            // this.datas.filteredReport.forEach((filteredElement, index) => {
+            //     this.datas.prevReport.forEach(prevElement => {
+            //         if(filteredElement.report_id === prevElement.report_id){
+            //            filteredIndex = index
+            //            if(!test.find(el => el == filteredElement.report_id)){
+            //                test.push(filteredElement.report_id)
+            //            }
+            //         }
+            //     })
+            // })
+            // console.log(test)
+            // this.datas.prevReport.forEach(el => console.log(el.report_id))
+            this.datas.prevReport.sort(function (a,b) {
+                return a.zone_id < b.zone_id ? -1 : 1;
             })
-            this.datas.filteredReport.forEach((filteredElement, index) => {
-                this.datas.prevReport.forEach(prevElement => {
-                    if(filteredElement.report_id === prevElement.report_id){
-                       filteredIndex = index
-                    }
-                })
-            })
+            let numTest = 0;
             let tempArr = []
             this.datas.prevArray = [];
             this.datas.boothInfo.forEach((b)=>{
                 tempArr = []
-                b.zone.forEach((z)=>{
-                    tempArr.push(filteredIndex)
+                b.zone.forEach((z, zIndex)=>{
+                    if(this.datas.prevReport.length !==0){
+                        if(this.datas.prevReport[numTest] !== undefined){
+                            tempArr.push(this.datas.filteredReport.findIndex(el => el.report_id == this.datas.prevReport[numTest].report_id))
+                        }
+                        else{
+                            tempArr.push(null)
+                        }
+
+                    }
+                    else{
+                        tempArr.push(null)
+                    }
+                    numTest += z.robot.length
+                    if(tempArr[zIndex] == -1){tempArr[zIndex] = null}
                 })
                 this.datas.prevArray.push(tempArr)
             })
-            this.datas.prevIndex = filteredIndex
+            // this.datas.prevIndex = filteredIndex
         },
-
         setSelectBox(){
             let tempReportId = [];
-            this.datas.allReportDetail.forEach(el => {
-                tempReportId.push(el.report_id)        // his_report_detail db에 있는 report_id
-            })
-            let set = [...new Set(tempReportId)]       // 중복 제거
+            if(this.datas.allReportDetail !== ""){
+                this.datas.allReportDetail.forEach(el => {
+                    tempReportId.push(el.report_id)        // his_report_detail db에 있는 report_id
+                })
+            }
+            this.setFilteredReportList(tempReportId);
+        },
+        setFilteredReportList(allreportid){
+            let set = [...new Set(allreportid)]
             let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
-            // his_report 테이블에는 있고, report_detail 테이블에는 없는 report들 filter
-            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id) // 선택된 리포트 외에 리포트만 필터
-            notIncludeReportDetail.forEach(nonReport => {
-               this.datas.filteredReport.splice(this.datas.filteredReport.findIndex(item => item.report_id == nonReport.report_id),1) // 리포트 디테일에 없는 리포트 필터
+            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            if(this.datas.filteredReport.length !==0){
+                notIncludeReportDetail.forEach(nonReport => {
+                    this.datas.filteredReport.forEach((el,index) => {
+                        if(nonReport.report_id == el.report_id){
+                            this.datas.filteredReport.splice(index,1)
+                        }
+                    })
+                })
+            }
+        },
+        async getViolatedAccumulation(){
+            this.datas.violatedAccumulation = [];
+            let month = this.datas.selectedMonth.substr(0, 2)
+            let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
+            let start_date = `${this.datas.selectedYear}-${month}-01`
+            let end_date = `${this.datas.selectedYear}-${month}-${month_last_date}`
+            let dangerData = [];
+            await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${start_date}/enddate/${end_date}`)
+            .then((response) => {
+                dangerData = deepClone(response.data)
+                this.datas.violatedAccumulation = dangerData.reduce((acc, {robot_id, axis})=> {
+                    let axisKey = `axis${axis}`;
+                    let item = acc.find((el) => el.robot_id === robot_id);
+                    if(item) {
+                        if(Object.keys(item.axis).includes(axisKey)){
+                            item.axis[axisKey] += 1;
+                        } else {
+                            item.axis[axisKey] = 1;
+                        }
+                        return acc.map((el) => el.robot_id === robot_id ? {robot_id, axis: item.axis}: el);
+                    } else {
+                        return [...acc, {robot_id, axis: {[axisKey]: 1}}];
+                    }
+                }, []);
+                if(response.data == ""){
+                    window.alert('not data')
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                // window.alert('data error')
+                // this.datas.violatedAccumulation = [];
+                // this.getRobotInfos.forEach(el => {
+                //     this.datas.violatedAccumulation.push({
+                //         robot_id : el.id
+                //     })
+                // })
             })
         },
         async changeAllSelectBox(selectReport){
@@ -571,22 +722,30 @@ export default {
             this.datas.allReportDetail.forEach(el => {
                 if(el.report_id === selectReport.itemData.report_id) {
                     temp.push(el)
-                }                                                                     // 변경할 비교 리포트
-                if(el.report_id === this.datas.filteredReport[this.datas.prevIndex].report_id){
-                    tempArr.push(el)
-                }                                                                   // 이미 선택 되어진 비교 리포트
+                }
             })
+
             let array = [];
             this.datas.boothInfo[selectedboothIndex].zone[selectedZoneIndex].robot.forEach(el => {
                array = temp.filter(robotElement => robotElement.zone_id == el.zone)
             })
 
-            array.forEach(prevReport => {
-                tempArr.splice(tempArr.findIndex(item => item.robot_id == prevReport.robot_id),1)
-                tempArr.push(prevReport)
+            if(this.datas.prevReport.length !== 0){
+                this.datas.prevReport.forEach(el => {
+                array.forEach(arrayElement => {
+                    if(el.robot_id == arrayElement.robot_id){
+                        el = arrayElement
+                    }
+                })
+                tempArr.push(el)
             })
-
             this.datas.prevReport = tempArr
+            }
+            else{
+                this.datas.prevReport = temp
+            }
+
+            //
             this.$refs.prevContainer.forEach(item => {
                 item.instance.getDataSource().reload()
             })
@@ -636,7 +795,7 @@ export default {
                 resultArr.forEach(el => {
                     this.datas.robotInfo.forEach(robotElement => {
                         if(el.robot_id == robotElement.id){
-                            robotElement.violation_value.current_data = el.current_data
+                            robotElement.violation_value.current_data.violation_count = el.current_data.violation_count
                         }
                     })
                 })
@@ -651,15 +810,23 @@ export default {
             }
             this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
         },
+        getFilteredReportDetail(){
+             EventBus.$emit('getFilteredReportDetail',this.datas.selectedReport.report_id);
+        },
         async clickSaveButton(){
-            console.log(this.datas.reportSwitch)
             if (window.confirm("저장하시겠습니까?")){
                 this.datas.filteredCurrentData = [];
                 this.datas.filteredPrevData = [];
                 await this.getRowData();
+                this.datas.tempReportId = [];
+                if(this.datas.allReportDetail !== ""){
+                    this.datas.allReportDetail.forEach(el => {
+                        this.datas.tempReportId.push(el.report_id)
+                    })
+                }
                 await this.updateCurrentReport();
                 await this.updatePrevReport();
-                await this.getReport();
+                await this.getFilteredReportDetail();
             }
         },
         async getRowData(){
@@ -681,6 +848,7 @@ export default {
         async updateCurrentReport(){
             for await(let row of this.datas.filteredCurrentData){
                 let report_id = this.datas.selectedReport.report_id
+                let reportSwitch = null;
                 let booth_id = row.data.booth
                 let zone_id = row.data.zone
                 let report_type = 0
@@ -690,32 +858,32 @@ export default {
                 let data_id = row.data.violation_value.data_id
                 let current_start_date = row.data.violation_value.current_start_date
                 let current_end_date = row.data.violation_value.current_end_date
-                for(let i =0; i < row.values.length; i++){
-                    if(row.values[i] === undefined){
-                        row.values[i] = null
-                    }
-                }
                 let current_data= {
-                    danger_level: row.values[8],
+                    danger_level: row.data.violation_value.current_data.danger_level,
                     violation_count : [
-                        row.values[1],
-                        row.values[2],
-                        row.values[3],
-                        row.values[4],
-                        row.values[5],
-                        row.values[6],
-                        row.values[7],
+                        row.data.violation_value.current_data.violation_count[0],
+                        row.data.violation_value.current_data.violation_count[1],
+                        row.data.violation_value.current_data.violation_count[2],
+                        row.data.violation_value.current_data.violation_count[3],
+                        row.data.violation_value.current_data.violation_count[4],
+                        row.data.violation_value.current_data.violation_count[5],
+                        row.data.violation_value.current_data.violation_count[6],
                     ],
-                    comment: row.values[9]
+                    comment: row.data.violation_value.current_data.comment
                 }
 
-                if(row.data.hasOwnProperty('previolation_value')!==true){
+                if(row.data.previolation_value.hasOwnProperty('prev_data_id')!==true){
                     prev_data_id = null
                 }
                 else{
                     prev_data_id = row.data.previolation_value.data_id
                 }
-                if(this.datas.torqueAnalysisReportDetail.reportDetail !== ''){
+                if(this.datas.tempReportId.includes(this.datas.selectedReport.report_id)){
+                    reportSwitch = 1
+                }else{
+                    reportSwitch = 0
+                }
+                if(reportSwitch == 1){
                     await this.updateReport({
                         report_id,
                         booth_id,
@@ -739,7 +907,6 @@ export default {
                         report_type,
                         current_data,
                         prev_data_id,
-                        data_id,
                         comment,
                         current_start_date,
                         current_end_date
@@ -750,6 +917,7 @@ export default {
         async updatePrevReport(){
             for await(let row of this.datas.filteredPrevData){
                 let report_id = row.data.previolation_value.report_id
+                let reportSwitch = null;
                 let booth_id = row.data.booth
                 let zone_id = row.data.zone
                 let report_type = 0
@@ -759,32 +927,31 @@ export default {
                 let data_id = row.data.previolation_value.data_id
                 let current_start_date = row.data.previolation_value.current_start_date
                 let current_end_date = row.data.previolation_value.current_end_date
-                for(let i =0; i < row.values.length; i++){
-                    if(row.values[i] === undefined){
-                        row.values[i] = null
-                    }
-                }
                 let current_data= {
-                    danger_level: row.values[8],
+                    danger_level: row.data.previolation_value.current_data.danger_level,
                     violation_count : [
-                        row.values[1],
-                        row.values[2],
-                        row.values[3],
-                        row.values[4],
-                        row.values[5],
-                        row.values[6],
-                        row.values[7],
+                        row.data.previolation_value.current_data.violation_count[0],
+                        row.data.previolation_value.current_data.violation_count[1],
+                        row.data.previolation_value.current_data.violation_count[2],
+                        row.data.previolation_value.current_data.violation_count[3],
+                        row.data.previolation_value.current_data.violation_count[4],
+                        row.data.previolation_value.current_data.violation_count[5],
+                        row.data.previolation_value.current_data.violation_count[6],
                     ],
-                    comment: row.values[9]
+                    comment: row.data.previolation_value.current_data.comment
                 }
-
-                if(row.data.hasOwnProperty('previolation_value')!==true){
+                if(row.data.previolation_value.hasOwnProperty('prev_data_id')!==true){
                     prev_data_id = null
                 }
                 else{
                     prev_data_id = row.data.previolation_value.prev_data_id
                 }
-                if(this.datas.torqueAnalysisReportDetail.reportDetail !== ''){
+                if(this.datas.tempReportId.includes(row.data.previolation_value.report_id)){
+                    reportSwitch = 1
+                }else{
+                    reportSwitch = 0
+                }
+                if(reportSwitch == 1){
                     await this.updateReport({
                         report_id,
                         booth_id,
@@ -808,7 +975,6 @@ export default {
                         report_type,
                         current_data,
                         prev_data_id,
-                        data_id,
                         comment,
                         current_start_date,
                         current_end_date
@@ -816,9 +982,9 @@ export default {
                 }
             }
         },
-        updateReport(item){
-            console.log('put')
-            this.$http.put(`/diagnostics/report/report/${item.report_id}`, {
+        async updateReport(item){
+            if(item.report_id !== undefined){
+                await this.$http.put(`/diagnostics/report/report/${item.report_id}`, {
                 factory_id: this.getFactoryId,
                 booth_id : item.booth_id,
                 zone_id : item.zone_id,
@@ -831,13 +997,12 @@ export default {
                 current_start_date : item.current_start_date,
                 current_end_date : item.current_end_date
             })
-            .then(() => {
-
-            })
+            .then(() => {})
+            }
         },
-        createReport(item){
-            console.log('post')
-            this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
+        async createReport(item){
+            if(item.report_id !==undefined){
+                await this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
                 factory_id: this.getFactoryId,
                 booth_id : item.booth_id,
                 zone_id : item.zone_id,
@@ -845,11 +1010,12 @@ export default {
                 report_type : item.report_type,
                 current_data : item.current_data,
                 prev_data_id : item.prev_data_id,
-                comment : item.comment
+                comment : item.comment,
+                current_start_date : item.current_start_date,
+                current_end_date : item.current_end_date
             })
-            .then(() => {
-
-            })
+            .then(() => {})
+            }
         }
     },
 }

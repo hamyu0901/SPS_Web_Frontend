@@ -17,6 +17,7 @@
                 @closeReportDialog="closeReportDialog"
                 @clickConfirmButton="clickConfirmButton"
                 @getReport="getReport"
+                @updateTorqueAnalysisReportDetail="updateTorqueAnalysisReportDetail"
             />
         </v-dialog>
         <div id="tabMenuBox">
@@ -41,10 +42,10 @@
             />
         </div>
         <div>
-            <temp-analysis 
+            <temp-analysis
                 v-if="datas.reportType === 1"
                 :reports="datas.reports"
-            
+
             ></temp-analysis>
         </div>
         <div v-if="datas.reportType === 2">알람 분석</div>
@@ -108,6 +109,9 @@ export default {
         },
         getReport(reports){
             this.datas.reports = reports
+        },
+        updateTorqueAnalysisReportDetail(item){
+            this.datas.torqueAnalysisReportDetail = item.torqueAnalysisReportDetail
         }
     }
 }
