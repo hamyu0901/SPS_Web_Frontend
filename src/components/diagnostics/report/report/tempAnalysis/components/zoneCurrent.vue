@@ -416,6 +416,7 @@ export default {
     },
     watch:{
         quickPeriod(){
+            
             var quickDate;
             var date = new Date();
             var form_date = this.formatDate(date)
@@ -552,6 +553,7 @@ export default {
             this.zoneName = this.zoneInfo.zone_name;
         },
         findZoneData(dateFrom, dateTo){
+            
             const variable ={
                 report_id: null,
                 factory_id: 2,
@@ -572,9 +574,10 @@ export default {
                 this.disableTextArea = false;
             })
             this.opinionInput = '';
-
+            this.isLoading = false;
         },
         updatePeriod(period){
+            this.isLoading = true;
             this.zonePeriod = period;
             var dateFrom = `${this.zonePeriod.substr(0,10)} 00:00:00`;
             var dateTo = `${this.zonePeriod.substr(13,23)} 23:59:59`;

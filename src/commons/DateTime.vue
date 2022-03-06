@@ -14,7 +14,7 @@ export default {
         }
     },
     created(){
-        this.date = this.dateModel !== null ? this.dateModel : new now();
+        this.date = this.dateModel !== null ? this.dateModel : this.now();
     },
     mounted(){
 
