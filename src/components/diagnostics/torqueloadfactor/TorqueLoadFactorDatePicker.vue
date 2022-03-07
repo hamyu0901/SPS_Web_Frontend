@@ -55,14 +55,12 @@ export default {
             else {
                 this.$refs.torqueloadpicker.$refs.input.style.color = this.$style.common.datePickerItemInputColor;
             }
-            // this.$refs.torqueloadpicker.$refs.input.nextElementSibling.style.backgroundColor = this.$style.common.datePickerItemNextElementSiblingBackgroundColor;
+            this.$refs.torqueloadpicker.$refs.input.nextElementSibling.style.backgroundColor = this.$style.common.datePickerItemNextElementSiblingBackgroundColor;
             this.$refs.torqueloadpicker.$refs.input.nextSibling.nextSibling.childNodes[0].childNodes[0].style.color = this.$style.common.datePickerItemNextSiblingColor;
             this.$refs.torqueloadpicker.$refs.calendar.style.backgroundColor = this.$style.common.datePickerItemCalendarBackgroundColor;
             this.$refs.torqueloadpicker.$refs.calendar.childNodes[2].childNodes[0].style.color = this.$style.common.datePickerItemCalendarColor;
             this.$refs.torqueloadpicker.$refs.calendar.childNodes[2].childNodes[2].childNodes[0].childNodes[0].style.color = this.$style.common.datePickerItemCalendarColor;
-            // this.$refs.torqueloadpicker.$refs.calendar.childNodes[2].childNodes[2].childNodes[0].childNodes[1].style.color = this.$style.common.datePickerItemCalendarColor;
             this.$refs.torqueloadpicker.$refs.calendar.childNodes[2].childNodes[2].childNodes[2].style.color = this.$style.common.datePickerItemCalendarColor;
-            // this.$refs.torqueloadpicker.$refs.calendar.childNodes[2].childNodes[2].childNodes[4].style.color = this.$style.common.datePickerItemCalendarColor;
             document.documentElement.style.setProperty("--datePickerAppendBackgroundColor", this.$style.common.datePickerItemAppendBackgroundColor);
         },
         convertDateFormat(date) {

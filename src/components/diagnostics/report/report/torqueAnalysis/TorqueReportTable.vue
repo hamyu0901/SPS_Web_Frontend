@@ -5,7 +5,7 @@
             <v-flex class="reportHeader">{{ui.header}}</v-flex>
             <v-flex class="compareCombobox">
                 <DxSelectBox
-                    :data-source="datas.filteredReport"
+                    :data-source="datas.selectBoxReportList"
                     display-expr="report_name"
                     width="300"
                     @item-click="changeAllSelectBox"
@@ -37,10 +37,10 @@
                             <div class="prevSelectBox">
                                 <DxSelectBox class="prevSelectContent"
                                     :width="300"
-                                    :data-source="datas.filteredReport"
+                                    :data-source="datas.selectBoxReportList"
                                     display-expr="report_name"
                                     value-expr="report_id"
-                                    :value="datas.prevArray[boothIndex][zoneIndex] !== null ? datas.filteredReport[datas.prevArray[boothIndex][zoneIndex]].report_id : null"
+                                    :value="datas.selectAllReportIndexs[boothIndex][zoneIndex] !== null ? datas.selectBoxReportList[datas.selectAllReportIndexs[boothIndex][zoneIndex]].report_id : null"
                                     @opened="setSelectBox"
                                     @item-click="changeSelectBox($event,boothIndex,zoneIndex)"
                                 />
@@ -301,7 +301,6 @@ export default {
     props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType','reportSwitch','selectedMonth','selectedYear'],
     data() {
         return {
-            date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
             ui : {
                 header : ''
             },
@@ -310,8 +309,7 @@ export default {
                 selectedMonth: null,
                 selectedYear: null,
                 reportType: null,
-                prevIndex: null,
-                prevArray: [],
+                selectAllReportIndexs: [],
                 selectedReport: {},
                 boothInfo: [],
                 robotInfo: [],
@@ -321,7 +319,7 @@ export default {
                     {id: 1, name: '중'},
                     {id: 2, name: '상'},
                 ],
-                filteredReport : [],
+                selectBoxReportList : [],
                 prevReport: [],
                 reports: [],
                 allReportDetail: [],
@@ -329,7 +327,7 @@ export default {
                 filteredPrevData: [],
                 torqueAnalysisReportDetail:[],
                 violatedAccumulation: [],
-                tempReportId: [],
+                allReportId: [],
             }
         }
     },
@@ -472,19 +470,7 @@ export default {
             if(reportSwitch == 0){
                 await this.getViolatedAccumulation();
             }
-            this.setFilteredReportList(tempReportId)
-            // let set = [...new Set(tempReportId)]
-            // let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
-            // this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
-            // if(this.datas.filteredReport.length !==0){
-            //     notIncludeReportDetail.forEach(nonReport => {
-            //         this.datas.filteredReport.forEach((el,index) => {
-            //             if(nonReport.report_id == el.report_id){
-            //                 this.datas.filteredReport.splice(index,1)
-            //             }
-            //         })
-            //     })
-            // }
+            this.setSelectBoxReportList(tempReportId)
             this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
                 if(reportSwitch == 0){
@@ -570,31 +556,19 @@ export default {
 
                 });
             })
-            // let test = []
-            // this.datas.filteredReport.forEach((filteredElement, index) => {
-            //     this.datas.prevReport.forEach(prevElement => {
-            //         if(filteredElement.report_id === prevElement.report_id){
-            //            filteredIndex = index
-            //            if(!test.find(el => el == filteredElement.report_id)){
-            //                test.push(filteredElement.report_id)
-            //            }
-            //         }
-            //     })
-            // })
-            // console.log(test)
-            // this.datas.prevReport.forEach(el => console.log(el.report_id))
+
             this.datas.prevReport.sort(function (a,b) {
                 return a.zone_id < b.zone_id ? -1 : 1;
             })
             let numTest = 0;
             let tempArr = []
-            this.datas.prevArray = [];
+            this.datas.selectAllReportIndexs = [];
             this.datas.boothInfo.forEach((b)=>{
                 tempArr = []
                 b.zone.forEach((z, zIndex)=>{
                     if(this.datas.prevReport.length !==0){
                         if(this.datas.prevReport[numTest] !== undefined){
-                            tempArr.push(this.datas.filteredReport.findIndex(el => el.report_id == this.datas.prevReport[numTest].report_id))
+                            tempArr.push(this.datas.selectBoxReportList.findIndex(el => el.report_id == this.datas.prevReport[numTest].report_id))
                         }
                         else{
                             tempArr.push(null)
@@ -607,9 +581,9 @@ export default {
                     numTest += z.robot.length
                     if(tempArr[zIndex] == -1){tempArr[zIndex] = null}
                 })
-                this.datas.prevArray.push(tempArr)
+                this.datas.selectAllReportIndexs.push(tempArr)
             })
-            // this.datas.prevIndex = filteredIndex
+
         },
         setSelectBox(){
             let tempReportId = [];
@@ -618,17 +592,17 @@ export default {
                     tempReportId.push(el.report_id)        // his_report_detail db에 있는 report_id
                 })
             }
-            this.setFilteredReportList(tempReportId);
+            this.setSelectBoxReportList(tempReportId);
         },
-        setFilteredReportList(allreportid){
+        setSelectBoxReportList(allreportid){
             let set = [...new Set(allreportid)]
             let notIncludeReportDetail = this.datas.reports.filter(el => !set.includes(el.report_id))
-            this.datas.filteredReport = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
-            if(this.datas.filteredReport.length !==0){
+            this.datas.selectBoxReportList = this.datas.reports.filter(el => el.report_id !== this.datas.selectedReport.report_id)
+            if(this.datas.selectBoxReportList.length !==0){
                 notIncludeReportDetail.forEach(nonReport => {
-                    this.datas.filteredReport.forEach((el,index) => {
+                    this.datas.selectBoxReportList.forEach((el,index) => {
                         if(nonReport.report_id == el.report_id){
-                            this.datas.filteredReport.splice(index,1)
+                            this.datas.selectBoxReportList.splice(index,1)
                         }
                     })
                 })
@@ -664,29 +638,23 @@ export default {
             })
             .catch((err) => {
                 console.log(err)
-                // window.alert('data error')
-                // this.datas.violatedAccumulation = [];
-                // this.getRobotInfos.forEach(el => {
-                //     this.datas.violatedAccumulation.push({
-                //         robot_id : el.id
-                //     })
-                // })
             })
         },
         async changeAllSelectBox(selectReport){
-            this.datas.filteredReport.forEach((item, index) => {
+            let selectedReportIndex = null;
+            this.datas.selectBoxReportList.forEach((item, index) => {
                 if(item.report_id === selectReport.itemData.report_id){
-                    this.datas.prevIndex = index
+                    selectedReportIndex = index
                 }
             })
-            this.datas.prevArray = [];
+            this.datas.selectAllReportIndexs = [];
             let tempArr = []
             this.datas.boothInfo.forEach((b)=>{
                 tempArr = []
                 b.zone.forEach((z)=>{
-                    tempArr.push(this.datas.prevIndex)
+                    tempArr.push(selectedReportIndex)
                 })
-                this.datas.prevArray.push(tempArr)
+                this.datas.selectAllReportIndexs.push(tempArr)
             })
             let temp = [];
             this.datas.allReportDetail.forEach(el => {
@@ -712,9 +680,9 @@ export default {
             this.datas.prevReport = temp
         },
         async changeSelectBox(selectReport,selectedboothIndex,selectedZoneIndex){
-            this.datas.filteredReport.forEach((item, index) => {
+            this.datas.selectBoxReportList.forEach((item, index) => {
                 if(item.report_id === selectReport.itemData.report_id){
-                    this.datas.prevArray[selectedboothIndex][selectedZoneIndex] = index
+                    this.datas.selectAllReportIndexs[selectedboothIndex][selectedZoneIndex] = index
                 }
             })
             let temp = [];
@@ -818,10 +786,10 @@ export default {
                 this.datas.filteredCurrentData = [];
                 this.datas.filteredPrevData = [];
                 await this.getRowData();
-                this.datas.tempReportId = [];
+                this.datas.allReportId = [];
                 if(this.datas.allReportDetail !== ""){
                     this.datas.allReportDetail.forEach(el => {
-                        this.datas.tempReportId.push(el.report_id)
+                        this.datas.allReportId.push(el.report_id)
                     })
                 }
                 await this.updateCurrentReport();
@@ -858,6 +826,9 @@ export default {
                 let data_id = row.data.violation_value.data_id
                 let current_start_date = row.data.violation_value.current_start_date
                 let current_end_date = row.data.violation_value.current_end_date
+                if(row.data.violation_value.current_data.danger_level == null){
+                    row.data.violation_value.current_data.danger_level = 0
+                }
                 let current_data= {
                     danger_level: row.data.violation_value.current_data.danger_level,
                     violation_count : [
@@ -878,7 +849,7 @@ export default {
                 else{
                     prev_data_id = row.data.previolation_value.data_id
                 }
-                if(this.datas.tempReportId.includes(this.datas.selectedReport.report_id)){
+                if(this.datas.allReportId.includes(this.datas.selectedReport.report_id)){
                     reportSwitch = 1
                 }else{
                     reportSwitch = 0
@@ -927,6 +898,9 @@ export default {
                 let data_id = row.data.previolation_value.data_id
                 let current_start_date = row.data.previolation_value.current_start_date
                 let current_end_date = row.data.previolation_value.current_end_date
+                if(row.data.previolation_value.current_data.danger_level == null){
+                    row.data.violation_value.current_data.danger_level = 0
+                }
                 let current_data= {
                     danger_level: row.data.previolation_value.current_data.danger_level,
                     violation_count : [
@@ -946,7 +920,7 @@ export default {
                 else{
                     prev_data_id = row.data.previolation_value.prev_data_id
                 }
-                if(this.datas.tempReportId.includes(row.data.previolation_value.report_id)){
+                if(this.datas.allReportId.includes(row.data.previolation_value.report_id)){
                     reportSwitch = 1
                 }else{
                     reportSwitch = 0

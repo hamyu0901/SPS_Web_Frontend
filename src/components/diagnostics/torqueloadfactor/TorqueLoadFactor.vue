@@ -9,7 +9,6 @@
                     ></date-picker> -->
                     <torque-load-factor-date-picker
                         v-on:getDate="getPrevPickerDate"
-
                     />
                 </v-flex>
                 <a><img class="pt-1 pr-2" src="@/images/selector_icon.png"/></a>
@@ -67,10 +66,11 @@
                     ></selector>
                 </v-flex>
 
-                <v-flex lg1>
-                </v-flex>
+                <!-- <v-flex lg1>
+                </v-flex> -->
                 <v-spacer/>
-                <v-btn class="smallBtn ml-1" @click="searchBtnClicked"><a class="pt-1"><img :src="searchBtnIcon"></a></v-btn>
+                <v-btn class="alertBtn" color="error" icon @click="searchAlertDataClicked"><v-icon>mdi-alert-circle-check</v-icon></v-btn>
+                <v-btn class="smallBtn" color="primary" icon @click="searchBtnClicked"><v-icon>mdi-magnify</v-icon></v-btn>
                 <comfirm-dlg
                     v-bind:comfirmDlgType="'jobUpdate'"
                     v-bind:comfirmDlgFlag="comfirmDlgFlag"
@@ -452,6 +452,21 @@ export default {
                 this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.checkSearchData`));
             }
         },
+        searchAlertDataClicked(){
+            if(this.prevStartDate != undefined && this.prevEndDate != undefined && this.targetBoothId != undefined
+                && this.targetZoneId != undefined && this.targetRobotId != undefined
+                && this.targetJobFile != undefined && this.targetAxisNum != undefined)
+            {
+                this.getAbnormalStandardDatas();
+                this.getFilteredWorkListTableDatas();
+                this.getFilteredLoadFactorTrendDatas();
+            } else {
+                this.abnormalStandardSettingTableContentDatas = [];
+                this.workListTableContentDatas = [];
+                this.loadFactorTrendDatas = [];
+                this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.checkSearchData`));
+            }
+        },
         getAbnormalStandardDatas() {
             let postDatas = {};
             this.abnormalStandardSettingTableContentDatas = [];
@@ -519,6 +534,38 @@ export default {
                 this.setLoadingDialog(false);
             })
         },
+        getFilteredWorkListTableDatas() {
+            let postDatas = {};
+            this.workListTableContentDatas = [];
+            postDatas = this.checkTargetDatas(this.targetBoothId, this.targetZoneId, this.targetRobotId, this.targetJobFile, this.targetAxisNum);
+            postDatas['excpt'] = Boolean(this.exceptCheckFlag);
+            postDatas['prevtime'] = this.prevDate;
+            postDatas['startDate'] = this.prevStartDate;
+            postDatas['endDate'] = this.prevEndDate;
+            this.setLoadingDialog(true);
+            this.$http.post(`${this.baseUrl}/diagnostics/torqueloadfactor/data`, postDatas)
+            .then((result) => {
+                if(result.data != '') {
+                    this.workListTableContentDatas = [];
+                    let maxSum = this.abnormalStandardSettingTableContentDatas[0].maxsum
+                    let minSum = this.abnormalStandardSettingTableContentDatas[0].minsum
+                    this.workListTableContentDatas = result.data.filter(el => el.sum > maxSum || el.sum < minSum);
+                    this.setLoadingDialog(false);
+                }
+                else {
+                    this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.currentData`));
+                    if(this.workListTableContentDatas.length == 0) {
+                        for(let i = 0; i < 5; i++) {
+                            this.workListTableContentDatas.push({timestamp: '', acm: '', avg: '', cycle: ''});
+                        }
+                    }
+                    this.setLoadingDialog(false);
+                }
+            }).catch((error) => {
+                this.$log.error(error);
+                this.setLoadingDialog(false);
+            })
+        },
         getLoadFactorTrendDatas() {
             let postDatas = {};
             postDatas = this.checkTargetDatas(this.targetBoothId, this.targetZoneId, this.targetRobotId, this.targetJobFile, this.targetAxisNum);
@@ -532,6 +579,32 @@ export default {
             .then((result) => {
                 if(result.data != '') {
                     this.loadFactorTrendDatas = result.data;
+                    this.setLoadingDialog(false);
+                }
+                else {
+                    this.$popmsg(this.$t(`diagnostics.torqueLoadFactor.popMsg.trendData`));
+                    this.setLoadingDialog(false);
+                }
+            }).catch((error) => {
+                this.$log.error(error);
+                this.setLoadingDialog(false);
+            })
+        },
+        getFilteredLoadFactorTrendDatas(){
+            let postDatas = {};
+            postDatas = this.checkTargetDatas(this.targetBoothId, this.targetZoneId, this.targetRobotId, this.targetJobFile, this.targetAxisNum);
+            postDatas['excpt'] = Boolean(this.exceptCheckFlag);
+            postDatas['prevtime'] = this.prevDate;
+            postDatas['startDate'] = this.prevStartDate;
+            postDatas['endDate'] = this.prevEndDate;
+            this.loadFactorTrendDatas = [];
+            this.setLoadingDialog(true);
+            this.$http.post(`${this.baseUrl}/diagnostics/torqueloadfactor/data`, postDatas)
+            .then((result) => {
+                if(result.data != '') {
+                    let maxSum = this.abnormalStandardSettingTableContentDatas[0].maxsum
+                    let minSum = this.abnormalStandardSettingTableContentDatas[0].minsum
+                    this.loadFactorTrendDatas = result.data.filter(el => el.sum > maxSum || el.sum < minSum )
                     this.setLoadingDialog(false);
                 }
                 else {
