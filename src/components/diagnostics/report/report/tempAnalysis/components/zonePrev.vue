@@ -1,5 +1,5 @@
 <template>
-    <div id="zonePrevBox">
+    <div id="zonePrevBox" class="zonePrevBox">
         <loading-spinner v-if="isLoading"></loading-spinner>
         <div id="zoneComboBox">
             <selector-vue ref="selector" :noDataText="'조회 가능한 리포트가 없습니다.'" :items="reportList" @selectItem="selectItem" :type="'prev_report_selection'"></selector-vue>
@@ -10,30 +10,35 @@
                 prepend-icon="event"
             ></v-text-field>
         </div>
-        <div id="zoneTableBox">
-            <table-vue :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/>
+        <div id="zoneTableBox" class="zoneTableBox">
+            <zone-prev-table :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/>
+            <!-- <table-vue :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/> -->
         </div>
         <div id="opinionBox">
-            <zone-opinion-vue :disabled="true" :opinionInput="opinionInput"></zone-opinion-vue>
+            <zone-prev-opinion :disabled="true" :opinionInput="opinionInput"/>
+            <!-- <zone-opinion-vue :disabled="true" :opinionInput="opinionInput"></zone-opinion-vue> -->
         </div>
     </div>
 </template>
 <script>
 import DateFromToVue from '../../../../../../commons/DateFromTo.vue';
 import report_selectorVue from '../../../../../../commons/report_selector.vue';
-import TableVue from '../../../../../../commons/Table.vue'
-import zoneOpinionVue from './zoneOpinion.vue';
-
+// import TableVue from '../../../../../../commons/Table.vue'
+// import zoneOpinionVue from './zoneOpinion.vue';
+import zonePrevOpinion from './zonePrevOpinion.vue'
+import zonePrevTable from './zonePrevTable.vue'
 import {mapGetters} from 'vuex';
 import LoadingSpinnerVue from '../../../../../../commons/LoadingSpinner.vue';
 export default {
     props:['robotInfo', 'zoneInfo'],
     components: {
         selectorVue: report_selectorVue,
-        tableVue: TableVue,
+        // tableVue: TableVue,
         DateFromToVue: DateFromToVue,
-        zoneOpinionVue: zoneOpinionVue,
+        // zoneOpinionVue: zoneOpinionVue,
         loadingSpinner: LoadingSpinnerVue,
+        zonePrevTable,
+        zonePrevOpinion
     },
     data(){
         return{
@@ -147,13 +152,15 @@ export default {
             tableData: [],
             testList: [
                 ],
-            
         }
     },
     created(){
         this.setThisZone();
         this.initializeReportId();
         this.initializeItems();
+    },
+    mounted(){
+        this.initializeStyle();
     },
     computed:{
         ...mapGetters({
@@ -177,7 +184,7 @@ export default {
     watch:{
         reportId(){
             this.report_id = this.getReportItems.selectedReport.report_id;
-            
+
             var param = {
                 current_report_id: this.report_id,
             }
@@ -188,7 +195,7 @@ export default {
                 for(const item of result.data){
                     this.reportList.push({report_id: item[0], name: item[1]});
                 }
-                
+
             });
         },
     },
@@ -202,13 +209,13 @@ export default {
                 data_id_list: s
             };
             var report_data = null;
-            
+
             await this.$http.post(`/diagnostics/datareport/temperature/reportDetailfromCurr`, param).then(result => {
                 if(result.data !== 'no data'){
                     report_data = result.data[0][0].report_id;
-                    this.selectItem({report_id: report_data}); 
+                    this.selectItem({report_id: report_data});
                     this.$refs.selector.updateReport(report_data)
-                    
+
                 }else{
                     this.zonePeriod = null;
                     this.tableData.splice(0);
@@ -255,12 +262,9 @@ export default {
                         end_date = list[3];
                     }
                     this.dataIdList.push(list[1]);
-                    
                     if(this.opinionInput === ''){
                         this.opinionInput = list[4];
-                        console.log(this.opinionInput)
                     }
-                    
                 }
                 this.zonePeriod = `${start_date} ~ ${end_date}`
             });
@@ -275,6 +279,13 @@ export default {
             }
             this.isLoading = false;
             this.$emit('updateDataId', list);
+        },
+        initializeStyle(){
+            // 조건문으로 스타일 변경해야함
+
+            // let table = document.getElementsByClassName('zonePrevBox').children
+            // let tableId = document.getElementById('zonePrevBox')
+            // let zoneTable = Array.prototype.slice.call((tableId).children);
         },
         initializeReportId(){
             this.report_id = this.getReportItems.selectedReport.report_id;
@@ -296,7 +307,6 @@ export default {
                 for(const item of result.data){
                     this.reportList.push({report_id: item[0], name: item[1]});
                 }
-                
             });
         },
         findZoneData(){
@@ -310,7 +320,6 @@ export default {
             for(const list of this.testList){
                 this.tableData.push(list);
             }
-            
         },
         updatePeriod(period){
             this.zonePeriod = period;
