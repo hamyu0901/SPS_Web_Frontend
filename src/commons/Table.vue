@@ -27,11 +27,12 @@
                 </th>
                 <td v-if="tableData.length > 0" v-for="(x_header, column_index) in propsColumn_x" :key="column_index" @mouseover="mouseover(row_index, column_index)" @mouseleave="mouseleave()" >
                     <label v-if="x_header.key[0] === 'avg_temperature'">{{objectFindByKey(tableData, 'robot_id', y_header.robot_id).avg_temperature[0][x_header.array_key]}} ({{objectFindByKey(tableData, 'robot_id', y_header.robot_id).violation[0][x_header.array_key]}})</label>
-                    <selector-vue v-if="x_header.key === 'severity'" :disable="isEditable === false" :items="selectorItems" :selectedItem="objectFindByKey(tableData, 'robot_id', y_header.robot_id).severity" :robotId="y_header.robot_id" @changeSelect="changeSelect"></selector-vue>
+                    <zone-selector v-if="x_header.key === 'severity'" :items="selectorItems" :selectedItem="objectFindByKey(tableData, 'robot_id', y_header.robot_id).severity" :robotId="y_header.robot_id" @changeSelect="changeSelect"/>
+                    <!-- <selector-vue v-if="x_header.key === 'severity'" :disable="isEditable === false" :items="selectorItems" :selectedItem="objectFindByKey(tableData, 'robot_id', y_header.robot_id).severity" :robotId="y_header.robot_id" @changeSelect="changeSelect"></selector-vue> -->
                     <input-vue v-if="x_header.key === 'comment'" :disable="isEditable === false" :model="objectFindByKey(tableData, 'robot_id', y_header.robot_id).comment" :robotId="y_header.robot_id" @changeInput="changeInput"></input-vue>
                 </td>
                 <td v-if="tableData.length <= 0" v-for="(x_header, column_index) in propsColumn_x" :key="column_index" @mouseover="mouseover(row_index, column_index)" @mouseleave="mouseleave()" >
-                    
+
                 </td>
             </tr>
         </tbody>
@@ -47,12 +48,14 @@
 </template>
 <script>
 import report_inputVue from './report_input.vue';
-import report_selectorVue from './report_selector.vue';
+// import report_selectorVue from './report_selector.vue';
+import zoneSelector from '@/components/diagnostics/report/report/tempAnalysis/components/zoneSelector.vue'
 export default {
     props: [ "withRowHeaders", "propsColumn_x", "isEditable", "propsColumn_y", "propsData", "propsTheme", "propsFormat"],
     components:{
-        selectorVue: report_selectorVue,
+        // selectorVue: report_selectorVue,
         inputVue: report_inputVue,
+        zoneSelector
     },
     data(){
         return{
@@ -145,10 +148,10 @@ table{
                     color: black;
                 }
             }
-            
-            
+
+
             td{
-                
+
                 border-right: 1px solid #4d4d4d;
                 #selectorBox >>> .v-input >>> .v-menu-content{
                     top:0 !important;
@@ -167,7 +170,7 @@ table{
                     }
                 }
 
-                
+
 
                 &:last-child{
                     border-right: none;
@@ -178,7 +181,7 @@ table{
                 border-bottom: none;
             }
         }
-        
+
     }
 }
 </style>
