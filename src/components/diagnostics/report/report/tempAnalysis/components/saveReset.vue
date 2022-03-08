@@ -14,10 +14,14 @@ export default {
     },
     methods:{
         saveData(){
-            this.$emit('onSave');
+            if (window.confirm("저장하시겠습니까?")){
+                this.$emit('onSave');
+            }
         },
         resetData(){
-            this.$emit('onReset');
+            if (window.confirm("되돌리시겠습니까?")){
+                this.$emit('onReset');
+            }
         }
     }
 }
@@ -30,7 +34,7 @@ export default {
     column-gap: 15px;
     margin-right: 20px;
     button{
-        
+
         padding: 0 !important;
         margin: 0 !important;
         background: transparent;
@@ -56,8 +60,8 @@ export default {
         content: none !important;
     }
 
-    
-    
-    
+
+
+
 }
 </style>
