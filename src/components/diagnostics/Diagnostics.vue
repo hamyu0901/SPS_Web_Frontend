@@ -1,20 +1,20 @@
 <template>
   <v-container fluid fill-height id="diagnosticsMainContainer">
-    <v-navigation-drawer 
-    app stateless 
-    class="navigationDrawer elevation-0" 
-    :clipped="clipped" 
-    v-model="drawer" 
+    <v-navigation-drawer
+    app stateless
+    class="navigationDrawer elevation-0"
+    :clipped="clipped"
+    v-model="drawer"
     value="true" width="260" v-bind="changeDrawerFlag"
     v-bind:style="{ backgroundColor: ui.menu.color }">
       <v-list class="pt-3">
-        <v-list-tile 
+        <v-list-tile
           :class="getTheme === false ? 'dy_navText_light--text' : 'dy_white--text'"
           :active-class="getTheme === false ? 'dy_navigationDrawer_over--text dy_navArea_light' : 'dy_navigationDrawer_over--text dy_navArea_dark'"
-          v-for="(listData, index) in getDiagnosticsMenuItems" 
-          :key="index" 
+          v-for="(listData, index) in getDiagnosticsMenuItems"
+          :key="index"
           v-show="listData.show"
-          v-model="listData.active" 
+          v-model="listData.active"
           @click="listDataClicked(index)"
           >
           <v-list-tile-action>
@@ -24,7 +24,7 @@
             <v-list-tile-title>{{ $t('diagnostics.drawertitle.'+listData.id) }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-      </v-list>      
+      </v-list>
     </v-navigation-drawer>
     <router-view/>
   </v-container>
@@ -34,7 +34,7 @@
 import {mapGetters} from 'vuex'
 export default {
     data() {
-        return {  
+        return {
           ui: {
             menu: {
               color: ''
@@ -52,7 +52,7 @@ export default {
             {title: this.$t(`diagnostics.drawertitle.torquetemperature`), normalImg: require("@/images/navicons/nav_torquetemperature_normal.png"), overImg: require("@/images/navicons/nav_torquetemperature_over.png"), active: false, path:'/sps/diagnostics/torquetemperature'},
             {title: this.$t(`diagnostics.drawertitle.atomizerdata`), normalImg: require("@/images/navicons/nav_atomizer_normal.png"), overImg: require("@/images/navicons/nav_atomizer_over.png"), active: false, path:'/sps/diagnostics/atomizerdata'},
             {title: this.$t(`diagnostics.drawertitle.alarmstatistics`), normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/alarmstatistics'},
-            {title: this.$t(`diagnostics.drawertitle.report`), normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/report'},
+            {title: this.$t(`diagnostics.drawertitle.report`), normalImg: require("@/images/navicons/nav_dataReport_normal.png"), overImg: require("@/images/navicons/nav_dataReport_hover.png"), active: false, path:'/sps/diagnostics/report'},
              // {title: `Histogram`, normalImg: require("@/images/navicons/nav_alarmstatistics_normal.png"), overImg: require("@/images/navicons/nav_alarmstatistics_over.png"), active: false, path:'/sps/diagnostics/histogram'}
           ],
         }
@@ -61,7 +61,7 @@ export default {
     created() {
       this.checkedPath();
     },
-    
+
     mounted() {
       this.$emit('mountedTab');
       this.initializeStyle();
@@ -92,7 +92,7 @@ export default {
           this.drawer = true;
         }
       }
-     
+
     },
 
     methods: {
