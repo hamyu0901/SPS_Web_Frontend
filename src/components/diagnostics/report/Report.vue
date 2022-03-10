@@ -11,8 +11,10 @@
                         v-bind="attrs"
                         class="reportBtn"
                     >
-                    <v-icon class="mr-2">assignment</v-icon>
-                    리포트 조회 / 생성</v-btn>
+                    <img class="mr-2" src="@/images/assignment-outline.png"/>
+                     리포트 조회 / 생성</v-btn>
+                     
+
                 </div>
             </template>
             <report-dialog
