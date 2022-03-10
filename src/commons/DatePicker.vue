@@ -29,7 +29,7 @@ export default {
     computed: {
         ...mapGetters ({
             getTheme: "getTheme",
-            getLanguage: "getLanguage"    
+            getLanguage: "getLanguage"
         }),
         initialize() {
             if (this.setDate != '') {
@@ -39,7 +39,7 @@ export default {
         sendDate() {
             if(this.selectedDate != '' && this.selectedDate != undefined) {
                 this.$emit('getDate', this.convertDateFormat(this.selectedDate));
-            }    
+            }
             else {
                 this.$emit('getDate', undefined);
             }
@@ -57,7 +57,7 @@ export default {
     methods: {
         initializeStyle() {
             this.$refs.datepicker.$refs.input.style.backgroundColor = this.$style.common.datePickerItemInputBackgroundColor;
-            this.$refs.datepicker.$refs.input.style.border = this.$style.common.datePickerItemInputBorder;
+            this.$refs.datepicker.$refs.input.style.border = 'none';
             if(this.textColor != undefined) {
                 this.$refs.datepicker.$refs.input.style.color = this.textColor.split(" ")[0];
             }
@@ -65,7 +65,7 @@ export default {
                 this.$refs.datepicker.$refs.input.style.color = this.$style.common.datePickerItemInputColor;
             }
             this.$refs.datepicker.$refs.input.nextElementSibling.style.backgroundColor = this.$style.common.datePickerItemNextElementSiblingBackgroundColor;
-            this.$refs.datepicker.$refs.input.nextSibling.nextSibling.childNodes[0].childNodes[0].style.color = this.$style.common.datePickerItemNextSiblingColor;
+            // this.$refs.datepicker.$refs.input.nextSibling.nextSibling.childNodes[0].childNodes[0].style.color = this.$style.common.datePickerItemNextSiblingColor;
             this.$refs.datepicker.$refs.calendar.style.backgroundColor = this.$style.common.datePickerItemCalendarBackgroundColor;
             this.$refs.datepicker.$refs.calendar.childNodes[2].childNodes[0].style.color = this.$style.common.datePickerItemCalendarColor;
             this.$refs.datepicker.$refs.calendar.childNodes[2].childNodes[2].childNodes[0].childNodes[0].style.color = this.$style.common.datePickerItemCalendarColor;
@@ -81,11 +81,11 @@ export default {
             year = d.getFullYear();
             if (month.length < 2) {
                 month = '0' + month;
-            } 
+            }
             if (day.length < 2) {
                 day = '0' + day;
-            } 
-            return [year, month, day].join('-'); 
+            }
+            return [year, month, day].join('-');
         },
     }
 }
