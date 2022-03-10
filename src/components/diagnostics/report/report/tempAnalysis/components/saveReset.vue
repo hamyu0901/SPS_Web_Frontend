@@ -1,7 +1,7 @@
 <template>
-  <div id="btnBox">
-      <v-btn @click="resetData" :ripple="false"><v-icon>refresh</v-icon><label>리셋</label></v-btn>
-      <v-btn @click="saveData" :ripple="false"><v-icon>file_upload</v-icon><label>저장</label></v-btn>
+  <div id="btnBox" class="ml-3">
+      <v-btn class="btnColor" @click="resetData" :ripple="false"><v-icon>refresh</v-icon><label>리셋</label></v-btn>
+      <v-btn class="btnColor" @click="saveData" :ripple="false"><v-icon>file_upload</v-icon><label>저장</label></v-btn>
   </div>
 </template>
 
@@ -58,6 +58,14 @@ export default {
 
     button:before{
         content: none !important;
+    }
+    .btnColor {
+        background-color: #237ffe;
+        width: 100px !important;
+        height: 40px !important;
+        border-radius: 4px !important;
+        margin-right: -5px !important;
+
     }
 
 

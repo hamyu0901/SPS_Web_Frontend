@@ -1,15 +1,20 @@
 <template>
     <div id="zonePrevBox" class="zonePrevBox">
+        <layout>
+            <div class="dataInfo">이전 데이터</div>
         <loading-spinner v-if="isLoading"></loading-spinner>
         <div id="zoneComboBox">
-            <selector-vue ref="selector" :noDataText="'조회 가능한 리포트가 없습니다.'" :items="reportList" @selectItem="selectItem" :type="'prev_report_selection'"></selector-vue>
-            <v-text-field
-                v-model="zonePeriod"
-                hide-details
-                readonly
-                prepend-icon="event"
-            ></v-text-field>
+            <selector-vue class ="test" ref="selector" :noDataText="'조회 가능한 리포트가 없습니다.'" :items="reportList" @selectItem="selectItem" :type="'prev_report_selection'"></selector-vue>
+            <div class="fieldBox">
+                <v-text-field
+                    v-model="zonePeriod"
+                    hide-details
+                    readonly
+                    prepend-icon="event"
+                ></v-text-field>
+            </div>
         </div>
+        </layout>
         <div id="zoneTableBox" class="zoneTableBox">
             <zone-prev-table :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/>
             <!-- <table-vue :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/> -->
@@ -331,7 +336,9 @@ export default {
 
 <style lang="scss" scoped>
 #zonePrevBox{
-    width: inherit; display: flex; flex-direction: column; position:relative;
+    width: inherit;
+    display: flex;
+    flex-direction: column;
     #zoneComboBox{
         height: 50px;
         display: flex;
@@ -360,5 +367,29 @@ export default {
     #zoneComboBox >>> .v-input__slot:before, #zoneComboBox >>> .v-input__slot:after{
         display: none;
     }
+    #zoneComboBox >>> .v-select__slot {
+        display: inline-block !important;
+    }
 }
+.dataInfo {
+    float: left;
+    font-weight: bold;
+    color: #0ca889;
+    font-size: 16px;
+    margin-right: 18px;
+    margin-top: 15px;
+}
+#zoneTableBox {
+    margin-top: -6px;
+}
+.fieldBox {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    border: 2px solid #4e546c;
+    border-radius: 3px !important;
+    margin-right: 70px;
+    margin-top: 10px;
+}
+
 </style>

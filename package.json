@@ -27,6 +27,7 @@
     "chartjs-plugin-piechart-outlabels": "^0.1.4",
     "chartjs-plugin-zoom": "^0.6.6",
     "cheetah-grid": "^0.22.9",
+    "devextreme": "^20.2.10",
     "devextreme-vue": "^20.2.10",
     "docdash": "^1.2.0",
     "expose-loader": "^0.7.5",

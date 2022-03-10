@@ -53,8 +53,8 @@ export default {
 <style scoped lang="scss">
     .zonePeriodContent{
         width: 250px;
-        border: 1px solid #6b6a6a;
-        border-radius: 5px;
+        border: 1px solid #4e546c;
+        border-radius: 4px;
         > .v-input {
             margin: auto;
             width: 230px;

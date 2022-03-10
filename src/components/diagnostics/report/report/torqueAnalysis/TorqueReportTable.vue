@@ -1002,7 +1002,7 @@ export default {
         font-weight: bold;
     }
     .currentDataName{
-        color: #3b69ce;
+        color: #2f86ff;
         margin: auto;
         margin-right: 10px;
         font-weight: bold;
@@ -1068,7 +1068,7 @@ export default {
         width: 250px;
     }
     .dx-data-row .robot-highlighted {
-        background-color: #3b69ce!important;
+        background-color: #2159aa!important;
         text-align: center!important;
     }
     .dx-data-row .prevRobot-highlighted {

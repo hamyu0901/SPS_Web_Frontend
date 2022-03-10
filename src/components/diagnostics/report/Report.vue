@@ -9,8 +9,10 @@
                     <v-btn
                         v-on="on"
                         v-bind="attrs"
-                        elevation="0"
-                    >리포트 조회 / 생성</v-btn>
+                        class="reportBtn"
+                    >
+                    <v-icon class="mr-2">assignment</v-icon>
+                    리포트 조회 / 생성</v-btn>
                 </div>
             </template>
             <report-dialog
@@ -21,16 +23,16 @@
             />
         </v-dialog>
         <div id="tabMenuBox">
-            <v-btn-toggle rounded color="transparent" style="background:transparent" v-model="datas.toggle">
-                <v-btn @click="clickTorqueAnalysis" :ripple="false" color="primary">토크 분석</v-btn>
-                <v-btn @click="clickTempAnalysis" :ripple="false" color="primary">온도 분석</v-btn>
-                <v-btn @click="clickAlarmAnalysis" :ripple="false" color="primary">알람 분석</v-btn>
+            <v-btn-toggle  class="btnToggle" rounded color="transparent" style="background:transparent" v-model="datas.toggle">
+                <v-btn class="btnInfo" @click="clickTorqueAnalysis" :ripple="false" color="#393b58"><v-icon class="mr-2">check</v-icon>토크 분석</v-btn>
+                <v-btn class="btnInfo" @click="clickTempAnalysis" :ripple="false" color="#393b58"><v-icon class="mr-2">check</v-icon>온도 분석</v-btn>
+                <v-btn class="btnInfo" @click="clickAlarmAnalysis" :ripple="false" color="#393b58"><v-icon class="mr-2">check</v-icon>알람 분석</v-btn>
             <!-- <v-btn @click="clickTorqueAnalysis" class="btnStyle" :ripple="false" color="primary" :to="{name: 'torqueAnalysis'}">토크 분석</v-btn> -->
             <!-- <v-btn class="btnStyle" :ripple="false" color="primary" :to="{name: 'tempAnalysis'}">온도 분석</v-btn>
             <v-btn class="btnStyle" :ripple="false" color="primary" :to="{name: 'alarmAnalysis'}">알람 분석</v-btn> -->
             </v-btn-toggle>
         </div>
-        <v-divider></v-divider>
+        <!-- <v-divider></v-divider> -->
         <div>
             <torque-analysis
                 v-if="datas.reportType === 0"

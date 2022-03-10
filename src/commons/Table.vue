@@ -2,8 +2,8 @@
     <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
     <table class="no-drag" :style="`background-color: ${propsTheme === 'dark' ? '#2a2a2a' : 'white'}`">
         <thead v-if="withRowHeaders === true">
-            <tr style="height: 30px;">
-                <th style="width: 5%"></th>
+            <tr style="height: 60px;">
+                <th style="width: 9%"></th>
                 <th v-for="(x_header, idx) in propsColumn_x" :key="idx" :class="x_value === idx ? 'active' : null" :style="`width: ${'colWidth' in x_header === true ? x_header.colWidth + '%' : 'inherit'}`">
                     <label>{{x_header.colname}}</label>
                 </th>
@@ -11,7 +11,7 @@
             </tr>
         </thead>
         <thead v-else>
-            <tr style="height: 30px;">
+            <tr style="height: 60px;">
                 <th v-for="(x_header, idx) in propsColumn_x" :key="idx" :class="x_value === idx ? 'active' : null">
                     <label>{{x_header.colName}}</label>
                 </th>
@@ -115,7 +115,9 @@ table{
     overflow: auto;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
-    border: 1px solid #4d4d4d;
+    border: 1px solid #474e6b;
+    border-radius: 10px !important;
+    background-color: #21263a !important;
     font-family: "Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
 
     thead{
@@ -124,35 +126,38 @@ table{
             border-bottom: 0;
         }
         th{
-            border-left: 1px solid #4d4d4d;
-            border-bottom: 1px solid #4d4d4d;
-            color:#929292;
+            border-left: 1px solid #474e6b;
+            border-bottom: 1px solid #474e6b;
+            color: white;
+            font-weight: bolder;
             &.active{
-                background-color: #FFFFFF;
-                color: black;
+                background-color: #237ffe;
+                color: white;
             }
         }
     }
     tbody{
         tr{
-            border-bottom: 1px solid #4d4d4d;
+            border-bottom: 1px solid #474e6b;
+            background-color: #34394f;
             height: 40px;
             th{
-                color:#929292;
-                border-top: 1px solid #4d4d4d;
-                border-right: 1px solid #4d4d4d;
-                background-color: none;
+                color:white;
+                border-top: 1px solid #474e6b;
+                border-right: 1px solid #474e6b;
+                background-color: #2159aa;
+                height: 55px !important;
 
                  &.active{
-                    background-color: #FFFFFF;
-                    color: black;
+                    background-color: #237ffe;
+                    color: white;
                 }
             }
 
 
             td{
-
-                border-right: 1px solid #4d4d4d;
+                color: white;
+                border-right: 1px solid #474e6b;
                 #selectorBox >>> .v-input >>> .v-menu-content{
                     top:0 !important;
                 }
@@ -165,12 +170,10 @@ table{
                     align-items: center;
 
                     &:hover{
-                        background-color:yellow;
-                        color: black;
+                        background-color:#237ffe;
+                        color: white;
                     }
                 }
-
-
 
                 &:last-child{
                     border-right: none;
@@ -180,6 +183,9 @@ table{
             &:last-child{
                 border-bottom: none;
             }
+        }
+        tr:nth-child(2n) {
+            background-color: #21263a;
         }
 
     }

@@ -1,14 +1,14 @@
 <template>
   <div id="opinion" :class="{expanded: showDetail}">
     <div id="opinion_left">
-        <div id="title">
+        <div id="title" class="mt-3 ml-2">
             <h1>종합의견</h1>
         </div>
     </div>
-    <div id="opinion_right">
+    <div id="opinion_right" class="mt-2">
         <v-btn color="transparent" @click="expandDiv"><v-icon>unfold_more</v-icon></v-btn>
     </div>
-    <div id="opinion_content" v-if="showDetail">
+    <div id="opinion_content" v-if="showDetail" class="mt-3">
         <v-textarea
             :readonly="disabled"
             v-model="opinion"
@@ -57,9 +57,9 @@ export default {
         width: 100%;
         position: relative;
         display: flex;
-        height: 40px;
-        border: 1px solid white;
-        border-radius: 10px;
+        height: 60px;
+        border: 1px solid #237ffe;
+        border-radius: 5px;
         #opinion_left{
             flex-grow: 1;
             flex-shrink: 1;
@@ -71,7 +71,7 @@ export default {
 
             #title{
                 h1{
-                    font-size: 15px;
+                    font-size: 16px;
                     font-weight: 700;
                 }
             }
@@ -117,7 +117,7 @@ export default {
                 display: none;
             }
         }
-        
+
 }
 .expanded{
     height: 150px !important;

@@ -1,11 +1,11 @@
 <template>
-    <v-card>
-        <v-card-title>{{ui.header}}
+    <v-card class="bgColor">
+        <v-card-title class="titleHeader">{{ui.header}}
             <v-spacer></v-spacer>
             <v-btn icon @click="closeReportDialog"><v-icon>mdi-close</v-icon></v-btn>
         </v-card-title>
         <v-layout>
-            <v-list two-line class="reportList">
+            <v-list two-line class="reportList ml-4">
             <template v-for="(item, index) in datas.reportItems">
                 <v-divider
                     v-if="item.divider"
@@ -28,7 +28,7 @@
                 </v-list-tile>
             </template>
         </v-list>
-        <div class="addReportContainer" v-if="datas.selectedReportNumber === 1">
+        <div class="addReportContainer ml-4" v-if="datas.selectedReportNumber === 1">
             <v-form class="addReportForm"
                 ref="form"
                 lazy-validation
@@ -67,14 +67,13 @@
                     </div>
                 </v-layout> -->
                 <div class= "addReportButton">
-                    <v-btn
-                        @click="clickReportAddButton"
+                    <v-btn class="btnColor my-3 mr-2" @click="clickReportAddButton"
                     >생성
                     </v-btn>
                 </div>
             </v-form>
         </div>
-        <v-layout column class="reportSelectContainer" v-if="datas.selectedReportNumber === 2">
+        <v-layout column class="reportSelectContainer ml-4" v-if="datas.selectedReportNumber === 2">
             <DxDataGrid
                 class="dataGrid"
                 :data-source="datas.reports"
@@ -91,8 +90,8 @@
                     show-check-boxes-mode="always"
                 />
             </DxDataGrid>
-                <div class="selectReportButton">
-                    <v-btn @click="clickConfirmButton">확인</v-btn>
+                <div class="selectReportButton my-3 mr-2">
+                    <v-btn class="btnColor" @click="clickConfirmButton">확인</v-btn>
                 </div>
         </v-layout>
         <router-view></router-view>
@@ -321,6 +320,7 @@ export default {
 <style scoped>
     .reportList{
         width: 300px;
+        background-color: #25273e;
     }
     .addReportContainer{
         width: 100%;
@@ -333,6 +333,11 @@ export default {
     .addReportButton{
         display: flex;
         justify-content: right;
+    }
+    .btnColor {
+        background-color: #237ffe !important;
+        font-weight: bold;
+        font-size: 15px;
     }
     .reportSelectContainer{
         width: 100%;
@@ -352,5 +357,25 @@ export default {
     }
     .monthBox{
         width: 300px;
+    }
+    .bgColor {
+        background-color: #25273e;
+    }
+    .titleHeader {
+        font-weight: bold;
+        font-size: 22px;
+        margin-left: 18px;
+    }
+    .v-list__tile__title {
+        color: #237ffe;
+        font-size: 17px;
+        font-weight: bold;
+    }
+    .v-avatar .v-icon {
+        color: #237ffe !important ;
+    }
+    .theme--dark.v-list :active {
+        background-color: #237ffe !important;
+        color: white;
     }
 </style>

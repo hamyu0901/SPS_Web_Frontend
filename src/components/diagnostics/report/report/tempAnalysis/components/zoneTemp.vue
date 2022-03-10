@@ -1,7 +1,7 @@
 <template>
     <div id="zoneBox">
         <div id="zoneTitleBox">
-            <h1>{{zoneName}}</h1>
+            <span class="zoneTitle">{{zoneName}}</span>
         </div>
         <div id="compareBox">
             <current-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" :quickPeriod="quickPeriod" ref="current" @onSave="onSave" @sendDataIdList="sendDataIdList"></current-zone>
@@ -16,7 +16,7 @@ import zonePrevVue from './zonePrev.vue';
 
 
 export default {
-    props:['zoneInfo', 'quickPeriod'], 
+    props:['zoneInfo', 'quickPeriod'],
     components: {
         currentZone: zoneCurrentVue,
         prevZone: zonePrevVue,
@@ -27,7 +27,7 @@ export default {
             data_id_List_from_curr:[],
             zoneName: null,
             robotInfo: []
-            
+
         }
     },
     created(){
@@ -35,7 +35,7 @@ export default {
         this.getRobots();
     },
     computed:{
-        
+
     },
     methods:{
         sendDataIdList(prev_data_id_list){
@@ -92,15 +92,16 @@ export default {
 
 <style lang="scss" scoped>
 #zoneBox{
-    display: flex; flex-direction: column;
-    border: 1px solid white;
-    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #4e546c;
+    border-radius: 12px;
     #zoneTitleBox{
-        color: orange;
-        font-size: 20px;
-        font-weight: 700;
+        color: white;
+        font-size: 10px !important;
         margin-left: 30px;
         margin-top: 20px;
+        font-size: 20px !important;
     }
     #compareBox{
         width: 100%;
@@ -109,5 +110,9 @@ export default {
     #compareBox > div{
         padding: 30px !important;
     }
+}
+.zoneTitle {
+    font-size: 23px !important;
+    font-weight: 600;
 }
 </style>

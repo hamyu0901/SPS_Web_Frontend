@@ -1,11 +1,11 @@
 <template>
   <div id="quickCombo">
-        <p>퀵 콤보: </p>
+        <!-- <p>퀵 콤보: </p> -->
         <v-select
+          class="selectInfo"
           :items="years"
           outline
           attach
-          :dense="true"
           :hide-details="true"
           :no-data-text="noDataTextYear"
           return-object
@@ -119,10 +119,11 @@ export default {
 
 <style lang="scss" scoped>
 #quickCombo{
-        width: 30%;
+        width: 450px;
         display: flex;
         align-items: center;
         column-gap: 10px;
+        // margin-left: 900px;
         p{
             margin: 0;
             width: 70px;
@@ -141,13 +142,13 @@ export default {
     .v-input >>> .v-input__control .v-input__slot .v-select__slot .v-select__selections {
         padding-top:0 !important;
         justify-content: center !important;
-        font-size: 13px;
+        font-size: 16px;
     }
     .v-input >>> .v-input__control .v-input__slot .v-select__slot .v-input__append-inner{
         margin: auto !important;
-    
+
         i{
             font-size: 17px;
         }
-    }  
+    }
 </style>

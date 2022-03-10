@@ -1,5 +1,7 @@
 <template>
     <div id="zoneCurrentBox">
+        <v-layout>
+        <div class="dataInfo">현재 데이터</div>
         <loading-spinner v-if="isLoading"></loading-spinner>
         <div id="zoneDataBox">
             <v-menu
@@ -25,6 +27,7 @@
                 <date-from-to-vue :dialog.sync="menu" @updatePeriod="updatePeriod"></date-from-to-vue>
             </v-menu>
         </div>
+        </v-layout>
         <div id="zoneTableBox">
             <table-vue ref="table" :withRowHeaders="true" :isEditable="true" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`" @onSave="onSave"/>
         </div>
@@ -386,13 +389,13 @@ export default {
             ],
             testList: [
                 ],
-            
+
         }
     },
     created(){
         this.setThisZone();
         this.initializeReportData();
-        
+
     },
     computed:{
         robots(){
@@ -416,12 +419,12 @@ export default {
     },
     watch:{
         quickPeriod(){
-            
+
             var quickDate;
             var date = new Date();
             var form_date = this.formatDate(date)
             var quick_today = (this.quickPeriod.quickYear.toString()+"-"+this.quickPeriod.quickMonth.toString());
-        
+
             if(form_date === quick_today){
                 quickDate = (("00"+ date.getDate())).slice(-2);
             }else{
@@ -452,7 +455,7 @@ export default {
 
                 }
             }
-            
+
             this.zonePeriod = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-01 ~ ${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-${quickDate}`;
             var dateFrom = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-01 00:00:00`;
             var dateTo = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-${quickDate} 23:59:59`;
@@ -497,7 +500,7 @@ export default {
                     }
                     this.disableTextArea = false;
                     this.zonePeriod = `${start_date} ~ ${end_date}`
-                    
+
                 }else{
                     this.zonePeriod = null;
                     this.tableData.splice(0);
@@ -515,7 +518,7 @@ export default {
             this.report_id = this.getReportItems.selectedReport.report_id;
         },
         formatDate(date){
-            let formatted_date = date.getFullYear() + "-" + (("00"+ (date.getMonth() + 1))).slice(-2)  
+            let formatted_date = date.getFullYear() + "-" + (("00"+ (date.getMonth() + 1))).slice(-2)
             return formatted_date;
         },
         updateText(txt){
@@ -544,7 +547,7 @@ export default {
                 end_date : this.zonePeriod.substr(13,23),
                 comment:this.opinionInput,
             }
-            
+
             this.$emit('onSave', value)
         },
         setThisZone(){
@@ -553,7 +556,7 @@ export default {
             this.zoneName = this.zoneInfo.zone_name;
         },
         findZoneData(dateFrom, dateTo){
-            
+
             const variable ={
                 report_id: null,
                 factory_id: 2,
@@ -562,7 +565,7 @@ export default {
                 fromDate: dateFrom,
                 toDate: dateTo
             }
-            
+
             this.$http.post(`/diagnostics/datareport/temperature/analyzeNoReport`, variable).then(result => {
                 if(this.tableData.length !== 0){
                     this.tableData.splice(0);
@@ -592,10 +595,12 @@ export default {
 #zoneCurrentBox{
     width: inherit; display: flex; flex-direction: column; position: relative;
     #zoneDataBox{
-        width:fit-content;
-        height: 50px;
+        width: 260px;
+        height: 40px;
         display: flex;
         align-items: center;
+        border: 2px solid #b8bac6;
+        border-radius: 3px !important;
     }
      #zoneDataBox >>> .v-text-field{
          padding: 0 !important;
@@ -608,6 +613,14 @@ export default {
     #zoneDataBox >>> .v-input__slot:before, #zoneDataBox >>> .v-input__slot:after{
         display: none;
     }
-    
+    .dataInfo {
+        float: left;
+        font-weight: bold;
+        color: #2f86ff;
+        font-size: 16px;
+        margin-right: 18px;
+        margin-top: 10px;
+    }
 }
+
 </style>

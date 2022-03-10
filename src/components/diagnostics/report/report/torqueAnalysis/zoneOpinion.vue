@@ -2,7 +2,7 @@
   <div id="opinion" :class="{expanded: showDetail}">
     <div >
         <v-layout row id="title" >
-            <h1 class="opinionHeader">종합의견:</h1>
+            <h1 class="opinionHeader">종합의견</h1>
             <div class="headerText">
                 {{datas.headerCurrentText}}
             </div>
@@ -68,7 +68,7 @@ export default {
         display: flex;
         height: 40px;
         // border: 2px solid #515dbe;
-        border: 2px solid #3b69ce;
+        border: 1px solid #3b69ce;
         border-radius: 5px;
         #opinion_left{
             flex-grow: 1;
@@ -132,7 +132,7 @@ export default {
     white-space: nowrap;
 }
 .opinionHeader{
-    font-size: 20px;
+    font-size: 16px;
     margin-left: 10px;
     margin-top: 5px;
     font-weight: bold;

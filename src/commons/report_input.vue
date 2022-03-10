@@ -1,6 +1,6 @@
 <template>
 <div id="textBox">
-    <v-text-field 
+    <v-text-field
         v-model="inputModel"
         outlined
         hide-details
@@ -9,7 +9,7 @@
         @input="changeInput"
     ></v-text-field>
 </div>
-    
+
 </template>
 <script>
 export default {
@@ -39,19 +39,22 @@ export default {
 </script>
 <style lang="scss" scoped>
 #textBox{
-    margin: 0 !important;
-    padding: 0 2% !important;
+    margin: 10px !important;
+    padding: 0 5px !important;
+    width: 80px;
 }
 #textBox >>> input {
     text-align: left;
     font-size: 13px;
+    width: 60px !important;
 }
 #textBox >>> i {
-    color:white !important;
+    color:#979db8 !important;
 }
 #textBox >>> .v-input {
-    padding: 0 !important;
-    caret-color: white !important;
+    padding: 3px !important;
+    caret-color: #237ffe !important;
+    width: 210px !important;
 }
 #textBox >>> .v-input__slot:before, #textBox >>> .v-input__slot:after{
     display: none;

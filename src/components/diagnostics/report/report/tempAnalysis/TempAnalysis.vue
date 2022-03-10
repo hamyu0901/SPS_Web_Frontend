@@ -1,11 +1,12 @@
 <template>
   <!-- eslint-disable vue/no-use-v-if-with-v-for,vue/no-confusing-v-for-v-if -->
   <div id="tempMainContainer" v-if="report.report_id" >
-      <div id="tempHeader">
-        <quick-combo-vue @quickSetting="quickSetting"></quick-combo-vue>
+      <div id="tempHeader" class="ml-3">
         <div id="report-title-box">
           {{report.report_name}}
         </div>
+        <v-spacer/>
+        <quick-combo-vue @quickSetting="quickSetting"></quick-combo-vue>
         <save-reset-vue @onSave="onSave" @onReset="onReset"></save-reset-vue>
       </div>
       <booth-vue  v-for="(booth, index) in boothes"  :key="index"  :boothInfo="booth" :quickPeriod="quickPeriod" ref="child_component"></booth-vue>
@@ -71,7 +72,7 @@ export default {
         }
       },
       onReset(){
-        
+
       }
     }
 

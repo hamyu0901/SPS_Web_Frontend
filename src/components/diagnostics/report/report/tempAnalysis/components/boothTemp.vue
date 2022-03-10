@@ -1,8 +1,7 @@
 <template>
   <div id="boothBox">
-      <div id="boothTitleBox">
-          <h1>{{boothInfo.booth_name}}</h1>
-          <v-divider></v-divider>
+      <div id="boothTitleBox" class="ml-4">
+          <span class="boothTitle">{{boothInfo.booth_name}}</span>
       </div>
       <zone-vue v-for="(zone, index) in zones" :zoneInfo="zone" :key="index" :quickPeriod="quickPeriod" ref="child_component"></zone-vue>
   </div>
@@ -20,7 +19,7 @@ export default {
             boothId: null,
             boothName: null,
             zones:[],
-        } 
+        }
     },
     created(){
         this.initializeZones();
@@ -58,16 +57,26 @@ export default {
     display: flex;
     align-items: center;
     h1{
-        font-size: 35px;
+        font-size: 30px;
         font-weight: 800;
-        color: #08E8EA;
+        color: white;
     }
 }
-#boothTitleBox >>> .v-divider{
-    margin-left: 15px;
-    border: 1px dashed #08E8EA;
-}
+// #boothTitleBox >>> .v-divider{
+//     margin-left: 15px;
+//     border: 1px dashed white;
+// }
 #boothTitleBox ~ div{
     margin: 30px !important;
+}
+.boothTitle {
+    width: 100px;
+    height: 42px;
+    font-size: 22px;
+    font-weight: bold;
+    background-color: #34394f;
+    border-radius: 30px;
+    text-align: center;
+    line-height: 42px;
 }
 </style>
