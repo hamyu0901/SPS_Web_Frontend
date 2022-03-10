@@ -15,7 +15,7 @@
 
         <div v-for="(booth, boothIndex) in datas.boothInfo" :key="boothIndex">
             <div class="boothName">{{booth.name}}</div>
-            <v-layout column v-for="(element, zoneIndex) in booth.zone" :key="zoneIndex">
+            <v-layout class="zoneBox" column v-for="(element, zoneIndex) in booth.zone" :key="zoneIndex">
                     <div class="zoneName">{{element.name}}</div>
                     <v-layout>
                         <div class="currentDataName">현재 데이터</div>
@@ -59,7 +59,7 @@
                             :show-row-lines="true"
                             :rowAlternationEnabled="true"
                         >
-                            <DxColumn data-field="name" caption="" :width="60" css-class="robot-highlighted"/>
+                            <DxColumn data-field="name" caption="" :width="80" css-class="robot-highlighted"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[0]" caption="1축" :width="50" css-class="axis-highlighted"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[1]" caption="2축" :width="50" css-class="axis-highlighted"/>
                             <DxColumn data-field="violation_value.current_data.violation_count[2]" caption="3축" :width="50" css-class="axis-highlighted"/>
@@ -164,7 +164,7 @@
                             :show-row-lines="true"
                             :rowAlternationEnabled="true"
                         >
-                            <DxColumn data-field="name" caption="" :width="60" css-class="prevRobot-highlighted"/>
+                            <DxColumn data-field="name" caption="" :width="80" css-class="prevRobot-highlighted"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[0]" caption="1축" :width="50" css-class="axis-highlighted"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[1]" caption="2축" :width="50" css-class="axis-highlighted"/>
                             <DxColumn data-field="previolation_value.current_data.violation_count[2]" caption="3축" :width="50" css-class="axis-highlighted"/>
@@ -1004,14 +1004,14 @@ export default {
     .currentDataName{
         color: #2f86ff;
         margin: auto;
-        margin-right: 10px;
+        padding-left: 30px;
         font-weight: bold;
         font-size: 15px;
+        padding-right: 10px;
     }
     .currentDataGrid{
-        width: 520px;
-        margin-top: 5px;
-        margin-bottom: 5px;
+        width: 450px;
+        padding: 30px 30px 30px 30px;
     }
     .prevDataName{
         color: #21976a;
@@ -1022,7 +1022,7 @@ export default {
         padding-top: 10px;
     }
     .currentPicker{
-        width: 700px;
+        width: 690px;
     }
     .compareCombobox{
         display: flex;
@@ -1032,25 +1032,32 @@ export default {
         margin: auto;
     }
     .compareDataGrid{
-        width: 520px;
-        margin-top: 5px;
-        margin-bottom: 5px;
+        width: 450px;
+        padding: 30px 30px 30px 30px;
+    }
+    .zoneBox{
+        margin-top: 30px;
+        border: 2px solid #4e546c;
+        border-radius: 12px;
     }
     .zoneName{
-        margin-top: 5px;
-        font-size: 15px;
-        font-weight: bold;
-        color: #ffffff(210, 218, 142);
+        font-size: 23px !important;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: white;
+        padding-top: 30px;
+        padding-left: 30px;
     }
     .boothName{
-        margin-top: 10px;
-        margin-bottom:10px;
-        /* background-color: rgb(54, 83, 163); */
-        background-color: rgba(131, 130, 127, 0.3);
-        margin-right: 35px;
+        width: 100px;
+        height: 42px;
+        font-size: 22px;
         font-weight: bold;
-        font-size: 1.3rem;
+        background-color: #34394f;
+        border-radius: 30px;
         text-align: center;
+        line-height: 42px;
+        margin-top: 30px;
     }
     .dateBox{
         margin: auto;
@@ -1088,7 +1095,7 @@ export default {
         color: white;
     }
     .dx-header-row .comment-highlighted {
-        text-align: center!important;
+        /* text-align: center!important; */
         color: white;
     }
     .commentClass .v-input__control{
