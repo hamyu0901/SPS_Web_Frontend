@@ -6,10 +6,10 @@
 <script>
 </script>
 <style>
-    .v-input{
+    /* .v-input{
         padding-top: 0px;
         width: 250px
-    }
+    } */
     .dx-data-row .robot-highlighted {
         background-color: #3b69ce!important;
         text-align: center!important;

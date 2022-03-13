@@ -119,19 +119,19 @@ export default {
 
 <style lang="scss" scoped>
 #quickCombo{
-        width: 450px;
-        display: flex;
-        align-items: center;
-        column-gap: 10px;
-        // margin-left: 900px;
-        p{
-            margin: 0;
-            width: 70px;
-        }
-        height: 100px;
+    width: 450px;
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    height: 100px;
+
+    p{
+        margin: 0;
+        width: 70px;
     }
+
     .v-input >>> .v-menu__content{
-      top: 44px !important;
+        top: 44px !important;
     }
     .v-input >>> .v-input__control .v-input__slot{
         min-height:0 !important;
@@ -146,9 +146,9 @@ export default {
     }
     .v-input >>> .v-input__control .v-input__slot .v-select__slot .v-input__append-inner{
         margin: auto !important;
-
         i{
             font-size: 17px;
         }
     }
+}
 </style>

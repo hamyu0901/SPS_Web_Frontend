@@ -51,7 +51,14 @@ export default {
         },
         async onSave(value){
             value.prev_data_id_list = this.prev_data_id_list;
-            await this.$http.post(`/diagnostics/datareport/temperature/save`, value);
+            console.log(value)
+            await this.$http.post(`/diagnostics/datareport/temperature/save`, value)
+            .then((response) => {
+                console.log(response)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
         },
         childFunc() {
             this.$refs.current.childFunc();

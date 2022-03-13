@@ -125,8 +125,8 @@ table{
             border-bottom: 0;
         }
         th{
-            // border-left: 1px solid #474e6b;
-            // border-bottom: 1px solid #474e6b;
+            border-left: 1px solid #474e6b;
+            border-bottom: 1px solid #474e6b;
             color: white;
             font-weight: bolder;
             &.active{

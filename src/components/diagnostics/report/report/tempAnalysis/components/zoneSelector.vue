@@ -19,11 +19,11 @@
           />
           <img
               src="@/images/img_low.png"
-              v-else-if="selectedItem == 0"
+              v-else
           />
           <div v-if="selectedItem == 1">중</div>
           <div v-else-if="selectedItem == 2">상</div>
-          <div v-else-if="selectedItem == 0">하</div>
+          <div v-else>하</div>
         </v-layout>
       </button>
     </template>
