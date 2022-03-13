@@ -1,15 +1,30 @@
 <template>
     <div>
-        <div class="saveButton"><v-btn color="blue" @click="clickSaveButton">저장</v-btn></div>
+
+        <div class="saveButton"><v-btn color="#237ffe" @click="clickSaveButton"><v-icon>file_upload</v-icon><label>저장</label></v-btn></div>
         <v-layout>
             <v-flex class="reportHeader">{{ui.header}}</v-flex>
-            <v-flex class="compareCombobox">
-                <DxSelectBox
+            <v-flex class="prevAllSelectBox">
+                <!-- <div >
+                    <v-combobox
+                        outline
+                        color="grey"
+                        background-color="#21976a"
+                        label="select All"
+                        :items="datas.selectBoxReportList"
+                        item-text="report_name"
+                    >
+                    </v-combobox>
+
+                </div> -->
+
+                <DxSelectBox class="prevSelectContent"
                     :data-source="datas.selectBoxReportList"
                     display-expr="report_name"
                     width="300"
                     @item-click="changeAllSelectBox"
-                />
+                >
+                </DxSelectBox>
             </v-flex>
         </v-layout>
 
@@ -34,7 +49,7 @@
                                     v-bind:bindingCatch="bindingCatch"
                                 />
                             </div>
-                            <div class="prevSelectBox">
+                            <div>
                                 <DxSelectBox class="prevSelectContent"
                                     :width="300"
                                     :data-source="datas.selectBoxReportList"
@@ -124,7 +139,7 @@
                             <DxColumn
                                 caption="의견"
                                 data-field ="violation_value.current_data.comment"
-                                :width="300"
+                                alignment="center"
                                 css-class="comment-highlighted"
                                 cell-template="commentTemplate"
                             >
@@ -224,7 +239,7 @@
                             <DxColumn
                                 caption="의견"
                                 data-field="previolation_value.current_data.comment"
-                                :width="300"
+                                alignment="center"
                                 css-class="comment-highlighted"
                                 cell-template="commentPrevTemplate"
                             >
@@ -270,11 +285,20 @@ function deepClone(obj) {
 
   return result
 }
+function getKeyIndex(arr, obj){
+    for(let i=0; i < arr.length; i++){
+        if(arr[i].robot_id == obj.robot_id){
+            return i;
+        }
+    }
+    return -1;
+}
 import{
     DxDataGrid,
     DxColumn,
     DxEditing,
     DxLookup,
+    DxSelectBoxButton
 } from 'devextreme-vue/data-grid';
 import DxSelectBox from 'devextreme-vue/select-box';
 
@@ -296,11 +320,14 @@ export default {
         zoneOpinion,
         zonePrevOpinion,
         TorquePicker,
-        TorquePrevPicker
+        TorquePrevPicker,
+        DxSelectBoxButton,
     },
     props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType','reportSwitch','selectedMonth','selectedYear'],
     data() {
         return {
+            preselect_value : null,
+            somethings: ['a','b'],
             ui : {
                 header : ''
             },
@@ -429,6 +456,9 @@ export default {
             await this.$http.get(`diagnostics/report/report/detail/type/${this.datas.reportType}`)
             .then((response) => {
                 this.datas.allReportDetail = deepClone(response.data)
+            })
+            .catch((err) => {
+                console.log(err)
             })
         },
         setReportHeader(){
@@ -733,7 +763,7 @@ export default {
             this.$emit('bindingCatch')
         },
 
-        async updateDatePeriod(period,bIndex,zIndex){          // 선택 날짜 기준에 맞게 현재 report data 변경
+        async updateDatePeriod(period,bIndex,zIndex){       // 선택 날짜 기준에 맞게 현재 report data 변경
             this.datas.boothInfo[bIndex].zone[zIndex].robot.forEach(robotElement => {
                 robotElement.violation_value.current_start_date = period.start_date
                 robotElement.violation_value.current_end_date = period.end_date
@@ -741,42 +771,93 @@ export default {
             let zone_id = this.datas.boothInfo[bIndex].zone[zIndex].robot[0].zone
             let report_type = 0
             let temp = [];
-            await this.$http.get(`diagnostics/report/report/detail/type/${report_type}/zone/${zone_id}/start_date/${period.start_date}/end_date/${period.end_date}`)
-            .then((response) => {
-                temp = response.data
-                let resultArr = [];
-                for(let i = 0; i < temp.length; i++){
-                    let idx = getKeyIndex(resultArr, temp[i]);
-                    if(idx > -1){
-                        resultArr[idx].current_data.violation_count[0] += Number(temp[i].current_data.violation_count[0]);
-                        resultArr[idx].current_data.violation_count[1] += Number(temp[i].current_data.violation_count[1])
-                        resultArr[idx].current_data.violation_count[2] += Number(temp[i].current_data.violation_count[2])
-                        resultArr[idx].current_data.violation_count[3] += Number(temp[i].current_data.violation_count[3])
-                        resultArr[idx].current_data.violation_count[4] += Number(temp[i].current_data.violation_count[4])
-                        resultArr[idx].current_data.violation_count[5] += Number(temp[i].current_data.violation_count[5])
-                        resultArr[idx].current_data.violation_count[6] += Number(temp[i].current_data.violation_count[6])
+            let resultArr = [];
+            if(this.datas.reportSwitch == 0){
+                resultArr = await this.updateViolatedAccum(period,zone_id);
+            }
+            else{
+                await this.$http.get(`diagnostics/report/report/detail/type/${report_type}/zone/${zone_id}/start_date/${period.start_date}/end_date/${period.end_date}`)
+                .then(async (response) => {
+                    temp = response.data
+                    for(let i = 0; i < temp.length; i++){
+                        let idx = getKeyIndex(resultArr, temp[i]);
+                        if(idx > -1){
+                            resultArr[idx].current_data.violation_count[0] += Number(temp[i].current_data.violation_count[0]);
+                            resultArr[idx].current_data.violation_count[1] += Number(temp[i].current_data.violation_count[1])
+                            resultArr[idx].current_data.violation_count[2] += Number(temp[i].current_data.violation_count[2])
+                            resultArr[idx].current_data.violation_count[3] += Number(temp[i].current_data.violation_count[3])
+                            resultArr[idx].current_data.violation_count[4] += Number(temp[i].current_data.violation_count[4])
+                            resultArr[idx].current_data.violation_count[5] += Number(temp[i].current_data.violation_count[5])
+                            resultArr[idx].current_data.violation_count[6] += Number(temp[i].current_data.violation_count[6])
+                        }
+                        else{
+                            resultArr.push(temp[i])
+                        }
                     }
-                    else{
-                        resultArr.push(temp[i])
-                    }
-                }
-                resultArr.forEach(el => {
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+            }
+            this.$refs.currentContainer.forEach(item => {
+                item.instance.getDataSource().reload()
+            })
+            resultArr.forEach(el => {
                     this.datas.robotInfo.forEach(robotElement => {
                         if(el.robot_id == robotElement.id){
                             robotElement.violation_value.current_data.violation_count = el.current_data.violation_count
                         }
                     })
                 })
-            })
-            function getKeyIndex(arr, obj){
-                for(let i=0; i < arr.length; i++){
-                    if(arr[i].robot_id === obj.robot_id){
-                        return i;
+
+            this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
+        },
+        async updateViolatedAccum(period,zone_id){
+            let temp = [];
+            let resultArr = [];
+            await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${period.start_date}/enddate/${period.end_date}`)
+            .then(async (response) => {
+                temp = response.data.filter(el => el.zone_id == zone_id)
+                temp.forEach(el => {
+                    Object.assign(el, {current_data : {violation_count: [0,0,0,0,0,0,0]}})
+                })
+                for(let i = 0; i < temp.length; i++){
+                    let idx = await getKeyIndex(resultArr, temp[i]);
+                    if(idx > -1){
+                        switch(temp[i].axis){
+                            case 1 :
+                                resultArr[idx].current_data.violation_count[0] += Number(temp[i].axis)
+                            break;
+                            case 2:
+                                resultArr[idx].current_data.violation_count[1] += Number(temp[i].axis)
+                            break;
+                            case 3:
+                                resultArr[idx].current_data.violation_count[2] += Number(temp[i].axis)
+                            break;
+                            case 4:
+                                resultArr[idx].current_data.violation_count[3] += Number(temp[i].axis)
+                            break;
+                            case 5:
+                                resultArr[idx].current_data.violation_count[4] += Number(temp[i].axis)
+                            break;
+                            case 6:
+                                resultArr[idx].current_data.violation_count[5] += Number(temp[i].axis)
+                            break;
+                            case 7:
+                                resultArr[idx].current_data.violation_count[6] += Number(temp[i].axis)
+                            break;
+                        default:
+                        }
+                    }
+                    else{
+                        resultArr.push(temp[i])
                     }
                 }
-                return -1;
-            }
-            this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+            return resultArr
         },
         getFilteredReportDetail(){
              EventBus.$emit('getFilteredReportDetail',this.datas.selectedReport.report_id);
@@ -959,36 +1040,44 @@ export default {
         async updateReport(item){
             if(item.report_id !== undefined){
                 await this.$http.put(`/diagnostics/report/report/${item.report_id}`, {
-                factory_id: this.getFactoryId,
-                booth_id : item.booth_id,
-                zone_id : item.zone_id,
-                robot_id : item.robot_id,
-                report_type : item.report_type,
-                current_data : item.current_data,
-                prev_data_id : item.prev_data_id,
-                data_id : item.data_id,
-                comment : item.comment,
-                current_start_date : item.current_start_date,
-                current_end_date : item.current_end_date
-            })
-            .then(() => {})
+                    factory_id: this.getFactoryId,
+                    booth_id : item.booth_id,
+                    zone_id : item.zone_id,
+                    robot_id : item.robot_id,
+                    report_type : item.report_type,
+                    current_data : item.current_data,
+                    prev_data_id : item.prev_data_id,
+                    data_id : item.data_id,
+                    comment : item.comment,
+                    current_start_date : item.current_start_date,
+                    current_end_date : item.current_end_date
+                })
+                .then(() => {
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             }
         },
         async createReport(item){
             if(item.report_id !==undefined){
                 await this.$http.post(`/diagnostics/report/report/${item.report_id}`, {
-                factory_id: this.getFactoryId,
-                booth_id : item.booth_id,
-                zone_id : item.zone_id,
-                robot_id : item.robot_id,
-                report_type : item.report_type,
-                current_data : item.current_data,
-                prev_data_id : item.prev_data_id,
-                comment : item.comment,
-                current_start_date : item.current_start_date,
-                current_end_date : item.current_end_date
-            })
-            .then(() => {})
+                    factory_id: this.getFactoryId,
+                    booth_id : item.booth_id,
+                    zone_id : item.zone_id,
+                    robot_id : item.robot_id,
+                    report_type : item.report_type,
+                    current_data : item.current_data,
+                    prev_data_id : item.prev_data_id,
+                    comment : item.comment,
+                    current_start_date : item.current_start_date,
+                    current_end_date : item.current_end_date
+                })
+                .then((response) => {
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
             }
         }
     },
@@ -1024,13 +1113,30 @@ export default {
     .currentPicker{
         width: 690px;
     }
-    .compareCombobox{
+    .prevAllSelectBox{
         display: flex;
         justify-content: right;
         margin-right: 35px !important;
-        height: 30px;
         margin: auto;
     }
+
+    .prevAllSelectBox .v-input .v-input__control .v-input__slot{
+        min-height:0 !important;
+    }
+    .prevAllSelectBox .v-input .v-input__control .v-input__slot .v-select__slot{
+        height: 30px;
+    }
+    .prevAllSelectBox .v-select__slot .v-label{
+        position: absolute;
+        left: 10px;
+        top: 5px;
+        font-size: 15px;
+        color: #6c738f;
+    }
+    .prevAllSelectBox .v-input__append-inner {
+        margin: 4px !important;
+    }
+
     .compareDataGrid{
         width: 450px;
         padding: 30px 30px 30px 30px;
@@ -1067,12 +1173,14 @@ export default {
         justify-content: right;
         margin-right: 35px;
     }
+    .saveButton .v-btn {
+        width: 100px;
+        height: 40px;
+        border-radius: 4px !important;
+        font-size: 16px;
+    }
     .prevPicker{
         margin-right: 10px;
-    }
-    .v-input{
-        padding-top: 0px;
-        width: 250px;
     }
     .dx-data-row .robot-highlighted {
         background-color: #2159aa!important;
@@ -1082,10 +1190,15 @@ export default {
         background-color: #21976a!important;
         text-align: center!important;
     }
+
     .prevSelectContent .dx-selectbox-container .dx-texteditor-container  {
         background: #191d2b;
-        border-radius: 5px;
+        /* border-radius: 5px; */
     }
+    .prevSelectContent .dx-button-content {
+        background-color: #21976a!important;
+    }
+
     .dx-header-row .axis-highlighted {
         text-align: center!important;
         color: white;
@@ -1095,7 +1208,6 @@ export default {
         color: white;
     }
     .dx-header-row .comment-highlighted {
-        /* text-align: center!important; */
         color: white;
     }
     .commentClass .v-input__control{
