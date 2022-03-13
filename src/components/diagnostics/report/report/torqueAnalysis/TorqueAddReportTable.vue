@@ -1023,10 +1023,6 @@ export default {
     .prevPicker{
         margin-right: 10px;
     }
-    .v-input{
-        padding-top: 0px;
-        width: 250px !important
-    }
     .dx-data-row .robot-highlighted {
         background-color: #515dbe!important;
         text-align: center!important;

@@ -96,6 +96,7 @@ export default {
         border: 1px solid #4e546c;
         border-radius: 5px;
         > .v-input {
+            padding-top: 0px;
             margin: auto;
             width: 230px;
         }
