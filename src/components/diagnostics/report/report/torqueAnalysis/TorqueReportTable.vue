@@ -355,6 +355,7 @@ export default {
                 torqueAnalysisReportDetail:[],
                 violatedAccumulation: [],
                 allReportId: [],
+                successSave: false,
             }
         }
     },
@@ -863,6 +864,7 @@ export default {
              EventBus.$emit('getFilteredReportDetail',this.datas.selectedReport.report_id);
         },
         async clickSaveButton(){
+            this.datas.successSave = false;
             if (window.confirm("저장하시겠습니까?")){
                 this.datas.filteredCurrentData = [];
                 this.datas.filteredPrevData = [];
@@ -877,6 +879,7 @@ export default {
                 await this.updatePrevReport();
                 await this.getFilteredReportDetail();
             }
+            this.datas.successSave ? window.alert('저장되었습니다.') : window.alert('실패하였습니다.')
         },
         async getRowData(){
             await this.$refs.currentContainer.forEach(el => {
@@ -1053,9 +1056,12 @@ export default {
                     current_end_date : item.current_end_date
                 })
                 .then(() => {
+                    this.datas.successSave = true;
+
                 })
                 .catch((err) => {
                     console.log(err)
+                    this.datas.successSave = false;
                 })
             }
         },
@@ -1073,10 +1079,12 @@ export default {
                     current_start_date : item.current_start_date,
                     current_end_date : item.current_end_date
                 })
-                .then((response) => {
+                .then(() => {
+                    this.datas.successSave = true;
                 })
                 .catch((err) => {
                     console.log(err)
+                    this.datas.successSave = false;
                 })
             }
         }
