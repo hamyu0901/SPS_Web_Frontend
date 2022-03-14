@@ -295,7 +295,7 @@ export default {
             }
             this.setReportItems(this.datas.selectedReport);
             await this.getReportDetail(this.datas.selectedReport.report_id)
-            if(this.datas.torqueAnalysisReportDetail.length === 0){
+            if(this.datas.torqueAnalysisReportDetail.length == 0){
                 this.datas.reportSwitch = 0
             }
             else{

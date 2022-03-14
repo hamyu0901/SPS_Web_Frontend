@@ -139,11 +139,15 @@ export default {
 
         }
     },
+
     mounted(){
         this.datas.reportSwitch = this.reportSwitch
         this.datas.selectedReport = this.selectedReport
         this.datas.reports = this.reports
         this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+        if(this.datas.torqueAnalysisReportDetail.length !== 0){
+            this.datas.reportSwitch = 1
+        }
         this.resetDate();
     },
     watch: {
@@ -155,8 +159,17 @@ export default {
             await this.resetDate();
         },
         torqueAnalysisReportDetail(){
-            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
-        }
+            if(this.torqueAnalysisReportDetail.length !== 0){
+                this.datas.reportSwitch = 1
+            }
+        },
+       // async torqueAnalysisReportDetail(){
+        //     this.datas.reportSwitch = this.reportSwitch
+        //     this.datas.selectedReport = this.selectedReport
+        //     this.datas.reports = this.reports
+        //     this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+        //     await this.resetDate();
+        // }
     },
     methods:{
         resetDate(){
@@ -173,7 +186,7 @@ export default {
             if(this.datas.selectedYear == null){
                 window.alert('Year is Required')
             }
-        }
+        },
     }
 }
 </script>
