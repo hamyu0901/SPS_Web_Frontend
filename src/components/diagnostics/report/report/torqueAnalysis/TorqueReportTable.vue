@@ -770,36 +770,37 @@ export default {
                 robotElement.violation_value.current_end_date = period.end_date
             })
             let zone_id = this.datas.boothInfo[bIndex].zone[zIndex].robot[0].zone
-            let report_type = 0
-            let temp = [];
+            // let report_type = 0
+            // let temp = [];
             let resultArr = [];
-            if(this.datas.reportSwitch == 0){
-                resultArr = await this.updateViolatedAccum(period,zone_id);
-            }
-            else{
-                await this.$http.get(`diagnostics/report/report/detail/type/${report_type}/zone/${zone_id}/start_date/${period.start_date}/end_date/${period.end_date}`)
-                .then(async (response) => {
-                    temp = response.data
-                    for(let i = 0; i < temp.length; i++){
-                        let idx = getKeyIndex(resultArr, temp[i]);
-                        if(idx > -1){
-                            resultArr[idx].current_data.violation_count[0] += Number(temp[i].current_data.violation_count[0]);
-                            resultArr[idx].current_data.violation_count[1] += Number(temp[i].current_data.violation_count[1])
-                            resultArr[idx].current_data.violation_count[2] += Number(temp[i].current_data.violation_count[2])
-                            resultArr[idx].current_data.violation_count[3] += Number(temp[i].current_data.violation_count[3])
-                            resultArr[idx].current_data.violation_count[4] += Number(temp[i].current_data.violation_count[4])
-                            resultArr[idx].current_data.violation_count[5] += Number(temp[i].current_data.violation_count[5])
-                            resultArr[idx].current_data.violation_count[6] += Number(temp[i].current_data.violation_count[6])
-                        }
-                        else{
-                            resultArr.push(temp[i])
-                        }
-                    }
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
-            }
+
+            resultArr = await this.updateViolatedAccum(period,zone_id);
+
+            // else{
+            //     await this.$http.get(`diagnostics/report/report/detail/type/${report_type}/zone/${zone_id}/start_date/${period.start_date}/end_date/${period.end_date}`)
+            //     .then(async (response) => {
+            //         temp = response.data
+            //         console.log(temp)
+            //         for(let i = 0; i < temp.length; i++){
+            //             let idx = getKeyIndex(resultArr, temp[i]);
+            //             if(idx > -1){
+            //                 resultArr[idx].current_data.violation_count[0] += Number(temp[i].current_data.violation_count[0]);
+            //                 resultArr[idx].current_data.violation_count[1] += Number(temp[i].current_data.violation_count[1])
+            //                 resultArr[idx].current_data.violation_count[2] += Number(temp[i].current_data.violation_count[2])
+            //                 resultArr[idx].current_data.violation_count[3] += Number(temp[i].current_data.violation_count[3])
+            //                 resultArr[idx].current_data.violation_count[4] += Number(temp[i].current_data.violation_count[4])
+            //                 resultArr[idx].current_data.violation_count[5] += Number(temp[i].current_data.violation_count[5])
+            //                 resultArr[idx].current_data.violation_count[6] += Number(temp[i].current_data.violation_count[6])
+            //             }
+            //             else{
+            //                 resultArr.push(temp[i])
+            //             }
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         console.log(err)
+            //     })
+            // }
             this.$refs.currentContainer.forEach(item => {
                 item.instance.getDataSource().reload()
             })
@@ -816,44 +817,86 @@ export default {
         async updateViolatedAccum(period,zone_id){
             let temp = [];
             let resultArr = [];
+            this.datas.robotInfo.forEach(el => {
+                if(el.zone == zone_id){
+                    resultArr.push({
+                        robot_id: el.id,
+                        current_data: {violation_count: [0,0,0,0,0,0,0]}
+                    })
+                }
+            })
+
             await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${period.start_date}/enddate/${period.end_date}`)
             .then(async (response) => {
                 temp = response.data.filter(el => el.zone_id == zone_id)
                 temp.forEach(el => {
-                    Object.assign(el, {current_data : {violation_count: [0,0,0,0,0,0,0]}})
-                })
-                for(let i = 0; i < temp.length; i++){
-                    let idx = await getKeyIndex(resultArr, temp[i]);
-                    if(idx > -1){
-                        switch(temp[i].axis){
-                            case 1 :
-                                resultArr[idx].current_data.violation_count[0] += Number(temp[i].axis)
-                            break;
-                            case 2:
-                                resultArr[idx].current_data.violation_count[1] += Number(temp[i].axis)
-                            break;
-                            case 3:
-                                resultArr[idx].current_data.violation_count[2] += Number(temp[i].axis)
-                            break;
-                            case 4:
-                                resultArr[idx].current_data.violation_count[3] += Number(temp[i].axis)
-                            break;
-                            case 5:
-                                resultArr[idx].current_data.violation_count[4] += Number(temp[i].axis)
-                            break;
-                            case 6:
-                                resultArr[idx].current_data.violation_count[5] += Number(temp[i].axis)
-                            break;
-                            case 7:
-                                resultArr[idx].current_data.violation_count[6] += Number(temp[i].axis)
-                            break;
-                        default:
+                    resultArr.forEach(item => {
+                        if(el.robot_id == item.robot_id){
+                            switch(el.axis){
+                                case 1:
+                                    item.current_data.violation_count[0] += 1
+                                break;
+                                case 2:
+                                    item.current_data.violation_count[1] += 1
+                                break;
+                                case 3:
+                                    item.current_data.violation_count[2] += 1
+                                break;
+                                case 4:
+                                    item.current_data.violation_count[3] += 1
+                                break;
+                                case 5:
+                                    item.current_data.violation_count[4] += 1
+                                break;
+                                case 6:
+                                    item.current_data.violation_count[5] += 1
+                                break;
+                                case 7:
+                                    item.current_data.violation_count[6] += 1
+                                break;
+                            default:
+                            }
+
                         }
-                    }
-                    else{
-                        resultArr.push(temp[i])
-                    }
-                }
+                    })
+                })
+                console.log(resultArr)
+                // temp.forEach(el => {
+                //     Object.assign(el, {current_data : {violation_count: [0,0,0,0,0,0,0]}})
+                // })
+                // for(let i = 0; i < temp.length; i++){
+                //     let idx = await getKeyIndex(resultArr, temp[i]);
+                //     if(idx > -1){
+                //         console.log(idx, temp[i])
+                //         switch(temp[i].axis){
+                //             case 1 :
+                //                 resultArr[idx].current_data.violation_count[0] += Number(temp[i].axis)
+                //             break;
+                //             case 2:
+                //                 resultArr[idx].current_data.violation_count[1] += Number(temp[i].axis)
+                //             break;
+                //             case 3:
+                //                 resultArr[idx].current_data.violation_count[2] += Number(temp[i].axis)
+                //             break;
+                //             case 4:
+                //                 resultArr[idx].current_data.violation_count[3] += Number(temp[i].axis)
+                //             break;
+                //             case 5:
+                //                 resultArr[idx].current_data.violation_count[4] += Number(temp[i].axis)
+                //             break;
+                //             case 6:
+                //                 resultArr[idx].current_data.violation_count[5] += Number(temp[i].axis)
+                //             break;
+                //             case 7:
+                //                 resultArr[idx].current_data.violation_count[6] += Number(temp[i].axis)
+                //             break;
+                //         default:
+                //         }
+                //     }
+                //     else{
+                //         resultArr.push(temp[i])
+                //     }
+                // }
             })
             .catch((err) => {
                 console.log(err)
