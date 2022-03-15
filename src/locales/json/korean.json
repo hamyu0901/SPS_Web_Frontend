@@ -90,7 +90,7 @@
             "typeHintText": "조치사항 분류"
         }
     },
-    
+
     "selector": {
         "booth": "부스 선택",
         "zone": "존 선택",
@@ -435,7 +435,7 @@
             "cumulativeWarningValue": "누적 경고 값"
         }
     },
-    
+
     "diagnostics": {
         "drawertitle": {
             "predict": "예지 보전",
@@ -683,7 +683,7 @@
                     "processAlarmEventRatio": "공정 간 경보 발생 비율",
                     "alarmInfo": "알람 정보",
                     "alarmTypeStopTime": "알람 종류 별 정지 시간",
-                    "confirm": "확인",                      
+                    "confirm": "확인",
                     "deadtime": "정지 시간 (분)",
                     "count": "발생 건",
                     "alarmDescription" : {
@@ -843,7 +843,7 @@
                 "violationrecordData": "[알림] 위반 기록 데이터가 없습니다.",
                 "trendData": "[알림] 토크 부하율 데이터가 없습니다."
             },
-            "child": { 
+            "child": {
                 "abnormalStandardSettingTable": {
                     "setAbnormalStandard": "적산 경고 값 목록",
                     "initData": "경고 값 설정",
@@ -903,7 +903,7 @@
                 "loadFactorByAxis": {
                     "sumChartTitle": "토크 부하율 적산",
                     "yAxisTitle": "토크 부하율(%)",
-                    "xAxisTitle": "시간(HH:MM:SS)",
+                    "xAxisTitle": "날짜(MM-DD HH:MM)",
                     "torqueAccumLabel": "토크 부하율 적산 값",
                     "torqueWarningMaxLabel": "토크 최대 경고 범위 설정 값",
                     "torqueWarningMinLabel": "토크 최소 경고 범위 설정 값",
@@ -915,7 +915,7 @@
                         "acmmmv": "누적 최소",
                         "summxv": "적산 최대",
                         "summmv": "적산 최소",
-                        "cycle": "작업 시간" 
+                        "cycle": "작업 시간"
                     },
                     "popMsg": {
                         "accept": "[알림] 적용 완료",

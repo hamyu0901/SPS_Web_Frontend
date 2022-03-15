@@ -13,12 +13,13 @@
     </div>
     <div id="opinion_content" v-if="showDetail">
         <v-textarea
-          v-model="datas.bodyPrevText"
-          placeholder="의견을 입력해 주세요"
-          no-resize
-          color="white"
-          :value="datas.headerPrevText"
-          @input="inputPrevTextArea"
+            readonly
+            v-model="datas.bodyPrevText"
+            placeholder="의견을 입력해 주세요"
+            no-resize
+            color="white"
+            :value="datas.headerPrevText"
+            @input="inputPrevTextArea"
         ></v-textarea>
     </div>
 </div>
