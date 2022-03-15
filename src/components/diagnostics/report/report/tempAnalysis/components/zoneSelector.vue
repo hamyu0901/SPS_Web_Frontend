@@ -5,7 +5,7 @@
     >
       <template v-slot:activator="{on, attrs }">
         <button
-          disabled
+          :disabled="disable"
           v-bind="attrs"
           v-on="on"
         >
@@ -43,7 +43,7 @@
 </template>
 <script>
 export default {
-    props:['items', 'selectedItem', 'robotId'],
+    props:['items', 'selectedItem', 'robotId', 'disable'],
     data(){
         return{
         }
