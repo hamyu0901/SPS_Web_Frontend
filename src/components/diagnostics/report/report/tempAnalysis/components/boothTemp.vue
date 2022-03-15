@@ -3,7 +3,7 @@
       <div id="boothTitleBox" class="ml-4">
           <span class="boothTitle">{{boothInfo.booth_name}}</span>
       </div>
-      <zone-vue v-for="(zone, index) in zones" :zoneInfo="zone" :key="index" :quickPeriod="quickPeriod" ref="child_component"></zone-vue>
+      <zone-vue v-for="(zone, index) in zones" :zoneInfo="zone" :key="index" :quickPeriod="quickPeriod" ref="child_component" @successUpdate="successUpdate"></zone-vue>
   </div>
 </template>
 
@@ -47,6 +47,9 @@ export default {
                 zone.booth_id = this.boothId;
                 this.zones.push(zone);
             }
+        },
+        successUpdate(count){
+            this.$emit('successUpdate',count)
         }
     }
 }
