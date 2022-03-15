@@ -205,6 +205,7 @@
                                         <button
                                             v-bind="attrs"
                                             v-on="on"
+                                            disabled
                                         >
                                             <v-layout column>
                                                 <img
@@ -225,7 +226,7 @@
                                         </v-layout>
                                         </button>
                                     </template>
-                                    <v-list>
+                                    <!-- <v-list>
                                         <v-list-tile
                                             v-for="(item, index) in datas.danger_level"
                                             :key="index"
@@ -233,7 +234,7 @@
                                         >
                                         <v-list-tile-title>{{item.name}}</v-list-tile-title>
                                         </v-list-tile>
-                                    </v-list>
+                                    </v-list> -->
                                 </v-menu>
                             </template>
                             <DxColumn
@@ -252,6 +253,7 @@
                                     <v-text-field
                                         color="#21976a"
                                         :value="data.data.previolation_value.current_data.comment"
+                                        readonly
                                         @change="inputRobotComment($event,data)"
                                     >
                                     </v-text-field>

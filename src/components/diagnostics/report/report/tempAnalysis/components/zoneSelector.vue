@@ -5,6 +5,7 @@
     >
       <template v-slot:activator="{on, attrs }">
         <button
+          disabled
           v-bind="attrs"
           v-on="on"
         >
