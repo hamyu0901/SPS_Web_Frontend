@@ -860,7 +860,6 @@ export default {
                         }
                     })
                 })
-                console.log(resultArr)
                 // temp.forEach(el => {
                 //     Object.assign(el, {current_data : {violation_count: [0,0,0,0,0,0,0]}})
                 // })
