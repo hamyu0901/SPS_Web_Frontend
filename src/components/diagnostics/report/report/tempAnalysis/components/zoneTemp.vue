@@ -26,8 +26,8 @@ export default {
             prev_data_id_list:[],
             data_id_List_from_curr:[],
             zoneName: null,
-            robotInfo: []
-
+            robotInfo: [],
+            successCount: 1,
         }
     },
     created(){
@@ -52,10 +52,12 @@ export default {
         async onSave(value){
             value.prev_data_id_list = this.prev_data_id_list;
             await this.$http.post(`/diagnostics/datareport/temperature/save`, value)
-            .then((response) => {
+            .then(async (response) => {
+                await this.$emit('successUpdate',this.successCount)
             })
             .catch((err) => {
                 console.log(err)
+                window.alert('실패하였습니다.')
             })
         },
         childFunc() {

@@ -9,7 +9,7 @@
         <quick-combo-vue @quickSetting="quickSetting"></quick-combo-vue>
         <save-reset-vue @onSave="onSave" @onReset="onReset"></save-reset-vue>
       </div>
-      <booth-vue  v-for="(booth, index) in boothes"  :key="index"  :boothInfo="booth" :quickPeriod="quickPeriod" ref="child_component"></booth-vue>
+      <booth-vue  v-for="(booth, index) in boothes"  :key="index"  :boothInfo="booth" :quickPeriod="quickPeriod" ref="child_component" @successUpdate="successUpdate"></booth-vue>
   </div>
 </template>
 <script>
@@ -29,6 +29,7 @@ export default {
           boothes:[
           ],
           quickPeriod: null,
+          saveCount: 0
         }
     },
     created(){
@@ -46,6 +47,7 @@ export default {
     watch:{
       reportDatas(){
         this.report = this.$store.getters['getReport'];
+        this.saveCount = 0;
       },
     },
     methods:{
@@ -73,9 +75,14 @@ export default {
       },
       onReset(){
 
+      },
+      successUpdate(count){
+        this.saveCount += count
+        if(this.saveCount == 10){
+          window.alert('저장되었습니다.')
+        }
       }
     }
-
 }
 </script>
 <style lang="scss" scoped>
