@@ -46,7 +46,7 @@ import zoneOpinionVue from './zoneOpinion.vue';
 import LoadingSpinner from '../../../../../../commons/LoadingSpinner.vue';
 
 export default {
-    props:['zoneInfo', 'robotInfo', 'quickPeriod'],
+    props:['zoneInfo', 'robotInfo', 'quickPeriod','loadingSwitch'],
     components: {
     tableVue: TableVue,
     DateFromToVue: DateFromToVue,
@@ -389,6 +389,9 @@ export default {
             ],
             testList: [
                 ],
+            datas:{
+                loadingSwitch : null,
+            }
 
         }
     },
@@ -419,7 +422,6 @@ export default {
     },
     watch:{
         quickPeriod(){
-
             var quickDate;
             var date = new Date();
             var form_date = this.formatDate(date)
@@ -461,6 +463,12 @@ export default {
             var dateTo = `${this.quickPeriod.quickYear}-${this.quickPeriod.quickMonth}-${quickDate} 23:59:59`;
             this.findZoneData(dateFrom, dateTo);
         },
+        loadingSwitch(){
+            this.datas.loadingSwitch = this.loadingSwitch
+            if(this.datas.loadingSwitch == false){
+                this.isLoading = false
+            }
+        },
         reportDatas(){
             this.report_id = this.getReportItems.selectedReport.report_id;
             this.opinionInput = '';
@@ -478,6 +486,7 @@ export default {
             var prev_id_list = [];
             await this.$http.post(`/diagnostics/datareport/temperature/analyzeHasReport`, variable).then(result => {
                 if(result.data !== 'no data'){
+                    this.$emit('getViolatedData',result.data.length)
                     if(this.tableData.length !== 0){
                         this.tableData.splice(0);
                     }
@@ -504,13 +513,12 @@ export default {
                 }else{
                     this.zonePeriod = null;
                     this.tableData.splice(0);
+                    this.$emit('changeLoading')
                 }
 
             });
             this.isLoading = false;
             this.$emit('sendDataIdList', prev_id_list)
-
-
         }
     },
     methods:{
@@ -556,7 +564,6 @@ export default {
             this.zoneName = this.zoneInfo.zone_name;
         },
         findZoneData(dateFrom, dateTo){
-
             const variable ={
                 report_id: null,
                 factory_id: 2,
@@ -565,8 +572,10 @@ export default {
                 fromDate: dateFrom,
                 toDate: dateTo
             }
-
-            this.$http.post(`/diagnostics/datareport/temperature/analyzeNoReport`, variable).then(result => {
+            this.isLoading = true;
+            this.$http.post(`/diagnostics/datareport/temperature/analyzeNoReport`, variable)
+            .then(result => {
+                this.$emit('getViolatedData',result.data.length)
                 if(this.tableData.length !== 0){
                     this.tableData.splice(0);
                 }
@@ -577,7 +586,7 @@ export default {
                 this.disableTextArea = false;
             })
             this.opinionInput = '';
-            this.isLoading = false;
+            // this.isLoading = this.loadingSwitch;
         },
         updatePeriod(period){
             this.isLoading = true;

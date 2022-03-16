@@ -3,14 +3,23 @@
       <div id="boothTitleBox" class="ml-4">
           <span class="boothTitle">{{boothInfo.booth_name}}</span>
       </div>
-      <zone-vue v-for="(zone, index) in zones" :zoneInfo="zone" :key="index" :quickPeriod="quickPeriod" ref="child_component" @successUpdate="successUpdate"></zone-vue>
+    <zone-vue v-for="(zone, index) in zones"
+        :zoneInfo="zone"
+        :key="index"
+        :quickPeriod="quickPeriod"
+        ref="child_component"
+        @successUpdate="successUpdate"
+        @getViolatedData="getViolatedData"
+        :violatedDataLength="violatedDataLength"
+        >
+    </zone-vue>
   </div>
 </template>
 
 <script>
 import zoneTempVue from './zoneTemp.vue'
 export default {
-    props:['boothInfo', 'quickPeriod'],
+    props:['boothInfo', 'quickPeriod','violatedDataLength'],
     components:{
         zoneVue: zoneTempVue,
     },
@@ -50,6 +59,9 @@ export default {
         },
         successUpdate(count){
             this.$emit('successUpdate',count)
+        },
+        getViolatedData(violatedTemp){
+            this.$emit('getViolatedData',violatedTemp)
         }
     }
 }

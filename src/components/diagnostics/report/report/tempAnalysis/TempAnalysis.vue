@@ -6,10 +6,19 @@
           {{report.report_name}}
         </div>
         <v-spacer/>
-        <quick-combo-vue @quickSetting="quickSetting"></quick-combo-vue>
+        <quick-combo-vue @quickSetting="quickSetting" @resetViolatedTemp="resetViolatedTemp"></quick-combo-vue>
         <save-reset-vue @onSave="onSave" @onReset="onReset"></save-reset-vue>
       </div>
-      <booth-vue  v-for="(booth, index) in boothes"  :key="index"  :boothInfo="booth" :quickPeriod="quickPeriod" ref="child_component" @successUpdate="successUpdate"></booth-vue>
+      <booth-vue
+        v-for="(booth, index) in boothes"  :key="index"
+        :boothInfo="booth"
+        :quickPeriod="quickPeriod"
+        ref="child_component"
+        @successUpdate="successUpdate"
+        @getViolatedData="getViolatedData"
+        :violatedDataLength="violatedDataLength"
+        >
+      </booth-vue>
   </div>
 </template>
 <script>
@@ -17,6 +26,7 @@ import boothTempVue from './components/boothTemp.vue';
 import quickSetterVue from './components/quickSetter.vue';
 import saveResetVue from './components/saveReset.vue';
 import {mapGetters} from 'vuex';
+import EventBus from "@/commons/EventBus";
 export default {
     components: {
         quickComboVue: quickSetterVue,
@@ -29,7 +39,8 @@ export default {
           boothes:[
           ],
           quickPeriod: null,
-          saveCount: 0
+          saveCount: 0,
+          violatedDataLength: 0
         }
     },
     created(){
@@ -53,6 +64,10 @@ export default {
     methods:{
       initializeReportData(){
         this.report = this.$store.getters['getReport'];
+      },
+      resetViolatedTemp(){
+        this.violatedDataLength = 0;
+        EventBus.$emit('loadingSwitch')
       },
       initializeBoothes(){
           this.$http.get(`/diagnostics/datareport/temperature/factoryInfo`).then(result => {
@@ -81,6 +96,9 @@ export default {
         if(this.saveCount == 10){
           window.alert('저장되었습니다.')
         }
+      },
+      getViolatedData(violatedTemp){
+        this.violatedDataLength += violatedTemp
       }
     }
 }
