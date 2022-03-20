@@ -37,7 +37,6 @@ export default {
             data_id_List_from_curr:[],
             zoneName: null,
             robotInfo: [],
-            successCount: 1,
             isLoading : null,
         }
     },
@@ -75,7 +74,7 @@ export default {
             value.prev_data_id_list = this.prev_data_id_list;
             await this.$http.post(`/diagnostics/datareport/temperature/save`, value)
             .then(async (response) => {
-                await this.$emit('successUpdate',this.successCount)
+                await this.$emit('successUpdate',response.status)
             })
             .catch((err) => {
                 console.log(err)

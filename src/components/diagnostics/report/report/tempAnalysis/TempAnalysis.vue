@@ -6,7 +6,7 @@
           {{report.report_name}}
         </div>
         <v-spacer/>
-        <quick-combo-vue @quickSetting="quickSetting" @resetViolatedTemp="resetViolatedTemp"></quick-combo-vue>
+        <quick-combo-vue @quickSetting="quickSetting" @selectMonth="selectMonth"></quick-combo-vue>
         <save-reset-vue @onSave="onSave" @onReset="onReset"></save-reset-vue>
       </div>
       <booth-vue
@@ -40,7 +40,7 @@ export default {
           ],
           quickPeriod: null,
           saveCount: 0,
-          violatedDataLength: 0
+          violatedDataLength: 0,
         }
     },
     created(){
@@ -58,14 +58,14 @@ export default {
     watch:{
       reportDatas(){
         this.report = this.$store.getters['getReport'];
-        this.saveCount = 0;
+        this.violatedDataLength = 0 ;
       },
     },
     methods:{
       initializeReportData(){
         this.report = this.$store.getters['getReport'];
       },
-      resetViolatedTemp(){
+      selectMonth(){
         this.violatedDataLength = 0;
         EventBus.$emit('loadingSwitch')
       },
@@ -83,7 +83,8 @@ export default {
       quickSetting(quickPeriod){
         this.quickPeriod = quickPeriod;
       },
-      onSave(){
+      async onSave(){
+        this.saveCount = 0;
         for(var i = 0; i < this.$refs.child_component.length; i++){
           this.$refs.child_component[i].childFunc()
         }
@@ -91,9 +92,9 @@ export default {
       onReset(){
 
       },
-      successUpdate(count){
-        this.saveCount += count
-        if(this.saveCount == 10){
+      successUpdate(successedStatus){
+        this.saveCount += successedStatus
+        if(this.saveCount == 2000){
           window.alert('저장되었습니다.')
         }
       },

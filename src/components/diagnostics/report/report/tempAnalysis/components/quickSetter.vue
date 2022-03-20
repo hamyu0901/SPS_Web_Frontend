@@ -29,7 +29,7 @@
           :hide-details="true"
           :no-data-text="noDataTextMonth"
           return-object
-          @change="findData"
+          @input="findData"
         >
           <template v-slot:item="{ item }">
             <div>
@@ -104,7 +104,7 @@ export default {
             return null;
         },
         async findData(month){
-          await this.$emit('resetViolatedTemp')
+          await this.$emit('selectMonth')
             this.selectedMonth = month.monthes;
             const quickPeriod = {
                 quickYear: this.selectedYear,
