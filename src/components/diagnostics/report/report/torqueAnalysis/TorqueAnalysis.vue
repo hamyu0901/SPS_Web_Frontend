@@ -4,20 +4,6 @@
             <torque-report
             />
         </div>
-        <div>
-            <torque-report-table
-                v-if="datas.selectedMonth !== null || datas.reportSwitch == 1"
-                v-bind:selectedReport="datas.selectedReport"
-                v-bind:reports="datas.reports"
-                v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
-                @bindingCatch="bindingCatch"
-                v-bind:bindingCatch="datas.rerender"
-                v-bind:reportType="reportType"
-                v-bind:reportSwitch="datas.reportSwitch"
-                v-bind:selectedMonth="datas.selectedMonth"
-                v-bind:selectedYear="datas.selectedYear"
-            />
-        </div>
         <div v-if="datas.reportSwitch == 0">
             <div class="combobox">
                 <div class="yearCombobox">
@@ -42,6 +28,20 @@
                 </div>
             </div>
         </div>
+        <div>
+            <torque-report-table
+                v-if="datas.selectedMonth !== null || datas.reportSwitch == 1"
+                v-bind:selectedReport="datas.selectedReport"
+                v-bind:reports="datas.reports"
+                v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
+                @bindingCatch="bindingCatch"
+                v-bind:bindingCatch="datas.rerender"
+                v-bind:reportType="reportType"
+                v-bind:reportSwitch="datas.reportSwitch"
+                v-bind:selectedMonth="datas.selectedMonth"
+                v-bind:selectedYear="datas.selectedYear"
+            />
+        </div>
         <!-- <div>
             <torque-add-report-table
                 v-if="datas.selectedMonth !== null && datas.reportSwitch == 0"
@@ -56,20 +56,6 @@
                 v-bind:reportSwitch="datas.reportSwitch"
             />
         </div> -->
-        <!-- <v-menu
-            ref="menu"
-            v-model="datas.pickerModal"
-            full-width
-            max-width="290px"
-            min-width="290px"
-            :position-y="200"
-            :position-x="300"
-        >
-            <torque-picker
-                v-on:closeTorquePicker="closeTorquePicker"
-                v-on:clickPickerMonth="clickPickerMonth"
-            />
-        </v-menu> -->
         <v-spacer></v-spacer>
     </div>
 </template>
@@ -77,6 +63,14 @@
 <script>
 
 // import TorquePicker from '@/components/diagnostics/report/report/torqueAnalysis/TorquePicker'
+function isEmptyObj(obj)  {
+  if(obj.constructor === Object
+     && Object.keys(obj).length === 0)  {
+    return true;
+  }
+
+  return false;
+}
 
 import {mapGetters} from 'vuex';
 import TorqueReportAddDlg from '@/components/diagnostics/report/report/torqueAnalysis/TorqueReportAddDlg'
@@ -119,12 +113,11 @@ export default {
   },
     computed: {
         ...mapGetters({
-            baseUrl: 'getBaseUrl',
-            getFactoryId: 'getFactoryId',
-            getBoothInfos: 'getBoothInfos',
-            getZoneInfos: 'getZoneInfos',
-            getRobotInfos: 'getRobotInfos'
+            getReport : 'getReport'
         }),
+        reportDatas(){
+            return this.$store.getters['getReport'];
+        },
         years(){
             let years = [];
             years.push(Number(new Date().getFullYear()),Number(new Date().getFullYear())-1)
@@ -141,12 +134,17 @@ export default {
     },
 
     mounted(){
-        this.datas.reportSwitch = this.reportSwitch
-        this.datas.selectedReport = this.selectedReport
-        this.datas.reports = this.reports
-        this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
-        if(this.datas.torqueAnalysisReportDetail.length !== 0){
-            this.datas.reportSwitch = 1
+        if(isEmptyObj(this.selectedReport) == true){
+            this.initializeReportData();
+        }
+        else{
+            this.datas.reportSwitch = this.reportSwitch
+            this.datas.selectedReport = this.selectedReport
+            this.datas.reports = this.reports
+            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+            if(this.datas.torqueAnalysisReportDetail.length !== 0){
+                this.datas.reportSwitch = 1
+            }
         }
         this.resetDate();
     },
@@ -163,15 +161,20 @@ export default {
                 this.datas.reportSwitch = 1
             }
         },
-       // async torqueAnalysisReportDetail(){
-        //     this.datas.reportSwitch = this.reportSwitch
-        //     this.datas.selectedReport = this.selectedReport
-        //     this.datas.reports = this.reports
-        //     this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
-        //     await this.resetDate();
-        // }
     },
     methods:{
+        async initializeReportData(){
+            this.report = this.$store.getters['getReport'];
+            this.datas.selectedReport = this.report
+            await this.getReportDetail(this.report.report_id);
+            await this.getReportList();
+            if(this.datas.torqueAnalysisReportDetail.length !== 0){
+                this.datas.reportSwitch = 1
+            }
+            else{
+                this.datas.reportSwitch = 0
+            }
+        },
         resetDate(){
             this.datas.selectedYear = null
             this.datas.selectedMonth = null
@@ -187,6 +190,36 @@ export default {
                 window.alert('Year is Required')
             }
         },
+        async getReportList(){
+            await this.$http.get(`/diagnostics/report/report`)
+            .then((response) => {
+                this.datas.reports = response.data
+                this.datas.reports.forEach((el,index) => {
+                Object.assign(el, {reportNumber : index + 1})
+                })
+            });
+        },
+        async getReportDetail(report_id){
+            this.datas.torqueAnalysisReportDetail = [];
+            await this.$http.get(`diagnostics/report/report/detail/${report_id}`)
+            .then((response) => {
+                if(response.data !== ''){
+                    response.data.forEach(el => {
+                        switch(el.report_type){
+                            case 0: this.datas.torqueAnalysisReportDetail.push(el)
+                            break;
+                        default:
+                        }
+                    })
+                }
+                else{
+                    this.datas.torqueAnalysisReportDetail = [];
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+        }
     }
 }
 </script>
