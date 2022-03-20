@@ -356,6 +356,7 @@ export default {
                 filteredPrevData: [],
                 torqueAnalysisReportDetail:[],
                 violatedAccumulation: [],
+                filteredViolatedAccum: [],
                 allReportId: [],
                 successSave: false,
             }
@@ -510,7 +511,7 @@ export default {
                     let cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0, cnt6 = 0, cnt7 = 0
                     let month = this.datas.selectedMonth.substr(0, 2)
                     let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
-                    Object.assign(robotElement, { violation_value : this.datas.violatedAccumulation.filter(element => element.robot_id == robotElement.id)[0]})
+                    Object.assign(robotElement, { violation_value : this.datas.filteredViolatedAccum.filter(element => element.robot_id == robotElement.id)[0]})
                     if(robotElement.violation_value == undefined){
                         robotElement.violation_value = {
                             axis: {axis1:0,axis2:0,axis3:0,axis4:0,axis5:0,axis6:0,axis7:0},
@@ -641,17 +642,50 @@ export default {
                 })
             }
         },
+        // async getViolatedAccumulation(){
+        //     this.datas.violatedAccumulation = [];
+        //     let month = this.datas.selectedMonth.substr(0, 2)
+        //     let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
+        //     let start_date = `${this.datas.selectedYear}-${month}-01`
+        //     let end_date = `${this.datas.selectedYear}-${month}-${month_last_date}`
+        //     let dangerData = [];
+        //     await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${start_date}/enddate/${end_date}`)
+        //     .then((response) => {
+        //         dangerData = deepClone(response.data)
+        //         this.datas.violatedAccumulation = dangerData.reduce((acc, {robot_id, axis})=> {
+        //             let axisKey = `axis${axis}`;
+        //             let item = acc.find((el) => el.robot_id === robot_id);
+        //             if(item) {
+        //                 if(Object.keys(item.axis).includes(axisKey)){
+        //                     item.axis[axisKey] += 1;
+        //                 } else {
+        //                     item.axis[axisKey] = 1;
+        //                 }
+        //                 return acc.map((el) => el.robot_id === robot_id ? {robot_id, axis: item.axis}: el);
+        //             } else {
+        //                 return [...acc, {robot_id, axis: {[axisKey]: 1}}];
+        //             }
+        //         }, []);
+        //         if(response.data == ""){
+        //             window.alert('not data')
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log(err)
+        //     })
+        // },
         async getViolatedAccumulation(){
+            this.datas.filteredViolatedAccum = [];
             this.datas.violatedAccumulation = [];
             let month = this.datas.selectedMonth.substr(0, 2)
             let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
-            let start_date = `${this.datas.selectedYear}-${month}-01`
-            let end_date = `${this.datas.selectedYear}-${month}-${month_last_date}`
-            let dangerData = [];
-            await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${start_date}/enddate/${end_date}`)
+            let start_date = `${this.datas.selectedYear}-${month}-01 00:00:00`
+            let end_date = `${this.datas.selectedYear}-${month}-${month_last_date} 00:00:00`
+            await this.$http.get(`/diagnostics/accum/startdate/${start_date}/enddate/${end_date}`)
             .then((response) => {
-                dangerData = deepClone(response.data)
-                this.datas.violatedAccumulation = dangerData.reduce((acc, {robot_id, axis})=> {
+                if(response.data !== ''){
+                    this.datas.violatedAccumulation = response.data.filter(el => el.maxsum !== null && el.minsum !== null && (el.maxsum <= el.sum || el.minsum >= el.sum))
+                this.datas.filteredViolatedAccum = this.datas.violatedAccumulation.reduce((acc, {robot_id, axis})=> {
                     let axisKey = `axis${axis}`;
                     let item = acc.find((el) => el.robot_id === robot_id);
                     if(item) {
@@ -665,8 +699,6 @@ export default {
                         return [...acc, {robot_id, axis: {[axisKey]: 1}}];
                     }
                 }, []);
-                if(response.data == ""){
-                    window.alert('not data')
                 }
             })
             .catch((err) => {
@@ -817,7 +849,10 @@ export default {
             this.$emit('bindingCatch') // 하위 컴포넌트 watch 작동을 위해 이벤트 전송
         },
         async updateViolatedAccum(period,zone_id){
-            let temp = [];
+            let temp = []
+            let tempArr = []
+            let start_date = new Date(`${period.start_date} 00:00:00`);
+            let end_date = new Date(`${period.end_date} 23:59:59`)
             let resultArr = [];
             this.datas.robotInfo.forEach(el => {
                 if(el.zone == zone_id){
@@ -827,10 +862,17 @@ export default {
                     })
                 }
             })
+            await this.$http.get(`/diagnostics/accum/startdate/${period.start_date}/enddate/${period.end_date}`)
+            .then((response)=> {
+                tempArr = response.data.filter(el => el.maxsum !== null && el.minsum !== null && (el.maxsum <= el.sum || el.minsum >= el.sum))
+                tempArr.forEach(el => {
+                    el.time_stamp = this.$moment(el.time_stamp).format('YYYY-MM-DD hh:mm:ss');
+                    el.e_time = this.$moment(el.e_time).format('YYYY-MM-DD hh:mm:ss');
+                })
+            })
 
-            await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${period.start_date}/enddate/${period.end_date}`)
-            .then(async (response) => {
-                temp = response.data.filter(el => el.zone_id == zone_id)
+            temp = tempArr.filter(el => new Date(el.time_stamp) >= start_date && new Date(el.e_time) <= end_date && el.zone_id == zone_id)
+            if(temp.length !== 0){
                 temp.forEach(el => {
                     resultArr.forEach(item => {
                         if(el.robot_id == item.robot_id){
@@ -862,46 +904,47 @@ export default {
                         }
                     })
                 })
-                // temp.forEach(el => {
-                //     Object.assign(el, {current_data : {violation_count: [0,0,0,0,0,0,0]}})
-                // })
-                // for(let i = 0; i < temp.length; i++){
-                //     let idx = await getKeyIndex(resultArr, temp[i]);
-                //     if(idx > -1){
-                //         console.log(idx, temp[i])
-                //         switch(temp[i].axis){
-                //             case 1 :
-                //                 resultArr[idx].current_data.violation_count[0] += Number(temp[i].axis)
-                //             break;
-                //             case 2:
-                //                 resultArr[idx].current_data.violation_count[1] += Number(temp[i].axis)
-                //             break;
-                //             case 3:
-                //                 resultArr[idx].current_data.violation_count[2] += Number(temp[i].axis)
-                //             break;
-                //             case 4:
-                //                 resultArr[idx].current_data.violation_count[3] += Number(temp[i].axis)
-                //             break;
-                //             case 5:
-                //                 resultArr[idx].current_data.violation_count[4] += Number(temp[i].axis)
-                //             break;
-                //             case 6:
-                //                 resultArr[idx].current_data.violation_count[5] += Number(temp[i].axis)
-                //             break;
-                //             case 7:
-                //                 resultArr[idx].current_data.violation_count[6] += Number(temp[i].axis)
-                //             break;
-                //         default:
-                //         }
-                //     }
-                //     else{
-                //         resultArr.push(temp[i])
-                //     }
-                // }
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+            }
+
+            // await this.$http.get(`/torquemonitoring/factory/${this.getFactoryId}/startdate/${period.start_date}/enddate/${period.end_date}`)
+            // .then(async (response) => {
+            //     temp = response.data.filter(el => el.zone_id == zone_id)
+            //     temp.forEach(el => {
+            //         resultArr.forEach(item => {
+            //             if(el.robot_id == item.robot_id){
+            //                 switch(el.axis){
+            //                     case 1:
+            //                         item.current_data.violation_count[0] += 1
+            //                     break;
+            //                     case 2:
+            //                         item.current_data.violation_count[1] += 1
+            //                     break;
+            //                     case 3:
+            //                         item.current_data.violation_count[2] += 1
+            //                     break;
+            //                     case 4:
+            //                         item.current_data.violation_count[3] += 1
+            //                     break;
+            //                     case 5:
+            //                         item.current_data.violation_count[4] += 1
+            //                     break;
+            //                     case 6:
+            //                         item.current_data.violation_count[5] += 1
+            //                     break;
+            //                     case 7:
+            //                         item.current_data.violation_count[6] += 1
+            //                     break;
+            //                 default:
+            //                 }
+
+            //             }
+            //         })
+            //     })
+
+            // })
+            // .catch((err) => {
+            //     console.log(err)
+            // })
             return resultArr
         },
         getFilteredReportDetail(){
