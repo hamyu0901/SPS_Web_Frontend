@@ -63,7 +63,7 @@ export default {
 <style lang="scss" scoped>
 #opinion{
         margin-top: 15px;
-        width: 745px;
+        width: 850px;
         position: relative;
         display: flex;
         height: 40px;
