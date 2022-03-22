@@ -1,23 +1,9 @@
 <template>
     <div>
-
         <div class="saveButton"><v-btn color="#237ffe" @click="clickSaveButton"><v-icon>file_upload</v-icon><label>저장</label></v-btn></div>
         <v-layout>
             <v-flex class="reportHeader">{{ui.header}}</v-flex>
             <v-flex class="prevAllSelectBox">
-                <!-- <div >
-                    <v-combobox
-                        outline
-                        color="grey"
-                        background-color="#21976a"
-                        label="select All"
-                        :items="datas.selectBoxReportList"
-                        item-text="report_name"
-                    >
-                    </v-combobox>
-
-                </div> -->
-
                 <DxSelectBox class="prevSelectContent"
                     :data-source="datas.selectBoxReportList"
                     display-expr="report_name"
@@ -325,19 +311,15 @@ export default {
         TorquePrevPicker,
         DxSelectBoxButton,
     },
-    props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','reportType','reportSwitch','selectedMonth','selectedYear'],
+    props:['selectedReport','reports','torqueAnalysisReportDetail','bindingCatch','selectedMonth','selectedYear'],
     data() {
         return {
-            preselect_value : null,
-            somethings: ['a','b'],
             ui : {
                 header : ''
             },
             datas : {
-                reportSwitch: null,
                 selectedMonth: null,
                 selectedYear: null,
-                reportType: null,
                 selectAllReportIndexs: [],
                 selectedReport: {},
                 boothInfo: [],
@@ -369,7 +351,6 @@ export default {
             getBoothInfos: 'getBoothInfos',
             getZoneInfos: 'getZoneInfos',
             getRobotInfos: 'getRobotInfos',
-            reportDatas: 'getReportItems'
         }),
     },
     created(){
@@ -391,9 +372,9 @@ export default {
     methods: {
         async resetData(){
             this.datas.selectedReport = deepClone(this.selectedReport)
-            this.datas.reports = deepClone(this.reports)
-            this.datas.reportType = this.reportType
-            this.datas.reportSwitch = this.reportSwitch
+            if(this.reports.length !==0){
+                this.datas.reports = deepClone(this.reports)
+            }
             this.datas.selectedMonth = this.selectedMonth
             this.datas.selectedYear = this.selectedYear
             this.datas.torqueAnalysisReportDetail = deepClone(this.torqueAnalysisReportDetail)
@@ -456,8 +437,9 @@ export default {
             this.setBoothInfo();
         },
         async getDetail(){
+            let reportType = 0
             this.datas.allReportDetail = []
-            await this.$http.get(`diagnostics/report/report/detail/type/${this.datas.reportType}`)
+            await this.$http.get(`diagnostics/report/report/detail/type/${reportType}`)
             .then((response) => {
                 this.datas.allReportDetail = deepClone(response.data)
             })
@@ -477,77 +459,52 @@ export default {
             let reportSwitch = null // report_detail 테이블에 저장되어있는지 안했는지 표시
             if(this.datas.allReportDetail !== ""){
                 this.datas.allReportDetail.forEach(el => {
-                tempReportId.push(el.report_id)
-                if(tempReportId.includes(this.datas.selectedReport.report_id)){
-                    reportSwitch = 1
-                }else{
-                    reportSwitch = 0
-                }
-                this.datas.torqueAnalysisReportDetail.forEach(element => {
-                    if(el.data_id === element.prev_data_id) {
-                        temp.push(el)
+                    tempReportId.push(el.report_id)
+                    if(tempReportId.includes(this.datas.selectedReport.report_id)){
+                        reportSwitch = 1
+                    }else{
+                        reportSwitch = 0
                     }
+                    this.datas.torqueAnalysisReportDetail.forEach(element => {
+                        if(el.data_id === element.prev_data_id) {
+                            temp.push(el)
+                        }
+                    })
                 })
-            })
             }
             else{
                 reportSwitch = 0
             }
-
              this.datas.torqueAnalysisReportDetail.forEach(element => {
                 if(element.prev_data_id == null){
-
                     temp.push(element)
                 }
             })
             this.datas.prevReport = deepClone(temp);
             if(reportSwitch == 0){
-                await this.getViolatedAccumulation();
+                if(this.datas.selectedMonth !== null){
+                    await this.getViolatedAccumulation();
+                }
             }
             this.setSelectBoxReportList(tempReportId)
             this.datas.robotInfo.forEach(robotElement => {
                 Object.assign(robotElement, { booth: this.datas.zoneInfo.filter(zone=> zone.id === robotElement.zone)[0].booth})
                 if(reportSwitch == 0){
-                    let cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0, cnt6 = 0, cnt7 = 0
-                    let month = this.datas.selectedMonth.substr(0, 2)
-                    let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
-                    Object.assign(robotElement, { violation_value : this.datas.filteredViolatedAccum.filter(element => element.robot_id == robotElement.id)[0]})
-                    if(robotElement.violation_value == undefined){
+                    if(this.datas.selectedMonth == null){
                         robotElement.violation_value = {
-                            axis: {axis1:0,axis2:0,axis3:0,axis4:0,axis5:0,axis6:0,axis7:0},
-                            current_start_date : `${this.datas.selectedYear}-${month}-01 00:00:00`,
-                            current_end_date : `${this.datas.selectedYear}-${month}-${month_last_date} 00:00:00`,
+                            current_start_date : null,
+                            current_end_date: null,
                             current_data : {
                                 violation_count : [null,null,null,null,null,null,null],
                                 comment: null,
                                 danger_level: null,
-                            }
+                            },
                         }
                     }
-                    cnt1 = robotElement.violation_value.axis.axis1 ? cnt1 + robotElement.violation_value.axis.axis1 : cnt1
-                    cnt2 = robotElement.violation_value.axis.axis2 ? cnt2 + robotElement.violation_value.axis.axis2 : cnt2
-                    cnt3 = robotElement.violation_value.axis.axis3 ? cnt3 + robotElement.violation_value.axis.axis3 : cnt3
-                    cnt4 = robotElement.violation_value.axis.axis4 ? cnt4 + robotElement.violation_value.axis.axis4 : cnt4
-                    cnt5 = robotElement.violation_value.axis.axis5 ? cnt5 + robotElement.violation_value.axis.axis5 : cnt5
-                    cnt6 = robotElement.violation_value.axis.axis6 ? cnt6 + robotElement.violation_value.axis.axis6 : cnt6
-                    cnt7 = robotElement.violation_value.axis.axis7 ? cnt7 + robotElement.violation_value.axis.axis7 : cnt7
-                    robotElement.violation_value = {
-                        current_start_date : `${this.datas.selectedYear}-${month}-01 00:00:00`,
-                        current_end_date : `${this.datas.selectedYear}-${month}-${month_last_date} 00:00:00`,
-                        current_data : {
-                            violation_count : [null,null,null,null,null,null,null],
-                            comment: null,
-                            danger_level: null,
-                        }
-                    }
-                    robotElement.violation_value.current_data.violation_count[0] = cnt1; cnt1 = 0;
-                    robotElement.violation_value.current_data.violation_count[1] = cnt2; cnt2 = 0;
-                    robotElement.violation_value.current_data.violation_count[2] = cnt3; cnt3 = 0;
-                    robotElement.violation_value.current_data.violation_count[3] = cnt4; cnt4 = 0;
-                    robotElement.violation_value.current_data.violation_count[4] = cnt5; cnt5 = 0;
-                    robotElement.violation_value.current_data.violation_count[5] = cnt6; cnt6 = 0;
-                    robotElement.violation_value.current_data.violation_count[6] = cnt7; cnt7 = 0;
+                    else{
+                        this.setCurrentViolatedData(robotElement);
 
+                    }
                 }
                 else{
                     Object.assign(robotElement, { violation_value: this.datas.torqueAnalysisReportDetail.filter(element => element.robot_id === robotElement.id)[0]})
@@ -619,6 +576,47 @@ export default {
             })
 
         },
+        setCurrentViolatedData(robotElement){
+            let cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0, cnt6 = 0, cnt7 = 0
+            let month = this.datas.selectedMonth.substr(0, 2)
+            let month_last_date = new Date(this.datas.selectedYear, month, 0).getDate();
+            Object.assign(robotElement, { violation_value : this.datas.filteredViolatedAccum.filter(element => element.robot_id == robotElement.id)[0]})
+            if(robotElement.violation_value == undefined){
+                robotElement.violation_value = {
+                    axis: {axis1:0,axis2:0,axis3:0,axis4:0,axis5:0,axis6:0,axis7:0},
+                    current_start_date : `${this.datas.selectedYear}-${month}-01 00:00:00`,
+                    current_end_date : `${this.datas.selectedYear}-${month}-${month_last_date} 00:00:00`,
+                    current_data : {
+                        violation_count : [null,null,null,null,null,null,null],
+                        comment: null,
+                        danger_level: null,
+                    }
+                }
+            }
+            cnt1 = robotElement.violation_value.axis.axis1 ? cnt1 + robotElement.violation_value.axis.axis1 : cnt1
+            cnt2 = robotElement.violation_value.axis.axis2 ? cnt2 + robotElement.violation_value.axis.axis2 : cnt2
+            cnt3 = robotElement.violation_value.axis.axis3 ? cnt3 + robotElement.violation_value.axis.axis3 : cnt3
+            cnt4 = robotElement.violation_value.axis.axis4 ? cnt4 + robotElement.violation_value.axis.axis4 : cnt4
+            cnt5 = robotElement.violation_value.axis.axis5 ? cnt5 + robotElement.violation_value.axis.axis5 : cnt5
+            cnt6 = robotElement.violation_value.axis.axis6 ? cnt6 + robotElement.violation_value.axis.axis6 : cnt6
+            cnt7 = robotElement.violation_value.axis.axis7 ? cnt7 + robotElement.violation_value.axis.axis7 : cnt7
+            robotElement.violation_value = {
+                current_start_date : `${this.datas.selectedYear}-${month}-01 00:00:00`,
+                current_end_date : `${this.datas.selectedYear}-${month}-${month_last_date} 00:00:00`,
+                current_data : {
+                    violation_count : [null,null,null,null,null,null,null],
+                    comment: null,
+                    danger_level: null,
+                }
+            }
+            robotElement.violation_value.current_data.violation_count[0] = cnt1; cnt1 = 0;
+            robotElement.violation_value.current_data.violation_count[1] = cnt2; cnt2 = 0;
+            robotElement.violation_value.current_data.violation_count[2] = cnt3; cnt3 = 0;
+            robotElement.violation_value.current_data.violation_count[3] = cnt4; cnt4 = 0;
+            robotElement.violation_value.current_data.violation_count[4] = cnt5; cnt5 = 0;
+            robotElement.violation_value.current_data.violation_count[5] = cnt6; cnt6 = 0;
+            robotElement.violation_value.current_data.violation_count[6] = cnt7; cnt7 = 0;
+        },
         setSelectBox(){
             let tempReportId = [];
             if(this.datas.allReportDetail !== ""){
@@ -685,20 +683,20 @@ export default {
             .then((response) => {
                 if(response.data !== ''){
                     this.datas.violatedAccumulation = response.data.filter(el => el.maxsum !== null && el.minsum !== null && (el.maxsum <= el.sum || el.minsum >= el.sum))
-                this.datas.filteredViolatedAccum = this.datas.violatedAccumulation.reduce((acc, {robot_id, axis})=> {
-                    let axisKey = `axis${axis}`;
-                    let item = acc.find((el) => el.robot_id === robot_id);
-                    if(item) {
-                        if(Object.keys(item.axis).includes(axisKey)){
-                            item.axis[axisKey] += 1;
+                     this.datas.filteredViolatedAccum = this.datas.violatedAccumulation.reduce((acc, {robot_id, axis})=> {
+                        let axisKey = `axis${axis}`;
+                        let item = acc.find((el) => el.robot_id === robot_id);
+                        if(item) {
+                            if(Object.keys(item.axis).includes(axisKey)){
+                                item.axis[axisKey] += 1;
+                            } else {
+                                item.axis[axisKey] = 1;
+                            }
+                            return acc.map((el) => el.robot_id === robot_id ? {robot_id, axis: item.axis}: el);
                         } else {
-                            item.axis[axisKey] = 1;
+                            return [...acc, {robot_id, axis: {[axisKey]: 1}}];
                         }
-                        return acc.map((el) => el.robot_id === robot_id ? {robot_id, axis: item.axis}: el);
-                    } else {
-                        return [...acc, {robot_id, axis: {[axisKey]: 1}}];
-                    }
-                }, []);
+                    }, []);
                 }
             })
             .catch((err) => {
@@ -948,7 +946,7 @@ export default {
             return resultArr
         },
         getFilteredReportDetail(){
-             EventBus.$emit('getFilteredReportDetail',this.datas.selectedReport.report_id);
+            EventBus.$emit('getFilteredReportDetail',this.datas.selectedReport.report_id);
         },
         async clickSaveButton(){
             this.datas.successSave = false;
@@ -1200,13 +1198,14 @@ export default {
     .prevDataName{
         color: #21976a;
         margin-right: 10px;
-        margin-left: 20px;
         font-weight: bold;
         font-size: 15px;
         padding-top: 10px;
     }
     .currentPicker{
         width: 690px;
+        margin-right: 130px;
+
     }
     .prevAllSelectBox{
         display: flex;
