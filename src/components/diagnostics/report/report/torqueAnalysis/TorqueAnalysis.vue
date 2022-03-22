@@ -4,15 +4,15 @@
             <torque-report
             />
         </div>
-        <div v-if="datas.reportSwitch == 0">
+        <div v-if="datas.reportSwitch == 0 && datas.reports.length !== 0">
             <div class="combobox">
                 <div class="yearCombobox">
                     <v-combobox
                         v-model="datas.selectedYear"
                         label="Select year"
                         outlined
-                        :rules="[v => !!v || 'year is required']"
                         :items="years"
+                        @input="clickYear"
                     >
                     </v-combobox>
                 </div>
@@ -23,6 +23,7 @@
                         label="Select Month"
                         outlined
                         :items="month"
+                        :disabled="!datas.isYearSelected"
                     >
                     </v-combobox>
                 </div>
@@ -30,7 +31,7 @@
         </div>
         <div>
             <torque-report-table
-                v-if="datas.selectedMonth !== null || datas.reportSwitch == 1"
+                v-if="datas.reports.length !== 0"
                 v-bind:selectedReport="datas.selectedReport"
                 v-bind:reports="datas.reports"
                 v-bind:torqueAnalysisReportDetail="datas.torqueAnalysisReportDetail"
@@ -107,7 +108,8 @@ export default {
               selectedMonth : null,
               months: [],
               torqueAnalysisReportDetail:[],
-              rerender : 0
+              rerender : 0,
+              isYearSelected : false,
           }
       }
   },
@@ -132,8 +134,13 @@ export default {
 
         }
     },
-
+    async created(){
+        if(isEmptyObj(this.selectedReport) == true){
+            await this.getReportList();
+        }
+    },
     mounted(){
+        this.report = this.$store.getters['getReport'];
         if(isEmptyObj(this.selectedReport) == true){
             this.initializeReportData();
         }
@@ -142,9 +149,7 @@ export default {
             this.datas.selectedReport = this.selectedReport
             this.datas.reports = this.reports
             this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
-            if(this.datas.torqueAnalysisReportDetail.length !== 0){
-                this.datas.reportSwitch = 1
-            }
+            this.datas.torqueAnalysisReportDetail.length !== 0 ? this.datas.reportSwitch = 1 : this.datas.reportSwitch = 0
         }
         this.resetDate();
     },
@@ -157,30 +162,19 @@ export default {
             await this.resetDate();
         },
         torqueAnalysisReportDetail(){
-            if(this.torqueAnalysisReportDetail.length !== 0){
-                this.datas.reportSwitch = 1
-            }
+            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
+            this.datas.torqueAnalysisReportDetail.length !== 0 ? this.datas.reportSwitch = 1 : this.datas.reportSwitch = 0
         },
     },
     methods:{
         async initializeReportData(){
-            this.report = this.$store.getters['getReport'];
             this.datas.selectedReport = this.report
             await this.getReportDetail(this.report.report_id);
-            await this.getReportList();
-            if(this.datas.torqueAnalysisReportDetail.length !== 0){
-                this.datas.reportSwitch = 1
-            }
-            else{
-                this.datas.reportSwitch = 0
-            }
+            this.datas.torqueAnalysisReportDetail.length !== 0 ? this.datas.reportSwitch = 1 : this.datas.reportSwitch = 0
         },
         resetDate(){
             this.datas.selectedYear = null
             this.datas.selectedMonth = null
-        },
-        resetTorqueAnalysisReportDetail(){
-            this.datas.torqueAnalysisReportDetail= this.torqueAnalysisReportDetail
         },
         bindingCatch(){
             this.datas.rerender ++;
@@ -190,14 +184,25 @@ export default {
                 window.alert('Year is Required')
             }
         },
+        clickYear(){
+            this.datas.isYearSelected = true;
+        },
         async getReportList(){
             await this.$http.get(`/diagnostics/report/report`)
             .then((response) => {
                 this.datas.reports = response.data
-                this.datas.reports.forEach((el,index) => {
-                Object.assign(el, {reportNumber : index + 1})
-                })
+                if(this.datas.reports !== ""){
+                    this.datas.reports.forEach((el,index) => {
+                        Object.assign(el, {reportNumber : index + 1})
+                    })
+                }
             });
+            if(this.datas.reports.length == 0){
+                window.alert('리포트를 생성해주세요')
+            }
+            else{
+
+            }
         },
         async getReportDetail(report_id){
             this.datas.torqueAnalysisReportDetail = [];
