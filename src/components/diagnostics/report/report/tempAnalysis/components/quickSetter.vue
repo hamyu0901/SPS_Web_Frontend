@@ -29,7 +29,7 @@
           :hide-details="true"
           :no-data-text="noDataTextMonth"
           return-object
-          @change="findData"
+          @input="findData"
         >
           <template v-slot:item="{ item }">
             <div>
@@ -73,7 +73,6 @@ export default {
             })
         },
         getMonth(year){
-
             this.isYearSelected = true;
             this.selectedYear = year.years;
 
@@ -104,13 +103,13 @@ export default {
             }
             return null;
         },
-        findData(month){
+        async findData(month){
+          await this.$emit('selectMonth')
             this.selectedMonth = month.monthes;
             const quickPeriod = {
                 quickYear: this.selectedYear,
                 quickMonth: this.selectedMonth,
             };
-
             this.$emit('quickSetting', quickPeriod);
         }
     }

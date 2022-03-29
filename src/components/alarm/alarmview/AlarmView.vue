@@ -11,7 +11,7 @@
         <v-flex class="pl-2 pr-2" lg2>
             <date-picker
                 v-bind:style="ui.selectorStyle"
-                v-bind:placeHolder="ui.currDate" 
+                v-bind:placeHolder="ui.currDate"
                 v-bind:setDate="setCurrDate()"
                 v-on:getDate="getCurrDate"
             ></date-picker>
@@ -29,35 +29,46 @@
         </v-flex>
         <v-flex class="pl-2 pr-2" lg2>
             <selector
-            v-bind:style="ui.selectorStyle"
-            v-bind:selectorTitle="ui.alarmStatus"
-            v-bind:selectorOptions="datas.alarmStatus"
-            v-on:selectedTarget="getTargetAlarmStatus"
+                v-bind:style="ui.selectorStyle"
+                v-bind:selectorTitle="ui.alarmStatus"
+                v-bind:selectorOptions="datas.alarmStatus"
+                v-on:selectedTarget="getTargetAlarmStatus"
             ></selector>
         </v-flex>
-        <v-flex class="ml-2 mr-2" lg1>
-            <!-- flags.isUseAlarmCode -->
+        <v-flex class="pl-2 pr-2">
+            <multi-selector
+                class="FilterSelector"
+                v-bind:selectorTitle="ui.selectAlarmCode"
+                v-bind:selectorOptions="datas.alarmCodes"
+                v-on:selectedTargets="getTargetAlarmCodes"
+            >
+            </multi-selector>
+        </v-flex>
+        <!-- <v-flex class="ml-2 mr-2" lg1>
             <v-checkbox
                 v-bind:style="ui.checkboxStyle"
                 v-model="flags.isUseAlarmCode "
-                @change="getAlarmCodeFlag(flags.isUseAlarmCode)" 
+                @change="getAlarmCodeFlag(flags.isUseAlarmCode)"
                 :label="ui.useAlarmCode"
             ></v-checkbox>
         </v-flex>
-        <v-flex class="pl-2" lg2>
-            <input 
+        <v-flex class="alaramInputBox pl-2" lg2>
+        <div class="pl-2 lg2">
+            <input
                 v-bind:style="ui.inputStyle"
                 @input="setAlarmCode($event.target.value)"
                 :readonly="!flags.isUseAlarmCode" >
-        </v-flex>
+        </div>
+        </v-flex> -->
         <v-spacer/>
         <v-btn v-bind:style="ui.buttonStyle"  @click="searchBtnClicked">
             <a class="pt-1"><img :src="ui.searchBtnIcon"></a>
         </v-btn>
+
         <v-flex xs12 lg12>
             <loading-dlg v-bind:loadingFlag="flags.loading"></loading-dlg>
             <alarm-view
-                v-bind:headerData="datas.infoTableHeaderData" 
+                v-bind:headerData="datas.infoTableHeaderData"
                 v-bind:contentData="datas.infoTableContentData"
             ></alarm-view>
         </v-flex>
@@ -68,11 +79,14 @@
 import {mapGetters} from 'vuex';
 import datePicker from '@/commons/DatePicker';
 import selector from '@/commons/Selector';
+import MultiSelector from '@/commons/MultiSelector'
 import alarmView from '@/components/alarm/alarmview/alarmview/GridTableWithDialog';
 import loadingDlg from '@/commons/LoadingDlg'
+// import { SetLeftFeature } from 'ag-grid-community';
 export default {
     components: {
         selector,
+        MultiSelector,
         datePicker,
         alarmView,
         loadingDlg
@@ -88,6 +102,7 @@ export default {
                 robot:          this.$t(`alarmView.robot`),
                 alarmType:      this.$t(`alarmView.alarmType`),
                 alarmStatus:    this.$t(`alarmView.alarmStatus`),
+                selectAlarmCode:    this.$t(`alarmView.selectAlarmCode`),
                 useAlarmCode:   this.$t(`alarmView.useAlarmCode`),
                 alarmCode:      this.$t(`alarmView.alarmCode`),
                 searchBtnIcon: require("@/images/search_icon.png"),
@@ -128,6 +143,7 @@ export default {
                     { id: 0, name: "OPEN"},
                     { id: 1, name: "CLOSE"}
                 ],
+                alarmCodes: [],
                 searchDatas: {},
                 postDatas: {}
             },
@@ -143,11 +159,16 @@ export default {
                 this.initDatas();
                 this.setNodeInfo(this.nodeInfo);
             }
-        },  
+        },
+        ...mapGetters({
+            baseUrl: 'getBaseUrl',
+            getFactoryId: 'getFactoryId',
+        }),
     },
     mounted() {
         this.setAlarmType();
         this.initializeStyle();
+        this.getAlarmCode();
     },
     methods: {
         initializeStyle() {
@@ -169,6 +190,37 @@ export default {
 
         getCurrDate(currDate) {
             this.datas.searchDatas['currtime'] = currDate;
+        },
+        getAlarmCode(){
+            this.$http.get(`/alarmview/data/alarm/code`)
+            .then((result) => {
+                if(result.data != '') {
+                    let data = [];
+                    Object.keys(result.data).forEach(function eachKey(key) {
+                        data.push({
+                            id: key,
+                            name: result.data[key].alarm_code
+                        });
+                    });
+                    this.datas.alarmCodes = data;
+                }
+                else {
+                    this.datas.alarmCodes = [];
+                }
+            })
+        },
+        getTargetAlarmCodes(selectedAlarmCodes){
+            let tempAlarmCodes = '';
+            for(let i = 0; i < selectedAlarmCodes.length; i++) {
+                let tempdata = "'" + selectedAlarmCodes[i] + "'"
+                if(i == selectedAlarmCodes.length - 1) {
+                    tempAlarmCodes += tempdata;
+                }
+                else {
+                    tempAlarmCodes += (tempdata + ',');
+                }
+            }
+            this.datas.searchDatas['selectedAlarmCodes'] = tempAlarmCodes;
         },
 
         getAlarmCodeFlag(alarmCodeFlag) {
@@ -210,7 +262,6 @@ export default {
             let currDate = year + "-" + month + "-" + day;
             return currDate;
         },
-       
         setAlarmType() {
             this.$http.get(`/diagnostics/alarmstatistics/data/alarm/type`)
             .then((result) => {
@@ -240,7 +291,6 @@ export default {
                 delete this.datas.searchDatas.alarmcode;
             }
         },
-      
         getTargetAlarmStatus(status) {
             if (typeof status !== 'string') {
                 this.datas.searchDatas.alarmstatus = status.target;
@@ -277,6 +327,7 @@ export default {
                     this.initCSS();
                 }
                 this.setLoadingDlg(false);
+
             }).catch((error) => {
                 this.$log.error(error);
                 this.setLoadingDlg(false);

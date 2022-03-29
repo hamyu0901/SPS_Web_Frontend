@@ -1,6 +1,6 @@
 <template>
   <div id="btnBox" class="ml-3">
-      <v-btn class="btnColor" @click="resetData" :ripple="false"><v-icon>refresh</v-icon><label>리셋</label></v-btn>
+      <!-- <v-btn class="btnColor" @click="resetData" :ripple="false"><v-icon>refresh</v-icon><label>리셋</label></v-btn> -->
       <v-btn class="btnColor" @click="saveData" :ripple="false"><v-icon>file_upload</v-icon><label>저장</label></v-btn>
   </div>
 </template>

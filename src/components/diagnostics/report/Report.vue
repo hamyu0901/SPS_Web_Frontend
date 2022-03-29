@@ -13,8 +13,6 @@
                     >
                     <img class="mr-2" src="@/images/assignment-outline.png"/>
                      리포트 조회 / 생성</v-btn>
-                     
-
                 </div>
             </template>
             <report-dialog
@@ -25,7 +23,7 @@
             />
         </v-dialog>
         <div id="tabMenuBox">
-            <v-btn-toggle  class="btnToggle" rounded color="transparent" style="background:transparent" v-model="datas.toggle">
+            <v-btn-toggle  class="btnToggle" rounded color="transparent" style="background:transparent" v-model="datas.toggle" mandatory >
                 <v-btn class="btnInfo" @click="clickTorqueAnalysis" :ripple="false" color="#393b58"><v-icon class="mr-2">check</v-icon>토크 분석</v-btn>
                 <v-btn class="btnInfo" @click="clickTempAnalysis" :ripple="false" color="#393b58"><v-icon class="mr-2">check</v-icon>온도 분석</v-btn>
                 <v-btn class="btnInfo" @click="clickAlarmAnalysis" :ripple="false" color="#393b58"><v-icon class="mr-2">check</v-icon>알람 분석</v-btn>
@@ -88,9 +86,15 @@ export default {
             reportDatas: 'getReportItems'
         })
     },
+    mounted() {
+        let btn = document.getElementsByClassName('btnToggle')
+        if(btn[0].children[0].__vue__.isActive == true){
+            this.datas.reportType = 0
+        }
+    },
 
     methods:{
-        clickTorqueAnalysis(){
+        clickTorqueAnalysis(e){
             this.reportDatas.selectedReport.report_type = 0
             this.datas.reportType = 0
         },

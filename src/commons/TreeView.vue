@@ -7,13 +7,13 @@
             :active-class="ui.activeClass"
             :items="datas.factoryInfos"
             item-key="key"
-            activatable
+
             hoverable
             transition
             :active.sync="datas.selectedItems"
             :open-all="flag.openAllFlag"
         >
-            <template slot="label" slot-scope="props" > 
+            <template slot="label" slot-scope="props" >
                 <v-layout column @click="nodeClicked(props.item, props)">
                     <v-layout class="treeItem" align-center>
                         <a class="pt-1"><img :src="props.item.icon"></a>
@@ -42,7 +42,7 @@ export default {
                 activeClass: ''
             },
             flag: {
-                openAllFlag: false 
+                openAllFlag: false
             },
             datas: {
                 factoryName: '',
@@ -55,9 +55,9 @@ export default {
             }
         }
     },
-    
+
     created() {
-        this.getFactoryInfos();    
+        this.getFactoryInfos();
         this.setThemeIcons();
     },
 
@@ -97,7 +97,7 @@ export default {
             return new Promise((resolve, reject) => {
                 this.$http.get(`/info/factorys`).then(result => {
                     resolve(result.data);
-                })  
+                })
             })
         },
         getFactoryName(factoryid) {
@@ -216,7 +216,7 @@ export default {
                 this.nodeClicked(factoryInfos);
             }
         }, 
-        nodeClicked(data) {  
+        nodeClicked(data) {
             this.setSelectedItems(data.key);
             this.$emit('nodeInfo', this.setNodeInfo(data));
         },

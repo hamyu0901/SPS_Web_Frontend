@@ -91,6 +91,7 @@
                 />
             </DxDataGrid>
                 <div class="selectReportButton my-3 mr-2">
+                    <v-btn class="deletebtnColor" @click="clickDeleteButton" >삭제</v-btn>
                     <v-btn class="btnColor" @click="clickConfirmButton">확인</v-btn>
                 </div>
         </v-layout>
@@ -288,12 +289,14 @@ export default {
             this.$emit('closeReportDialog')
         },
         async selectReport(selectReport){
-            this.datas.selectedReport = {
-                report_id : selectReport.selectedRowsData[0].report_id,
-                report_name : selectReport.selectedRowsData[0].report_name,
-                update_type : selectReport.selectedRowsData[0].update_time
+            if(selectReport.selectedRowsData.length !== 0){
+                this.datas.selectedReport = {
+                    report_id : selectReport.selectedRowsData[0].report_id,
+                    report_name : selectReport.selectedRowsData[0].report_name,
+                    update_type : selectReport.selectedRowsData[0].update_time
+                }
+                this.setReportItems(this.datas.selectedReport);
             }
-            this.setReportItems(this.datas.selectedReport);
             await this.getReportDetail(this.datas.selectedReport.report_id)
             if(this.datas.torqueAnalysisReportDetail.length == 0){
                 this.datas.reportSwitch = 0
@@ -314,6 +317,26 @@ export default {
                 window.alert('Select Report')
             }
         },
+        async clickDeleteButton(){
+            if(window.confirm("삭제하시겠습니까?")){
+                if(isEmptyObj(this.datas.selectedReport) !== true){
+                    await this.$http.post(`diagnostics/report/report/reportid/${this.datas.selectedReport.report_id}/delete`) // his_report 리포트 삭제
+                    .then(()=> {
+                        this.getReport();
+                    })
+                    await this.$http.get(`diagnostics/report/report/reportid/${this.datas.selectedReport.report_id}/delete/detail`) // 선택한 리포트 data_id 조회
+                    .then(async (response)=> {
+                        for await (let item of response.data){
+                            this.$http.post(`diagnostics/report/report/dataid/${item.data_id}/delete/detail`) // 동일한 data_id를 가지고 있는 prev_data_id를 null update
+                        }
+                        await this.$http.post(`diagnostics/report/report/reportid/${this.datas.selectedReport.report_id}/delete/detail`)// his_report_detail 리포트 삭제
+                    })
+                }
+                else{
+                    window.alert('Select Report')
+                }
+            }
+        }
     }
 }
 </script>
@@ -336,6 +359,11 @@ export default {
     }
     .btnColor {
         background-color: #237ffe !important;
+        font-weight: bold;
+        font-size: 15px;
+    }
+    .deletebtnColor{
+        background-color: #db4c0a !important;
         font-weight: bold;
         font-size: 15px;
     }

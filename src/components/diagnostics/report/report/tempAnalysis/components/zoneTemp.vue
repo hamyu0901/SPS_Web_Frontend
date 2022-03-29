@@ -4,7 +4,16 @@
             <span class="zoneTitle">{{zoneName}}</span>
         </div>
         <div id="compareBox">
-            <current-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" :quickPeriod="quickPeriod" ref="current" @onSave="onSave" @sendDataIdList="sendDataIdList"></current-zone>
+            <current-zone
+                :zoneInfo="zoneInfo"
+                :robotInfo="robotInfo"
+                :quickPeriod="quickPeriod" ref="current" @onSave="onSave"
+                @sendDataIdList="sendDataIdList"
+                @getViolatedData="getViolatedData"
+                :loadingSwitch="isLoading"
+                @changeLoading="changeLoading"
+            >
+            </current-zone>
             <prev-zone :zoneInfo="zoneInfo" :robotInfo="robotInfo" ref="prev" @updateDataId="updateDataId"></prev-zone>
         </div>
     </div>
@@ -13,10 +22,11 @@
 <script>
 import zoneCurrentVue from './zoneCurrent.vue';
 import zonePrevVue from './zonePrev.vue';
+import EventBus from "@/commons/EventBus";
 
 
 export default {
-    props:['zoneInfo', 'quickPeriod'],
+    props:['zoneInfo', 'quickPeriod','violatedDataLength'],
     components: {
         currentZone: zoneCurrentVue,
         prevZone: zonePrevVue,
@@ -27,17 +37,28 @@ export default {
             data_id_List_from_curr:[],
             zoneName: null,
             robotInfo: [],
-            successCount: 1,
+            isLoading : null,
         }
     },
     created(){
         this.setThisZone();
         this.getRobots();
+        EventBus.$on('loadingSwitch', this.loadingSwitch)
+    },
+    watch:{
+        violatedDataLength(){
+            if(this.violatedDataLength == 48){
+                this.isLoading = false;
+            }
+        }
     },
     computed:{
 
     },
     methods:{
+        loadingSwitch(){
+            this.isLoading = null;
+        },
         sendDataIdList(prev_data_id_list){
             if(this.data_id_List_from_curr !== 0){
                 this.data_id_List_from_curr.splice(0);
@@ -51,14 +72,15 @@ export default {
         },
         async onSave(value){
             value.prev_data_id_list = this.prev_data_id_list;
-            await this.$http.post(`/diagnostics/datareport/temperature/save`, value)
-            .then(async (response) => {
-                await this.$emit('successUpdate',this.successCount)
-            })
-            .catch((err) => {
-                console.log(err)
-                window.alert('실패하였습니다.')
-            })
+            this.$emit('sendCurrentData',value)
+            // await this.$http.post(`/diagnostics/datareport/temperature/save`, value)
+            // .then(async (response) => {
+            //     await this.$emit('successUpdate',response.status)
+            // })
+            // .catch((err) => {
+            //     console.log(err)
+            //     window.alert('실패하였습니다.')
+            // })
         },
         childFunc() {
             this.$refs.current.childFunc();
@@ -92,6 +114,12 @@ export default {
                 }
             })
         },
+        getViolatedData(violatedTemp){
+            this.$emit('getViolatedData', violatedTemp)
+        },
+        changeLoading(){
+            this.isLoading = null
+        }
     }
 
 }

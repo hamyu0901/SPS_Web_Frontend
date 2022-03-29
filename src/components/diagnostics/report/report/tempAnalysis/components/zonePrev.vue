@@ -1,6 +1,6 @@
 <template>
     <div id="zonePrevBox" class="zonePrevBox">
-        <layout>
+        <div>
             <div class="dataInfo">이전 데이터</div>
         <loading-spinner v-if="isLoading"></loading-spinner>
         <div id="zoneComboBox">
@@ -14,7 +14,7 @@
                 ></v-text-field>
             </div>
         </div>
-        </layout>
+        </div>
         <div id="zoneTableBox" class="zoneTableBox">
             <zone-prev-table :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/>
             <!-- <table-vue :withRowHeaders="true" :isEditable="false" :propsColumn_x="column_x" :propsColumn_y="robots" :propsData="tableData" :propsTheme="'dark'" :propsFormat="`°c`"/> -->
