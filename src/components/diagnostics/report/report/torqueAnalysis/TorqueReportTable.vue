@@ -1204,7 +1204,7 @@ export default {
     }
     .currentPicker{
         width: 690px;
-        margin-right: 130px;
+        margin-right: 20px;
 
     }
     .prevAllSelectBox{
