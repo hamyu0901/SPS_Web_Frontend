@@ -1169,6 +1169,7 @@
         "robot": "로봇 선택",
         "alarmType": "알람 종류",
         "alarmStatus": "알람 상태",
+        "selectAlarmCode": "알람 코드 선택",
         "useAlarmCode": "알람코드검색",
         "alarmCode": "알람 코드",
         "infoTableHeaderData": {

@@ -90,7 +90,7 @@
             "typeHintText": "改善事项分类"
         }
     },
-    
+
     "selector": {
         "booth": "选择喷房",
         "zone": "选择ZONE",
@@ -435,7 +435,7 @@
             "cumulativeWarningValue": "累积警告值"
         }
     },
-    
+
     "diagnostics": {
         "drawertitle": {
             "predict": "预防保全",
@@ -915,7 +915,7 @@
                         "acmmmv": "最小泄露",
                         "summxv": "最大积产值",
                         "summmv": "最小积产值",
-                        "cycle": "作业时间" 
+                        "cycle": "作业时间"
                     },
                     "popMsg": {
                         "accept": "[通知] 应用完毕",
@@ -1168,6 +1168,7 @@
         "robot": "选择ROBOT",
         "alarmType": "报警种类",
         "alarmStatus": "报警状态",
+        "selectAlarmCode": "选择报警代码",
         "useAlarmCode": "使用报警代码",
         "alarmCode": "报警代码",
         "infoTableHeaderData": {

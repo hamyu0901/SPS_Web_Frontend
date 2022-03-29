@@ -90,7 +90,7 @@
             "typeHintText": "Action Item Type"
         }
     },
-    
+
     "selector": {
         "booth": "BOOTH",
         "zone": "ZONE",
@@ -1169,6 +1169,7 @@
         "robot": "Select Robot",
         "alarmType": "Alarm Type",
         "alarmStatus": "Alarm Status",
+        "selectAlarmCode": "Select Alram Code",
         "useAlarmCode": "Search Alarm Code",
         "alarmCode": "Alarm Code",
         "infoTableHeaderData": {
