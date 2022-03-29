@@ -72,14 +72,15 @@ export default {
         },
         async onSave(value){
             value.prev_data_id_list = this.prev_data_id_list;
-            await this.$http.post(`/diagnostics/datareport/temperature/save`, value)
-            .then(async (response) => {
-                await this.$emit('successUpdate',response.status)
-            })
-            .catch((err) => {
-                console.log(err)
-                window.alert('실패하였습니다.')
-            })
+            this.$emit('sendCurrentData',value)
+            // await this.$http.post(`/diagnostics/datareport/temperature/save`, value)
+            // .then(async (response) => {
+            //     await this.$emit('successUpdate',response.status)
+            // })
+            // .catch((err) => {
+            //     console.log(err)
+            //     window.alert('실패하였습니다.')
+            // })
         },
         childFunc() {
             this.$refs.current.childFunc();

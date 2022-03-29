@@ -17,6 +17,7 @@
         @successUpdate="successUpdate"
         @getViolatedData="getViolatedData"
         :violatedDataLength="violatedDataLength"
+        @sendCurrentData="sendCurrentData"
         >
       </booth-vue>
   </div>
@@ -33,19 +34,22 @@ export default {
         boothVue: boothTempVue,
         saveResetVue: saveResetVue,
     },
+    props:['reports'],
     data(){
         return{
-          report:null,
+          report: null,
           boothes:[
           ],
           quickPeriod: null,
           saveCount: 0,
           violatedDataLength: 0,
+          tempCurrentData: [],
         }
     },
-    created(){
+    async created(){
         this.initializeBoothes();
         this.initializeReportData();
+        await this.getReportList();
     },
     computed: {
       ...mapGetters({
@@ -59,9 +63,31 @@ export default {
       reportDatas(){
         this.report = this.$store.getters['getReport'];
         this.violatedDataLength = 0 ;
+        this.isLoading = true
       },
+      async reports(){
+        await this.getReportList();
+      }
     },
     methods:{
+      async getReportList(){
+        await this.$http.get(`/diagnostics/report/report`)
+        .then((response) => {
+          if(response.data.length == 0){
+            this.report.report_id = null,
+            window.alert('리포트를 생성해주세요')
+          }
+        });
+      },
+      // confirmSelectReport(){
+      //   let temp = []
+      //   let result = {}
+      //   if(this.datas.reports.length !== 0){
+      //     temp = this.datas.reports.filter(el => el.report_id == this.report.report_id)
+      //     result = temp.length !== 0 ? temp[0] : this.datas.reports[this.datas.reports.length-1]
+      //   }
+      //   return result
+      // },
       initializeReportData(){
         this.report = this.$store.getters['getReport'];
       },
@@ -74,7 +100,6 @@ export default {
               if(this.boothes.length !== 0){
                 this.boothes.splice(0);
               }
-
               for(const data of result.data){
                 this.boothes.push(data.booth);
               }
@@ -85,8 +110,9 @@ export default {
       },
       async onSave(){
         this.saveCount = 0;
+        this.tempCurrentData = [];
         for(var i = 0; i < this.$refs.child_component.length; i++){
-          this.$refs.child_component[i].childFunc()
+          await this.$refs.child_component[i].childFunc()
         }
       },
       onReset(){
@@ -100,6 +126,37 @@ export default {
       },
       getViolatedData(violatedTemp){
         this.violatedDataLength += violatedTemp
+        this.isLoading = this.violatedDataLength == 48 ? false : true
+      },
+      sendCurrentData(value){
+        this.tempCurrentData.push(value)
+        if(this.tempCurrentData.length == 10){
+            this.updateCurrentData(this.tempCurrentData)
+        }
+      },
+      async updateCurrentData(tempCurrentData){
+        let temp = [];
+        let isBoolean = (item) => item == true
+        tempCurrentData.forEach(el => {
+          el.data_list.forEach(item => {
+            temp.push(item.hasOwnProperty('avg_temperature'))
+          })
+        })
+        if(temp.every(isBoolean) == true){
+          for await (let item of this.tempCurrentData){
+            this.$http.post(`/diagnostics/datareport/temperature/save`, item)
+            .then((response) => {
+              this.saveCount += response.status
+              if(this.saveCount == 2000){
+                window.alert('저장되었습니다.')
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+              window.alert('실패하였습니다.')
+            })
+          }
+        }
       }
     }
 }

@@ -11,6 +11,7 @@
         @successUpdate="successUpdate"
         @getViolatedData="getViolatedData"
         :violatedDataLength="violatedDataLength"
+        @sendCurrentData="sendCurrentData"
         >
     </zone-vue>
   </div>
@@ -62,6 +63,9 @@ export default {
         },
         getViolatedData(violatedTemp){
             this.$emit('getViolatedData',violatedTemp)
+        },
+        sendCurrentData(value){
+            this.$emit('sendCurrentData',value)
         }
     }
 }
